@@ -1,0 +1,28 @@
+{
+  "name": "threevrtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-preset-es2015": "*",
+    "babelify": "*",
+    "express": "*",
+    "grunt": "*",
+    "grunt-browserify": "*",
+    "grunt-concurrent": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-express-server": "*",
+    "load-grunt-tasks": "*",
+    "three": "^0.79.0",
+    "three-orbit-viewer": "*",
+    "three-vignette-background": "*",
+    "three-vreffect": "*"
+  }
+}
