@@ -16,6 +16,7 @@ export default function create( THREE ){
     loadControllers = true,
     vrButton = true,
     autoEnter = false,
+    antiAlias = true,
     pathToControllers = 'models/obj/vive-controller/',
     controllerModelName = 'vr_controller_vive_1_5.obj',
     controllerTextureMap = 'onepointfive_texture.png',
@@ -53,7 +54,7 @@ export default function create( THREE ){
       scene.add( light );
     }
 
-    const renderer = new THREE.WebGLRenderer( { antialias: false } );
+    const renderer = new THREE.WebGLRenderer( { antialias: antiAlias } );
     renderer.setClearColor( 0x505050 );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
@@ -147,7 +148,7 @@ export default function create( THREE ){
 
     return {
       scene, camera, controls, renderer,
-      controllerModels: [ controller1, controller2 ],
+      controllerModels: [ c1, c2 ],
       events,
       toggleVR
     };
