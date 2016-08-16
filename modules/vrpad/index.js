@@ -34,7 +34,7 @@ export function create(){
 function createPadHandler( pad ){
   const events = new Emitter();
 
-  let lastButtons = R.clone( pad.buttons );
+  let lastButtons = cloneButtons( pad.buttons );
 
   console.log( lastButtons );
   function update(){
