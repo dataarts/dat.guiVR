@@ -1,5 +1,4 @@
 import Emitter from 'events';
-import R from 'ramda';
 
 export function create(){
 

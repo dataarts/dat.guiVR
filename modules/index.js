@@ -3,7 +3,7 @@ import * as VRPad from './vrpad';
 
 const createApp = VRViewer( THREE );
 
-const { scene, camera, events, triggerVR } = createApp({
+const { scene, camera, events, toggleVR } = createApp({
   autoEnter: false,
   emptyRoom: true
 });
@@ -19,7 +19,7 @@ events.on( 'tick', (dt)=>{
 
 vrpad.events.on( 'connected0', ( pad ) => {
   pad.on('button3Pressed', function( index, value ){
-    triggerVR();
+    toggleVR();
   });
 });
 

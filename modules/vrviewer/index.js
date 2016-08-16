@@ -138,7 +138,7 @@ export default function create( THREE ){
       effect.render( scene, camera );
     }
 
-    function triggerVR(){
+    function toggleVR(){
       effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
     }
 
@@ -149,7 +149,7 @@ export default function create( THREE ){
       scene, camera, controls, renderer,
       controllerModels: [ controller1, controller2 ],
       events,
-      triggerVR
+      toggleVR
     };
   }
 }
