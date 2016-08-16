@@ -10,9 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "events": "^1.0.2",
+    "npm": "^3.10.6",
     "three": "^0.79.0"
   },
-
   "devDependencies": {
     "babel-preset-es2015": "*",
     "babelify": "*",

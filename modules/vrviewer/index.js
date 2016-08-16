@@ -68,12 +68,14 @@ export default function create( THREE ){
     const controller2 = new THREE.Group();
     scene.add( controller1, controller2 );
 
+    let c1, c2;
+
     if( loadControllers ){
-      const c1 = new THREE.ViveController( 0 );
+      c1 = new THREE.ViveController( 0 );
       c1.standingMatrix = controls.getStandingMatrix();
       controller1.add( c1 );
 
-      const c2 = new THREE.ViveController( 1 );
+      c2 = new THREE.ViveController( 1 );
       c2.standingMatrix = controls.getStandingMatrix();
       controller2.add( c2 );
 
@@ -136,13 +138,18 @@ export default function create( THREE ){
       effect.render( scene, camera );
     }
 
+    function triggerVR(){
+      effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
+    }
+
 
     animate();
 
     return {
       scene, camera, controls, renderer,
-      controller1, controller2,
-      events
+      controllerModels: [ controller1, controller2 ],
+      events,
+      triggerVR
     };
   }
 }
