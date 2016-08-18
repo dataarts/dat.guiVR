@@ -60,7 +60,7 @@ const boxes = [];
 for( let i=0; i<32; i++ ){
   const box = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), new THREE.MeshStandardMaterial() );
   box.position.y = 2.0;
-  box.position.z = -2.0;
+  box.position.z = -1.2;
   scene.add( box );
   boxes.push( box );
 }
@@ -101,6 +101,10 @@ const controller2 = gui.add( state, 'scale', 0.2, 3.0 ).onChanged( function( wid
     box.scale.x = width * index * 0.01;
     if( box.scale.x < 0.1 ){
       box.scale.x = 0.1;
+    }
+    box.scale.y = 1/width * index * 0.05;
+    if( box.scale.y < 0.1 ){
+      box.scale.y = 0.1;
     }
   });
 });
