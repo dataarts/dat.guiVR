@@ -11,7 +11,6 @@ export function create(){
     for( let i=0; i<gamePads.length; i++ ){
       const gamePad = gamePads[ i ];
       if( gamePad ){
-
         if( pads[ i ] === undefined ){
           pads[ i ] = createPadHandler( gamePad );
           events.emit( 'connected', pads[ i ] );
@@ -36,7 +35,6 @@ function createPadHandler( pad ){
 
   let lastButtons = cloneButtons( pad.buttons );
 
-  console.log( lastButtons );
   function update(){
 
     const buttons = pad.buttons;
