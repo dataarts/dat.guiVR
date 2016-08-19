@@ -19,14 +19,6 @@ events.on( 'tick', (dt)=>{
 
 
 
-//  create a pointer
-const pointer = new THREE.Mesh( new THREE.SphereGeometry(0.01, 12, 7 ), new THREE.MeshBasicMaterial({color:0xff0000, wireframe: true}) )
-pointer.position.z = -0.12;
-pointer.position.y = -0.12;
-controllerModels[0].add( pointer );
-
-
-
 
 
 //  right hand
@@ -55,6 +47,13 @@ vrpad.events.on( 'connected1', ( pad ) => {
 
 
 
+//  some boxes
+const state = {
+  rotationSpeed: 0.02,
+  offset: 0.01,
+  scale: 1.0
+};
+
 
 const boxes = [];
 for( let i=0; i<32; i++ ){
@@ -65,12 +64,6 @@ for( let i=0; i<32; i++ ){
   boxes.push( box );
 }
 
-const state = {
-  rotationSpeed: 0.02,
-  offset: 0.01,
-  scale: 1.0
-};
-
 events.on( 'tick', (dt)=>{
   boxes.forEach( function( box, index ){
     box.rotation.x += dt * ( state.rotationSpeed + index * state.offset );
@@ -79,6 +72,15 @@ events.on( 'tick', (dt)=>{
   });
 });
 
+
+
+
+
+//  create a pointer
+const pointer = new THREE.Mesh( new THREE.SphereGeometry(0.002, 12, 7 ), new THREE.MeshBasicMaterial({color:0xff0000, wireframe: true}) )
+pointer.position.z = -0.12;
+pointer.position.y = -0.12;
+controllerModels[0].add( pointer );
 
 const gui = VRDATGUI(THREE);
 gui.addInputObject( pointer );

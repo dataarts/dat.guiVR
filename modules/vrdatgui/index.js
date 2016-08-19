@@ -1,7 +1,6 @@
 import loadFont from 'load-bmfont';
 import Emitter from 'events';
 
-import TextureText from '../textureText';
 import createSlider from './slider';
 import * as SDFText from './sdftext';
 
@@ -15,6 +14,11 @@ export default function VRDATGUI( THREE ){
   const events = new Emitter();
 
   const DEFAULT_FNT = 'fonts/lucidasansunicode.fnt';
+
+  const guiState = {
+    currentHover: undefined,
+    currentInteraction: undefined
+  };
 
   loadFont( DEFAULT_FNT, function( err, font ){
     if( err ){
@@ -35,7 +39,7 @@ export default function VRDATGUI( THREE ){
   function add( object, propertyName, min = 0.0, max = 100.0 ){
 
     const slider = createSlider( {
-      textCreator, propertyName, object, min, max,
+      guiState, textCreator, propertyName, object, min, max,
       initialValue: object[ propertyName ]
     });
 
