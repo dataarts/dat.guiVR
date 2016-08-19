@@ -1,12 +1,7 @@
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
+import * as Colors from './colors';
 
-const DEFAULT_COLOR = 0x2FA1D6;
-const HIGHLIGHT_COLOR = 0x0FC3FF;
-const INTERACTION_COLOR = 0xBDE8FC;
-const EMISSIVE_COLOR = 0x222222;
-const HIGHLIGHT_EMISSIVE_COLOR = 0x999999;
-const OUTLINE_COLOR = 0x999999;
 
 export default function createSlider( {
   guiState,
@@ -22,10 +17,10 @@ export default function createSlider( {
   const group = new THREE.Group();
 
   //  filled volume
-  const rect = new THREE.BoxGeometry( 0.1, 0.1, 0.1, 1, 1, 1 );
+  const rect = new THREE.BoxGeometry( 0.1, 0.08, 0.1, 1, 1, 1 );
   rect.applyMatrix( new THREE.Matrix4().makeTranslation( -0.05, 0, 0 ) );
 
-  const material = new THREE.MeshPhongMaterial({ color: DEFAULT_COLOR, emissive: EMISSIVE_COLOR });
+  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
   const filledVolume = new THREE.Mesh( rect, material );
   filledVolume.scale.x = width;
 
@@ -36,19 +31,21 @@ export default function createSlider( {
   hitscanVolume.visible = false;
 
   const outline = new THREE.BoxHelper( hitscanVolume );
-  outline.material.color.setHex( OUTLINE_COLOR );
+  outline.material.color.setHex( Colors.OUTLINE_COLOR );
 
-  const endLocator = new THREE.Mesh( new THREE.BoxGeometry( 0.05, 0.05, 0.1, 1, 1, 1 ), new THREE.MeshBasicMaterial( {color: 0xffffff} ) );
+  const endLocator = new THREE.Mesh( new THREE.BoxGeometry( 0.05, 0.05, 0.1, 1, 1, 1 ), new THREE.MeshBasicMaterial() );
   endLocator.position.x = -0.1 * width;
   endLocator.visible = false;
 
 
   const descriptorLabel = createTextLabel( textCreator, propertyName );
   descriptorLabel.position.x = 0.03;
+  descriptorLabel.position.z = 0.05 - 0.015;
 
   const valueLabel = createTextLabel( textCreator, initialValue.toFixed(2) );
   valueLabel.position.x = 0.03;
   valueLabel.position.y = -0.05;
+  valueLabel.position.z = 0.05 - 0.015;
 
   group.add( filledVolume, outline, hitscanVolume, endLocator, descriptorLabel, valueLabel );
 
@@ -73,6 +70,10 @@ export default function createSlider( {
   };
 
   function handlePress( interactionObject, other, intersectionPoint ){
+    if( group.visible === false ){
+      return;
+    }
+
     filledVolume.updateMatrixWorld();
     endLocator.updateMatrixWorld();
 
@@ -103,16 +104,16 @@ export default function createSlider( {
 
   function updateView(){
     if( interaction.pressing() ){
-      material.color.setHex( INTERACTION_COLOR );
+      material.color.setHex( Colors.INTERACTION_COLOR );
     }
     else
     if( interaction.hovering() ){
-      material.color.setHex( HIGHLIGHT_COLOR );
-      material.emissive.setHex( HIGHLIGHT_EMISSIVE_COLOR );
+      material.color.setHex( Colors.HIGHLIGHT_COLOR );
+      material.emissive.setHex( Colors.HIGHLIGHT_EMISSIVE_COLOR );
     }
     else{
-      material.color.setHex( DEFAULT_COLOR );
-      material.emissive.setHex( EMISSIVE_COLOR );
+      material.color.setHex( Colors.DEFAULT_COLOR );
+      material.emissive.setHex( Colors.EMISSIVE_COLOR );
     }
   }
 

@@ -1,5 +1,6 @@
+import * as Colors from './colors';
 
-export default function createTextLabel( textCreator, str ){
+export default function createTextLabel( textCreator, str, width = 0.4 ){
 
   const group = new THREE.Group();
 
@@ -17,16 +18,18 @@ export default function createTextLabel( textCreator, str ){
   text.position.z = 0.015
 
   const backBounds = 0.01;
-  const labelBackGeometry = new THREE.BoxGeometry( 0.4, 0.04, 0.029, 1, 1, 1 );
+  const labelBackGeometry = new THREE.BoxGeometry( width, 0.04, 0.029, 1, 1, 1 );
+  labelBackGeometry.applyMatrix( new THREE.Matrix4().makeTranslation( width * 0.5, 0, 0 ) );
 
-  const labelBackMesh = new THREE.Mesh( labelBackGeometry, new THREE.MeshBasicMaterial({color:0x131313}));
+  const labelBackMesh = new THREE.Mesh( labelBackGeometry, new THREE.MeshBasicMaterial({color:Colors.DEFAULT_BACK}));
   labelBackMesh.position.y = 0.03;
-  labelBackMesh.position.x = 0.18;
+  // labelBackMesh.position.x = width * 0.5;
   group.add( labelBackMesh );
 
   // labelGroup.position.x = labelBounds.width * 0.5;
   // labelGroup.position.y = labelBounds.height * 0.5;
 
+  group.back = labelBackMesh;
 
   return group;
 }

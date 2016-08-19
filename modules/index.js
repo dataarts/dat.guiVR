@@ -25,8 +25,10 @@ events.on( 'tick', (dt)=>{
 vrpad.events.on( 'connected0', ( pad ) => {
 
   pad.on('button1Pressed', ()=>pointer.pressed = true );
-
   pad.on('button1Released', ()=>pointer.pressed = false );
+
+  pad.on('button2Pressed', ()=>pointer.gripped = true  );
+  pad.on('button2Released', ()=>pointer.gripped = false  );
 
   //  option button
   pad.on('button3Pressed', function( index, value ){
@@ -40,8 +42,9 @@ vrpad.events.on( 'connected1', ( pad ) => {
 
   //  option button
   pad.on('button3Pressed', function( index, value ){
-    window.close();
   });
+
+  pad.on('button2Pressed', pinGUI  );
 });
 
 
@@ -87,16 +90,20 @@ gui.addInputObject( pointer );
 
 
 
-const guiGroup = new THREE.Group();
-guiGroup.position.z = -0.1;
-guiGroup.rotation.x = -Math.PI * 0.5;
-guiGroup.scale.multiplyScalar( 0.25 );
-controllerModels[1].add( guiGroup );
+// const guiGroup = new THREE.Group();
+// guiGroup.position.z = -0.1;
+// guiGroup.rotation.x = -Math.PI * 0.5;
+// guiGroup.scale.multiplyScalar( 0.25 );
+// scene.add( guiGroup );
+// controllerModels[1].add( guiGroup );
 
 
+const folder = gui.addFolder( 'object state' );
+folder.position.y = 1.5;
+scene.add( folder );
 
 const controller = gui.add( state, 'rotationSpeed', -0.8, 0.8 );
-guiGroup.add( controller );
+folder.add( controller );
 
 const controller2 = gui.add( state, 'scale', 0.2, 3.0 ).onChanged( function( width ){
   boxes.forEach( function( box, index ){
@@ -110,12 +117,28 @@ const controller2 = gui.add( state, 'scale', 0.2, 3.0 ).onChanged( function( wid
     }
   });
 });
-controller2.position.y = 0.15;
-guiGroup.add( controller2 );
+folder.add( controller2 );
 
 const controller3 = gui.add( state, 'offset', 0.001, 0.1 );
-controller3.position.y = 0.3;
-guiGroup.add( controller3 );
+folder.add( controller3 );
 
+let pinned = false;
+function pinGUI(){
+  if( pinned === false ){
+    folder.position.y = 0;
+    folder.position.z = -0.1;
+    folder.rotation.x = -Math.PI * 0.5;
+    folder.scale.multiplyScalar( 0.25 );
+    folder.pinTo( controllerModels[ 1 ] );
+  }
+  else{
+    folder.position.y = 1.5;
+    folder.position.z = 0;
+    folder.rotation.x = 0;
+    folder.scale.set( 1, 1, 1 );
+    folder.pinTo( scene );
+  }
 
+  pinned = !pinned;
+}
 

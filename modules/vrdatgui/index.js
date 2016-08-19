@@ -2,6 +2,7 @@ import loadFont from 'load-bmfont';
 import Emitter from 'events';
 
 import createSlider from './slider';
+import createFolder from './folder';
 import * as SDFText from './sdftext';
 
 export default function VRDATGUI( THREE ){
@@ -48,11 +49,24 @@ export default function VRDATGUI( THREE ){
     return slider;
   }
 
+  function addFolder( name ){
+    const folder = createFolder({
+      guiState, textCreator,
+      name
+    });
+
+    controllers.push( folder );
+
+    return folder;
+  }
+
 
   function update() {
     requestAnimationFrame( update );
 
     inputObjects.forEach( function( set ){
+      set.object.updateMatrix();
+      set.object.updateMatrixWorld();
       set.box.setFromObject( set.object );
     });
 
@@ -65,7 +79,8 @@ export default function VRDATGUI( THREE ){
 
   return {
     addInputObject,
-    add
+    add,
+    addFolder
   };
 
 }

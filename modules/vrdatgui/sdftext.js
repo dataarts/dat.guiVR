@@ -38,6 +38,7 @@ export function creator( material, events ){
 
     const geometry = createGeometry({
       text: str,
+      align: 'left',
       width: 1000,
       flipY: true,
       font
