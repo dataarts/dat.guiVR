@@ -13,6 +13,7 @@ export default function VRDATGUI( THREE ){
   const controllers = [];
 
   const events = new Emitter();
+  events.setMaxListeners( 100 );
 
   const DEFAULT_FNT = 'fonts/lucidasansunicode.fnt';
 

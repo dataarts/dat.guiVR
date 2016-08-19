@@ -67,11 +67,13 @@ export function creator( material, events ){
       group.layout = mesh.geometry.layout;
     }
     else{
-      events.on( 'fontLoaded', function( font ){
+      function fontLoadedCB( font ){
         mesh = createText( str, font );
         group.add( mesh );
         group.layout = mesh.geometry.layout;
-      });
+        events.removeListener( 'fontLoaded', fontLoadedCB );
+      };
+      events.on( 'fontLoaded', fontLoadedCB );
     }
 
     group.update = function( str ){

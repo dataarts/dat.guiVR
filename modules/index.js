@@ -4,10 +4,18 @@ import VRDATGUI from './vrdatgui';
 
 const createApp = VRViewer( THREE );
 
-const { scene, camera, events, toggleVR, controllerModels } = createApp({
+const { scene, camera, events, toggleVR, controllerModels, renderer } = createApp({
   autoEnter: true,
   emptyRoom: true
 });
+
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// renderer.gammaInput = true;
+// renderer.gammaOutput = true;
+// renderer.toneMapping = THREE.ReinhardToneMapping;
+// renderer.toneMappingExposure = 3;
+
 
 
 const vrpad = VRPad.create();
@@ -50,32 +58,61 @@ vrpad.events.on( 'connected1', ( pad ) => {
 
 
 
-//  some boxes
+
 const state = {
-  rotationSpeed: 0.02,
-  offset: 0.01,
-  scale: 1.0
+  radius: 10,
+  tube: 3,
+  tubularSegments: 64,
+  radialSegments: 8,
+  p: 2,
+  q: 3
 };
 
 
-const boxes = [];
-for( let i=0; i<32; i++ ){
-  const box = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), new THREE.MeshStandardMaterial() );
-  box.position.y = 2.0;
-  box.position.z = -1.2;
-  scene.add( box );
-  boxes.push( box );
-}
+const textureCube = new THREE.CubeTextureLoader()
+  .setPath( 'textures/cube/pisa/' )
+  .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
+
+const material = new THREE.MeshStandardMaterial();
+material.roughness = 0.3;
+material.metalness = 1;
+material.envMap = textureCube;
+
+const mesh = new THREE.Mesh( new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q ), material );
+mesh.position.z = -1.5;
+mesh.position.y = 1.5;
+mesh.scale.multiplyScalar( 0.04 );
+mesh.castShadow = true;
+scene.add( mesh );
+
+const floor = new THREE.Mesh( new THREE.PlaneGeometry( 8,8, 1, 1), new THREE.MeshStandardMaterial({side: THREE.DoubleSide}) );
+floor.rotation.x = -Math.PI * 0.5;
+floor.receiveShadow = true;
+scene.add( floor );
 
 events.on( 'tick', (dt)=>{
-  boxes.forEach( function( box, index ){
-    box.rotation.x += dt * ( state.rotationSpeed + index * state.offset );
-    box.rotation.y -= dt * ( state.rotationSpeed * 1.2 + index * state.offset );
-    box.rotation.z += dt * ( state.rotationSpeed * 0.4 + index * state.offset );
-  });
+  mesh.rotation.y += 0.4 * dt;
 });
 
+const light = new THREE.SpotLight( 0xffffff );
+light.intensity = 2.0;
+light.distance = 7;
+light.position.set( 0, 6, -1 );
+light.penumbra = 0.248;
+light.angle = 24;
+light.castShadow = true;
+light.shadow.mapSize.set(2048,2048)
+light.shadow.radius = 0.5;
+light.target.position.set( 0, 0, -1.5 );
+light.target.updateMatrixWorld();
+scene.add( light, light.target );
 
+// var spotLightHelper = new THREE.SpotLightHelper( light );
+// scene.add( spotLightHelper );
+
+function updateMesh(){
+  mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );
+}
 
 
 
@@ -90,43 +127,26 @@ gui.addInputObject( pointer );
 
 
 
-// const guiGroup = new THREE.Group();
-// guiGroup.position.z = -0.1;
-// guiGroup.rotation.x = -Math.PI * 0.5;
-// guiGroup.scale.multiplyScalar( 0.25 );
-// scene.add( guiGroup );
-// controllerModels[1].add( guiGroup );
-
-
-const folder = gui.addFolder( 'object state' );
+const folder = gui.addFolder( 'folder settings' );
 folder.position.y = 1.5;
 scene.add( folder );
 
-const controller = gui.add( state, 'rotationSpeed', -0.8, 0.8 );
-folder.add( controller );
-
-const controller2 = gui.add( state, 'scale', 0.2, 3.0 ).onChanged( function( width ){
-  boxes.forEach( function( box, index ){
-    box.scale.x = width * index * 0.01;
-    if( box.scale.x < 0.1 ){
-      box.scale.x = 0.1;
-    }
-    box.scale.y = 1/width * index * 0.05;
-    if( box.scale.y < 0.1 ){
-      box.scale.y = 0.1;
-    }
-  });
-});
-folder.add( controller2 );
-
-const controller3 = gui.add( state, 'offset', 0.001, 0.1 );
-folder.add( controller3 );
+folder.add(
+  gui.add( state, 'radius', 1, 20 ).onChange( updateMesh ),
+  gui.add( state, 'tube', 0.1, 10 ).onChange( updateMesh ),
+  gui.add( state, 'tubularSegments', 3, 300 ).onChange( updateMesh ),
+  gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
+  gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
+  gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
+  gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 )
+);
 
 let pinned = false;
 function pinGUI(){
   if( pinned === false ){
     folder.position.y = 0;
     folder.position.z = -0.1;
+    folder.position.x = 0;
     folder.rotation.x = -Math.PI * 0.5;
     folder.scale.multiplyScalar( 0.25 );
     folder.pinTo( controllerModels[ 1 ] );
@@ -134,6 +154,7 @@ function pinGUI(){
   else{
     folder.position.y = 1.5;
     folder.position.z = 0;
+    folder.position.x = 0;
     folder.rotation.x = 0;
     folder.scale.set( 1, 1, 1 );
     folder.pinTo( scene );

@@ -14,6 +14,15 @@ export default function createSlider( {
 } = {} ){
 
 
+  const state = {
+    alpha: 1.0,
+    value: initialValue,
+    step: 3
+  };
+
+  state.alpha = map_range( initialValue, min, max, 0.0, 1.0 );
+
+
   const group = new THREE.Group();
 
   //  filled volume
@@ -50,15 +59,6 @@ export default function createSlider( {
   group.add( filledVolume, outline, hitscanVolume, endLocator, descriptorLabel, valueLabel );
 
 
-
-
-
-  const state = {
-    alpha: 1.0,
-    value: initialValue
-  };
-
-  state.alpha = map_range( initialValue, min, max, 0.0, 1.0 );
   filledVolume.scale.x = state.alpha * width;
 
   const interaction = createInteraction( guiState, hitscanVolume );
@@ -93,6 +93,8 @@ export default function createSlider( {
       state.value = max;
     }
 
+    state.value = parseFloat( state.value.toFixed( state.step-1 ) );
+
     object[ propertyName ] = state.value;
 
     valueLabel.setNumber( state.value );
@@ -120,8 +122,13 @@ export default function createSlider( {
   let onChangedCB;
   let onFinishChangeCB;
 
-  group.onChanged = function( callback ){
+  group.onChange = function( callback ){
     onChangedCB = callback;
+    return group;
+  };
+
+  group.step = function( stepCount ){
+    state.step = stepCount;
     return group;
   };
 

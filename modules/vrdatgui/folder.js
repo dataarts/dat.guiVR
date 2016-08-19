@@ -45,10 +45,12 @@ export default function createFolder({
     updateLabel();
   };
 
-  group.add = function( obj ){
-    const container = new THREE.Group();
-    container.add( obj );
-    collapseGroup.add( container );
+  group.add = function( ...args ){
+    args.forEach( function( obj ){
+      const container = new THREE.Group();
+      container.add( obj );
+      collapseGroup.add( container );
+    });
 
     performLayout();
   };
