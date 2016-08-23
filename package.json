@@ -11,12 +11,11 @@
   "dependencies": {
     "events": "^1.0.2",
     "load-bmfont": "^1.2.3",
-    "npm": "^3.10.6",
-    "three": "^0.79.0",
     "three-bmfont-text": "^2.1.0",
     "object-assign": "^4.0.1"
   },
   "devDependencies": {
+    "npm": "^3.10.6",
     "babel-preset-es2015": "*",
     "babelify": "*",
     "express": "*",
@@ -27,6 +26,7 @@
     "grunt-contrib-copy": "*",
     "grunt-contrib-watch": "*",
     "grunt-express-server": "*",
-    "load-grunt-tasks": "*"
+    "load-grunt-tasks": "*",
+    "three": "^0.79.0"
   }
 }
