@@ -39,7 +39,7 @@ module.exports = function (grunt) {
       },
       scripts: {
         files: ['testserver.js', './examples/dist/*.js' ],
-        tasks: []
+        tasks: ['copy:main']
       },
       html: {
         files: [ 'examples/*.html', 'examples/*.css' ],
@@ -72,12 +72,22 @@ module.exports = function (grunt) {
           logConcurrentOutput: true
         },
       }
+    },
+
+    copy: {
+      main: {
+        expand: true,
+        flatten: true,
+        src: 'examples/dist/*.js',
+        dest: 'build/'
+      }
     }
 
   });
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-express-server');
 
   grunt.registerTask('default', ['concurrent:test']);

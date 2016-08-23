@@ -15,16 +15,17 @@
     "object-assign": "^4.0.1"
   },
   "devDependencies": {
-    "npm": "^3.10.6",
     "babel-preset-es2015": "*",
     "babelify": "*",
     "express": "*",
     "grunt": "*",
     "grunt-browserify": "*",
     "grunt-concurrent": "*",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "*",
     "grunt-express-server": "*",
     "load-grunt-tasks": "*",
+    "npm": "^3.10.6",
     "three": "^0.79.0"
   }
 }
