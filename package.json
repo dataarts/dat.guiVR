@@ -22,8 +22,6 @@
     "grunt": "*",
     "grunt-browserify": "*",
     "grunt-concurrent": "*",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-copy": "*",
     "grunt-contrib-watch": "*",
     "grunt-express-server": "*",
     "load-grunt-tasks": "*",
