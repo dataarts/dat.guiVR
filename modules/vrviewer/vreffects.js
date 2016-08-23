@@ -271,7 +271,7 @@ THREE.VREffect = function ( renderer, onError ) {
 		}
 
 	};
-	
+
 	this.cancelAnimationFrame = function ( h ) {
 
 		if ( isWebVR1 && vrDisplay !== undefined ) {
@@ -285,7 +285,7 @@ THREE.VREffect = function ( renderer, onError ) {
 		}
 
 	};
-	
+
 	this.submitFrame = function () {
 
 		if ( isWebVR1 && vrDisplay !== undefined && scope.isPresenting ) {
@@ -362,14 +362,14 @@ THREE.VREffect = function ( renderer, onError ) {
 			};
 
 			if (renderTarget) {
-				
+
 				renderer.setRenderTarget(renderTarget);
 				renderTarget.scissorTest = true;
-				
+
 			} else  {
-				
+
 				renderer.setScissorTest( true );
-			
+
 			}
 
 			if ( renderer.autoClear || forceClear ) renderer.clear();
@@ -423,11 +423,11 @@ THREE.VREffect = function ( renderer, onError ) {
 				renderer.setRenderTarget( null );
 
 			} else {
-				
+
 				renderer.setScissorTest( false );
 
 			}
-			
+
 			if ( autoUpdate ) {
 
 				scene.autoUpdate = true;

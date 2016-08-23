@@ -29,6 +29,10 @@ export function create(){
   };
 }
 
+if( window ){
+  window.VRPad = create;
+}
+
 
 function createPadHandler( pad ){
   const events = new Emitter();

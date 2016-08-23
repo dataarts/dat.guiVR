@@ -19,9 +19,6 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          './examples/dist/build.js': [
-            'modules/*.js'
-          ],
           './examples/dist/vrviewer.js': [
             'modules/vrviewer/index.js'
           ],
@@ -63,7 +60,7 @@ module.exports = function (grunt) {
     },
 
     concurrent: {
-      target: {
+      test: {
         tasks: ['watch', 'browserify', 'express:dev'],
         options: {
           logConcurrentOutput: true
@@ -81,9 +78,8 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-express-server');
 
-  grunt.registerTask('default', ['copy', 'concat', 'concurrent:target']);
-  grunt.registerTask('publish', ['copy', 'concat', 'concurrent:publish']);
+  grunt.registerTask('default', ['concurrent:test']);
+  grunt.registerTask('publish', ['concurrent:publish']);
 };

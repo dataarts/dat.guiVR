@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VR Dat GUI Examples</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui" name="viewport" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+
+    <script type="text/javascript" src="thirdparty/three.js"></script>
+    <script type="text/javascript" src="dist/vrviewer.js"></script>
+    <script type="text/javascript" src="dist/vrpad.js"></script>
+    <script type="text/javascript" src="dist/datguivr.js"></script>
+
+    <script type="text/javascript" src="js/floorandlights.js"></script>
+
+    <script type="text/javascript">
+
+
+      const { scene, camera, events, toggleVR, controllerModels, renderer } = VRViewer({
+        autoEnter: true,
+        emptyRoom: false
+      });
+
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      scene.add( createFloorAndLights() );
+
+
+
+
+      const vrpad = VRPad();
+      events.on( 'tick', (dt)=>{
+        vrpad.update();
+      });
+
+
+
+
+      //  create a pointer object, attach it to the right controller
+      //  this is what will hit-detect against DAT GUI in VR
+      const pointer = new THREE.Mesh( new THREE.SphereGeometry(0.002, 12, 7 ), new THREE.MeshBasicMaterial({color:0xff0000, wireframe: true}) )
+      pointer.position.z = -0.12;
+      pointer.position.y = -0.12;
+      pointer.pressed = false;
+      controllerModels[0].add( pointer );
+
+
+
+
+      //  set "pressed" on pointer when right trigger is pressed
+      vrpad.events.on( 'connected0', ( pad ) => {
+        pad.on('button1Pressed', ()=>pointer.pressed = true );
+        pad.on('button1Released', ()=>pointer.pressed = false );
+        pad.on('button3Pressed', function( index, value ){
+          toggleVR();
+        });
+      });
+
+      //  "pin" the GUI on left controller when pressing the left trigger button
+      vrpad.events.on( 'connected1', ( pad ) => {
+        pad.on('button1Pressed', pinGUI  );
+      });
+
+
+
+
+
+      //  state that dat gui is changing
+      const state = {
+        radius: 10,
+        tube: 3,
+        tubularSegments: 64,
+        radialSegments: 8,
+        p: 2,
+        q: 3
+      };
+
+
+
+
+
+      //  torus mesh
+      const textureCube = new THREE.CubeTextureLoader()
+        .setPath( 'textures/cube/pisa/' )
+        .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
+
+      const material = new THREE.MeshStandardMaterial();
+      material.roughness = 1.0;
+      material.metalness = 1;
+      material.envMap = textureCube;
+
+      const mesh = new THREE.Mesh( new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q ), material );
+      mesh.position.z = -4.5;
+      mesh.position.y = 4.5;
+      mesh.scale.multiplyScalar( 0.2 );
+      mesh.castShadow = true;
+      events.on( 'tick', (dt)=>{
+        mesh.rotation.y += 0.4 * dt;
+      });
+
+      scene.add( mesh );
+
+
+
+
+
+      //  instance of DATGUIVR, only one is needed
+      const gui = DATGUIVR();
+
+      //  add an input object (your cursor in 3D)
+      //  you can add multiple objects
+      gui.addInputObject( pointer );
+
+
+
+
+      //  create a GUI folder
+      const folder = gui.addFolder( 'folder settings' );
+      folder.position.y = 1.5;
+      scene.add( folder );
+
+
+
+
+      //  add multiple sliders
+      //  updateMesh will be the callback when values are changed
+      folder.add(
+        gui.add( state, 'radius', 1, 20 ).onChange( updateMesh ),
+        gui.add( state, 'tube', 0.1, 10 ).onChange( updateMesh ),
+        gui.add( state, 'tubularSegments', 3, 300 ).onChange( updateMesh ),
+        gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
+        gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
+        gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
+        gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 )
+      );
+
+      function updateMesh(){
+        mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );
+      }
+
+
+
+
+
+      let pinned = false;
+      function pinGUI(){
+        if( pinned === false ){
+          folder.position.y = 0;
+          folder.position.z = -0.1;
+          folder.position.x = 0;
+          folder.rotation.x = -Math.PI * 0.5;
+          folder.scale.multiplyScalar( 0.25 );
+          folder.pinTo( controllerModels[ 1 ] );
+        }
+        else{
+          folder.position.y = 1.5;
+          folder.position.z = 0;
+          folder.position.x = 0;
+          folder.rotation.x = 0;
+          folder.scale.set( 1, 1, 1 );
+          folder.pinTo( scene );
+        }
+        pinned = !pinned;
+      }
+
+
+    </script>
+
+  </body>
+</html>

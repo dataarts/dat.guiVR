@@ -5,7 +5,7 @@ import createSlider from './slider';
 import createFolder from './folder';
 import * as SDFText from './sdftext';
 
-export default function VRDATGUI( THREE ){
+export default function DATGUIVR(){
 
   const textMaterial = SDFText.createMaterial();
 
@@ -86,3 +86,6 @@ export default function VRDATGUI( THREE ){
 
 }
 
+if( window ){
+  window.DATGUIVR = DATGUIVR;
+}

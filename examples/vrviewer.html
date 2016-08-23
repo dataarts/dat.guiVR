@@ -12,6 +12,21 @@
 
     <script type="text/javascript" src="thirdparty/three.js"></script>
     <script type="text/javascript" src="dist/vrviewer.js"></script>
+    <script type="text/javascript">
+
+      const { scene, camera, events, toggleVR, controllerModels, renderer } = VRViewer({
+        //  triggers entering vr without any input
+        autoEnter: true,
+
+        //  create an empty room with two lights
+        emptyRoom: true
+      });
+
+      console.log( scene, camera, renderer, controllerModels );
+
+      //  controller not showing? click any button on the controller!
+
+    </script>
 
   </body>
 </html>
