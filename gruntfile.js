@@ -19,33 +19,19 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          './public/dist/build.js': [
+          './examples/dist/build.js': [
             'modules/*.js'
           ],
+          './examples/dist/vrviewer.js': [
+            'modules/vrviewer/index.js'
+          ],
+          './examples/dist/vrpad.js': [
+            'modules/vrpad/index.js'
+          ],
+          './examples/dist/datguivr.js': [
+            'modules/datguivr/index.js'
+          ]
         }
-      }
-    },
-
-    copy: {
-      main: {
-        files: [{
-          expand: true,
-          flatten: true,
-          src: ['html/*.html'],
-          dest: 'public/'
-        }]
-      }
-    },
-
-    concat: {
-      options: {
-        separator: '\n',
-        sourceMap: false,
-        nonull: true
-      },
-      css: {
-        src: [ 'css/*.css' ],
-        dest: './public/dist/build.css'
       }
     },
 
@@ -55,16 +41,12 @@ module.exports = function (grunt) {
         spawn: false
       },
       scripts: {
-        files: ['server.js', './public/dist/*.js' ],
+        files: ['testserver.js', './examples/dist/*.js' ],
         tasks: []
       },
-      js: {
-        files: [ 'css/*.css' ],
-        tasks: [ 'concat' ]
-      },
       html: {
-        files: [ 'html/*.html' ],
-        tasks: [ 'copy' ]
+        files: [ 'examples/*.html', 'examples/*.css' ],
+        tasks: []
       }
     },
 
@@ -75,7 +57,7 @@ module.exports = function (grunt) {
       },
       dev: {
         options: {
-          script: 'server.js'
+          script: 'testserver.js'
         }
       }
     },
