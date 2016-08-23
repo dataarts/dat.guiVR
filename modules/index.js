@@ -6,15 +6,11 @@ const createApp = VRViewer( THREE );
 
 const { scene, camera, events, toggleVR, controllerModels, renderer } = createApp({
   autoEnter: true,
-  emptyRoom: true
+  emptyRoom: false
 });
 
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-// renderer.gammaInput = true;
-// renderer.gammaOutput = true;
-// renderer.toneMapping = THREE.ReinhardToneMapping;
-// renderer.toneMappingExposure = 3;
 
 
 
@@ -74,14 +70,14 @@ const textureCube = new THREE.CubeTextureLoader()
   .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
 
 const material = new THREE.MeshStandardMaterial();
-material.roughness = 0.3;
+material.roughness = 1.0;
 material.metalness = 1;
 material.envMap = textureCube;
 
 const mesh = new THREE.Mesh( new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q ), material );
-mesh.position.z = -1.5;
-mesh.position.y = 1.5;
-mesh.scale.multiplyScalar( 0.04 );
+mesh.position.z = -4.5;
+mesh.position.y = 4.5;
+mesh.scale.multiplyScalar( 0.2 );
 mesh.castShadow = true;
 scene.add( mesh );
 
@@ -107,8 +103,12 @@ light.target.position.set( 0, 0, -1.5 );
 light.target.updateMatrixWorld();
 scene.add( light, light.target );
 
-// var spotLightHelper = new THREE.SpotLightHelper( light );
-// scene.add( spotLightHelper );
+scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
+
+let directionalLight = new THREE.DirectionalLight( 0xffffff );
+directionalLight.position.set( 1, 1, 1 ).normalize();
+scene.add( directionalLight );
+
 
 function updateMesh(){
   mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );
@@ -118,7 +118,7 @@ function updateMesh(){
 
 //  create a pointer
 const pointer = new THREE.Mesh( new THREE.SphereGeometry(0.002, 12, 7 ), new THREE.MeshBasicMaterial({color:0xff0000, wireframe: true}) )
-pointer.position.z = -0.12;
+pointer.position.z = -0.03;
 pointer.position.y = -0.12;
 controllerModels[0].add( pointer );
 

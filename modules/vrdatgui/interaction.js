@@ -1,5 +1,12 @@
 import Emitter from 'events';
 
+/*
+
+  This is some horrible state machine I'm sorry to have written.
+  Please rewrite this.
+
+*/
+
 export default function createInteraction( guiState, object ){
   const interactionBounds = new THREE.Box3();
   interactionBounds.setFromObject( object );
@@ -51,6 +58,12 @@ export default function createInteraction( guiState, object ){
 
       if( !( press || grip ) && guiState.currentInteraction === interaction ){
         guiState.currentInteraction = undefined;
+        if( wasPressed ){
+          events.emit( 'releasePress', object );
+        }
+        if( wasGripped ){
+          events.emit( 'releaseGrip', object );
+        }
       }
     });
   }
@@ -79,7 +92,7 @@ export default function createInteraction( guiState, object ){
 
       events.emit( 'gripped', object, box, intersectionPoint, otherObject );
 
-      if( wasPressed === false && press === true ){
+      if( wasGripped === false && grip === true ){
         events.emit( 'onGrip', object, box, intersectionPoint, otherObject );
       }
     }

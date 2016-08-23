@@ -22,3 +22,6 @@ node_modules
 
 # Visual Studio Code
 .settings
+
+# Builds
+public/dist/*

@@ -8,6 +8,12 @@ export default function createFolder({
   textCreator,
   name
 } = {} ){
+
+  const state = {
+    collapsed: false,
+    previousParent: undefined
+  };
+
   const group = new THREE.Group();
   const collapseGroup = new THREE.Group();
   group.add( collapseGroup );
@@ -29,11 +35,8 @@ export default function createFolder({
   const interaction = createInteraction( guiState, interactionVolume );
   interaction.events.on( 'onPressed', handlePress );
 
-  interaction.events.on( 'gripped', handleGrip );
-
-  const state = {
-    collapsed: false
-  };
+  interaction.events.on( 'onGrip', handleOnGrip );
+  interaction.events.on( 'releaseGrip', handleReleaseGrip );
 
   function handlePress(){
     state.collapsed = !state.collapsed;
@@ -84,23 +87,48 @@ export default function createFolder({
     }
   }
 
-  const up = new THREE.Vector3( 0, 0, 1 );
-  function handleGrip( object, box, intersectionPoint, otherObject ){
-    // group.matrix.lookAt( group.position, otherObject.position, up );
+  function handleOnGrip( object, box, intersectionPoint, otherObject ){
 
-    group.position.copy( intersectionPoint );
+    otherObject.updateMatrixWorld();
+    group.updateMatrixWorld();
 
-    // group.rotation.copy( otherObject.parent.rotation );
-    // group.quaternion.copy( otherObject.parent.quaternion );
-    // group.matrix.compose( group.position, group.quaternion, group.scale );
-    // group.matrixNeedsUpdate = true;
-    group.matrixWorldNeedsUpdate = true;
-    // group.quaternion.copy( otherObject )
+    const v1 = new THREE.Vector3().setFromMatrixPosition( group.matrixWorld );
+    const v2 = new THREE.Vector3().setFromMatrixPosition( otherObject.matrixWorld );
+    const delta = new THREE.Vector3().subVectors( v1, v2 ).multiplyScalar( 0.5 );
+
+
+    state.previousParent = group.pinTo( otherObject );
+
+
+    // group.position.set(0,0,0);
+
+    group.position.copy( delta );
+
+    const a = new THREE.Euler().setFromRotationMatrix( otherObject.matrixWorld );
+
+    group.rotation.set( a.x * -1, a.y * -1, a.z * -1 );
+
+  }
+
+  function handleReleaseGrip( object ){
+
+    group.updateMatrixWorld();
+    group.position.copy( new THREE.Vector3().setFromMatrixPosition( group.matrixWorld ) );
+    group.rotation.copy( new THREE.Euler().setFromRotationMatrix( group.matrixWorld ) );
+
+    group.pinTo( state.previousParent );
+    state.previousParent = undefined;
   }
 
   group.pinTo = function( newParent ){
-    group.parent.remove( group );
+    const oldParent = group.parent;
+
+    if( group.parent ){
+      group.parent.remove( group );
+    }
     newParent.add( group );
+
+    return oldParent;
   };
 
   return group;

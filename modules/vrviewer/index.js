@@ -47,11 +47,11 @@ export default function create( THREE ){
       room.position.y = 3;
       scene.add( room );
 
-      // scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
+      scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
 
-      // let light = new THREE.DirectionalLight( 0xffffff );
-      // light.position.set( 1, 1, 1 ).normalize();
-      // scene.add( light );
+      let light = new THREE.DirectionalLight( 0xffffff );
+      light.position.set( 1, 1, 1 ).normalize();
+      scene.add( light );
     }
 
     const renderer = new THREE.WebGLRenderer( { antialias: antiAlias } );
