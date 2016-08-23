@@ -1,6 +1,6 @@
 import VRViewer from './vrviewer';
 import * as VRPad from './vrpad';
-import VRDATGUI from './vrdatgui';
+import DATGUIVR from './datguivr';
 
 const createApp = VRViewer( THREE );
 
@@ -122,7 +122,7 @@ pointer.position.z = -0.03;
 pointer.position.y = -0.12;
 controllerModels[0].add( pointer );
 
-const gui = VRDATGUI(THREE);
+const gui = DATGUIVR(THREE);
 gui.addInputObject( pointer );
 
 
