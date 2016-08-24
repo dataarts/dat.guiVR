@@ -37,7 +37,11 @@ Built on top of [THREE.js](http://threejs.org/)
     );
 
     function updateMesh(){
-      mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );
+      mesh.geometry = new THREE.TorusKnotGeometry(
+        state.radius, state.tube,
+        state.tubularSegments,
+        state.radialSegments,
+        state.p, state.q );
     }
 
 
