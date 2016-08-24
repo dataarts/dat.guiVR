@@ -45,6 +45,11 @@ Built on top of [THREE.js](http://threejs.org/)
     }
 
 
+## Build and Run
+
+    npm install
+    grunt
+
 
 ## Examples ##
 Then navigate to **localhost:8000/torus.html** on VR enabled Chromium build.
@@ -59,10 +64,6 @@ Then navigate to **localhost:8000/torus.html** on VR enabled Chromium build.
 * Can be used as a drop in script include (like the examples) or as an  ES6 module / node build.
 
 
-## Build and Run
-
-    npm install
-    grunt
 
 
 ## Individual Modules ##
