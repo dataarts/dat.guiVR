@@ -34,11 +34,12 @@ export default function createSlider( {
   const filledVolume = new THREE.Mesh( rect, material );
   filledVolume.scale.x = width;
 
+  const hitscanMaterial = new THREE.MeshBasicMaterial();
+  hitscanMaterial.visible = false;
 
   //  outline volume
-  const hitscanVolume = new THREE.Mesh( rect );
+  const hitscanVolume = new THREE.Mesh( rect, hitscanMaterial );
   hitscanVolume.scale.x = width;
-  hitscanVolume.visible = false;
 
   const outline = new THREE.BoxHelper( hitscanVolume );
   outline.material.color.setHex( Colors.OUTLINE_COLOR );
@@ -134,6 +135,7 @@ export default function createSlider( {
   };
 
   group.interaction = interaction;
+  group.hitscan = hitscanVolume;
 
   return group;
 }

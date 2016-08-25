@@ -29,9 +29,6 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       scene.add( createFloorAndLights() );
 
-
-
-
       const vrpad = VRPad();
       events.on( 'tick', (dt)=>{
         vrpad.update();
@@ -40,21 +37,10 @@
 
 
 
-      //  create a pointer object, attach it to the right controller
-      //  this is what will hit-detect against DAT GUI in VR
-      const pointer = new THREE.Mesh( new THREE.SphereGeometry(0.002, 12, 7 ), new THREE.MeshBasicMaterial({color:0xff0000, wireframe: true}) )
-      pointer.position.z = -0.12;
-      pointer.position.y = -0.12;
-      pointer.pressed = false;
-      controllerModels[0].add( pointer );
-
-
-
-
       //  set "pressed" on pointer when right trigger is pressed
       vrpad.events.on( 'connected0', ( pad ) => {
-        pad.on('button1Pressed', ()=>pointer.pressed = true );
-        pad.on('button1Released', ()=>pointer.pressed = false );
+        pad.on('button1Pressed', ()=>controllerModels[0].pressed = true );
+        pad.on('button1Released', ()=>controllerModels[0].pressed = false );
         pad.on('button3Pressed', function( index, value ){
           toggleVR();
         });
@@ -116,7 +102,8 @@
 
       //  add an input object (your cursor in 3D)
       //  you can add multiple objects
-      gui.addInputObject( pointer );
+      const laserPointer = gui.addInputObject( controllerModels[ 0 ] );
+      scene.add( laserPointer );
 
 
 

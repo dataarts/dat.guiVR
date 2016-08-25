@@ -12,6 +12,7 @@ export default function DATGUIVR(){
 
   const inputObjects = [];
   const controllers = [];
+  const hitscanObjects = [];
 
   const events = new Emitter();
   events.setMaxListeners( 100 );
@@ -32,11 +33,34 @@ export default function DATGUIVR(){
 
   const textCreator = SDFText.creator( textMaterial, events );
 
+  const cursorMaterial = new THREE.MeshBasicMaterial({color:0x444444, transparent: true, blending: THREE.AdditiveBlending } );
+
+  function createCursor(){
+    return new THREE.Mesh( new THREE.SphereGeometry(0.006, 4, 4 ), cursorMaterial );
+  }
+
+  const laserMaterial = new THREE.LineBasicMaterial({color:0x55aaff, transparent: true, blending: THREE.AdditiveBlending });
+  function createLaser(){
+    const g = new THREE.Geometry();
+    g.vertices.push( new THREE.Vector3() );
+    g.vertices.push( new THREE.Vector3(0,0,0) );
+
+    return new THREE.Line( g, laserMaterial );
+  }
+
   function addInputObject( object ){
-    inputObjects.push( {
+    const set = {
       box: new THREE.Box3(),
+      raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
+      laser: createLaser(),
+      cursor: createCursor(),
       object
-    });
+    };
+
+    set.laser.add( set.cursor );
+
+    inputObjects.push( set );
+    return set.laser;
   }
 
   function addSlider( object, propertyName, min = 0.0, max = 100.0 ){
@@ -46,6 +70,7 @@ export default function DATGUIVR(){
     });
 
     controllers.push( slider );
+    hitscanObjects.push( slider.hitscan )
 
     return slider;
   }
@@ -57,6 +82,7 @@ export default function DATGUIVR(){
     });
 
     controllers.push( checkbox );
+    hitscanObjects.push( checkbox.hitscan )
 
     return checkbox;
   }
@@ -90,18 +116,49 @@ export default function DATGUIVR(){
     });
 
     controllers.push( folder );
+    hitscanObjects.push( folder.hitscan );
 
     return folder;
   }
 
+  const tPosition = new THREE.Vector3();
+  const tDirection = new THREE.Vector3( 0, 0, -1 );
+  const tMatrix = new THREE.Matrix4();
 
   function update() {
     requestAnimationFrame( update );
 
-    inputObjects.forEach( function( set ){
-      set.object.updateMatrix();
-      set.object.updateMatrixWorld();
-      set.box.setFromObject( set.object );
+    inputObjects.forEach( function( {box,object,raycast,laser,cursor} = {} ){
+      object.updateMatrixWorld();
+
+      tPosition.set(0,0,0).setFromMatrixPosition( object.matrixWorld );
+      tMatrix.identity().extractRotation( object.matrixWorld );
+      tDirection.set(0,0,-1).applyMatrix4( tMatrix ).normalize();
+
+      raycast.set( tPosition, tDirection );
+
+      laser.geometry.vertices[ 0 ].copy( tPosition );
+
+      //  debug...
+      // laser.geometry.vertices[ 1 ].copy( tPosition ).add( tDirection.multiplyScalar( 1 ) );
+
+      const intersections = raycast.intersectObjects( hitscanObjects );
+      if( intersections.length > 0 ){
+        const firstHit = intersections[ 0 ];
+        laser.geometry.vertices[ 1 ].copy( firstHit.point );
+        laser.visible = true;
+        laser.geometry.computeBoundingSphere();
+        laser.geometry.computeBoundingBox();
+        laser.geometry.verticesNeedUpdate = true;
+        cursor.position.copy( firstHit.point );
+        cursor.visible = true;
+      }
+      else{
+        laser.visible = false;
+        cursor.visible = false;
+      }
+      box.setFromObject( cursor );
+
     });
 
     controllers.forEach( function( controller ){

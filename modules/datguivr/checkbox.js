@@ -29,8 +29,10 @@ export default function createCheckbox( {
   filledVolume.position.x = -0.05;
 
   //  outline volume
-  const hitscanVolume = new THREE.Mesh( rect );
-  hitscanVolume.visible = false;
+  const hitscanMaterial = new THREE.MeshBasicMaterial();
+  hitscanMaterial.visible = false;
+
+  const hitscanVolume = new THREE.Mesh( rect, hitscanMaterial );
   hitscanVolume.position.x = -0.05;
 
   const outline = new THREE.BoxHelper( hitscanVolume );
@@ -101,6 +103,7 @@ export default function createCheckbox( {
   };
 
   group.interaction = interaction;
+  group.hitscan = hitscanVolume;
 
   return group;
 }

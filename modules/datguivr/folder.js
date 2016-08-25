@@ -30,9 +30,10 @@ export default function createFolder({
 
   group.add( descriptorLabel );
 
-  const interactionVolume = new THREE.BoxHelper( descriptorLabel );
+  const interactionVolume = new THREE.Mesh( new THREE.BoxGeometry(0.5, 1, 0.05 ), new THREE.MeshBasicMaterial({color:0x000000}) );
+  interactionVolume.position.z = -0.1;
   addOriginal.call( group, interactionVolume );
-  interactionVolume.visible = false;
+  // interactionVolume.visible = false;
 
   const interaction = createInteraction( guiState, interactionVolume );
   interaction.events.on( 'onPressed', handlePress );
@@ -132,6 +133,8 @@ export default function createFolder({
 
     return oldParent;
   };
+
+  group.hitscan = interactionVolume;
 
   return group;
 }
