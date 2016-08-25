@@ -2,6 +2,7 @@ import loadFont from 'load-bmfont';
 import Emitter from 'events';
 
 import createSlider from './slider';
+import createCheckbox from './checkbox';
 import createFolder from './folder';
 import * as SDFText from './sdftext';
 
@@ -38,8 +39,7 @@ export default function DATGUIVR(){
     });
   }
 
-  function add( object, propertyName, min = 0.0, max = 100.0 ){
-
+  function addSlider( object, propertyName, min = 0.0, max = 100.0 ){
     const slider = createSlider( {
       guiState, textCreator, propertyName, object, min, max,
       initialValue: object[ propertyName ]
@@ -48,6 +48,39 @@ export default function DATGUIVR(){
     controllers.push( slider );
 
     return slider;
+  }
+
+  function addCheckbox( object, propertyName ){
+    const checkbox = createCheckbox({
+      guiState, textCreator, propertyName, object,
+      initialValue: object[ propertyName ]
+    });
+
+    controllers.push( checkbox );
+
+    return checkbox;
+  }
+
+  function add( object, propertyName, min, max ){
+
+    if( object === undefined ){
+      console.warn( 'object is undefined' );
+      return new THREE.Group();
+    }
+    else
+    if( object[ propertyName ] === undefined ){
+      console.warn( 'no property named', propertyName, 'on object', object );
+      return new THREE.Group();
+    }
+
+
+    if( isNumber( object[ propertyName] ) ){
+      return addSlider( object, propertyName, min, max );
+    }
+
+    if( isBoolean( object[ propertyName] ) ){
+      return addCheckbox( object, propertyName );
+    }
   }
 
   function addFolder( name ){
@@ -84,6 +117,14 @@ export default function DATGUIVR(){
     addFolder
   };
 
+}
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function isBoolean(n){
+  return typeof n === 'boolean';
 }
 
 if( window ){

@@ -9,6 +9,8 @@ export default function createFolder({
   name
 } = {} ){
 
+  const spacingPerController = 0.1;
+
   const state = {
     collapsed: false,
     previousParent: undefined
@@ -24,7 +26,7 @@ export default function createFolder({
 
   const descriptorLabel = createTextLabel( textCreator, '- ' + name, 0.6 );
   descriptorLabel.position.x = -0.4;
-  descriptorLabel.position.y = -0.1;
+  descriptorLabel.position.y = 0;
 
   group.add( descriptorLabel );
 
@@ -60,7 +62,7 @@ export default function createFolder({
 
   function performLayout(){
     collapseGroup.children.forEach( function( child, index ){
-      child.position.y = -(index+1) * 0.15;
+      child.position.y = -(index+1) * spacingPerController;
       if( state.collapsed ){
         child.children[0].visible = false;
       }

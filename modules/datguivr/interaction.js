@@ -27,7 +27,7 @@ export default function createInteraction( guiState, object ){
     interactionBounds.setFromObject( object );
 
     inputObjects.forEach( function( set ){
-      if( interactionBounds.intersectsBox( set.box ) && guiState.currentInteraction === undefined ){
+      if( interactionBounds.intersectsBox( set.box ) && guiState.currentInteraction === undefined && ( guiState.currentHover === undefined || guiState.currentHover === interaction ) ){
         hover = true;
         guiState.currentHover = interaction;
       }

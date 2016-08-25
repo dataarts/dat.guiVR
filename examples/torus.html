@@ -76,7 +76,8 @@
         tubularSegments: 64,
         radialSegments: 8,
         p: 2,
-        q: 3
+        q: 3,
+        spinning: true
       };
 
 
@@ -99,7 +100,9 @@
       mesh.scale.multiplyScalar( 0.2 );
       mesh.castShadow = true;
       events.on( 'tick', (dt)=>{
-        mesh.rotation.y += 0.4 * dt;
+        if( state.spinning ){
+          mesh.rotation.y += 0.4 * dt;
+        }
       });
 
       scene.add( mesh );
@@ -135,7 +138,8 @@
         gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
         gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
         gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
-        gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 )
+        gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 ),
+        gui.add( state, 'spinning' )
       );
 
       function updateMesh(){

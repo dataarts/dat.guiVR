@@ -6,3 +6,4 @@ export const HIGHLIGHT_EMISSIVE_COLOR = 0x999999;
 export const OUTLINE_COLOR = 0x999999;
 export const DEFAULT_BACK = 0x131313
 export const HIGHLIGHT_BACK = 0x494949;
+export const INACTIVE_COLOR = 0x161829;

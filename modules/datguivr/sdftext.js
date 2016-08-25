@@ -56,19 +56,21 @@ export function creator( material, events ){
     return mesh;
   }
 
+
   function create( str ){
     const group = new THREE.Group();
+    let lateText = str;
 
     let mesh;
 
     if( font ){
-      mesh = createText( str, font );
+      mesh = createText( lateText, font );
       group.add( mesh );
       group.layout = mesh.geometry.layout;
     }
     else{
       function fontLoadedCB( font ){
-        mesh = createText( str, font );
+        mesh = createText( lateText, font );
         group.add( mesh );
         group.layout = mesh.geometry.layout;
         events.removeListener( 'fontLoaded', fontLoadedCB );
@@ -79,6 +81,9 @@ export function creator( material, events ){
     group.update = function( str ){
       if( mesh ){
         mesh.geometry.update( str );
+      }
+      else{
+        lateText = str;
       }
     };
 

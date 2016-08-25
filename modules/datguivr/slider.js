@@ -20,6 +20,7 @@ export default function createSlider( {
     step: 3
   };
 
+  state.value = state.value.toFixed( state.step-1 );
   state.alpha = map_range( initialValue, min, max, 0.0, 1.0 );
 
 
@@ -50,13 +51,9 @@ export default function createSlider( {
   const descriptorLabel = createTextLabel( textCreator, propertyName );
   descriptorLabel.position.x = 0.03;
   descriptorLabel.position.z = 0.05 - 0.015;
+  updateValueLabel( state.value );
 
-  const valueLabel = createTextLabel( textCreator, initialValue.toFixed(2) );
-  valueLabel.position.x = 0.03;
-  valueLabel.position.y = -0.05;
-  valueLabel.position.z = 0.05 - 0.015;
-
-  group.add( filledVolume, outline, hitscanVolume, endLocator, descriptorLabel, valueLabel );
+  group.add( filledVolume, outline, hitscanVolume, endLocator, descriptorLabel );
 
 
   filledVolume.scale.x = state.alpha * width;
@@ -97,11 +94,15 @@ export default function createSlider( {
 
     object[ propertyName ] = state.value;
 
-    valueLabel.setNumber( state.value );
+    updateValueLabel( state.value );
 
     if( onChangedCB ){
       onChangedCB( state.value );
     }
+  }
+
+  function updateValueLabel( value ){
+    descriptorLabel.setString( propertyName + ': ' + parseFloat( value ) );
   }
 
   function updateView(){
