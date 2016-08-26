@@ -18,7 +18,11 @@ Built on top of [THREE.js](http://threejs.org/)
 
 
     const gui = DATGUIVR();
-    gui.addInputObject( pointer );
+
+    //  given any input control object (vive controller, cardboard headset, etc)...
+    //  addInputObject returns a live-updating laser pointer
+    const laserPointer = gui.addInputObject( controllerModel[ 0 ] );
+    scene.add( laserPointer );
 
 
     const folder = gui.addFolder( 'folder settings' );
@@ -27,13 +31,17 @@ Built on top of [THREE.js](http://threejs.org/)
 
 
     folder.add(
+      //  sliders for numeric values
       gui.add( state, 'radius', 1, 20 ).onChange( updateMesh ),
       gui.add( state, 'tube', 0.1, 10 ).onChange( updateMesh ),
       gui.add( state, 'tubularSegments', 3, 300 ).onChange( updateMesh ),
       gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
       gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
       gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
-      gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 )
+      gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 ),
+
+      //  booleans also work
+      gui.add( state, 'spinning' )
     );
 
     function updateMesh(){
