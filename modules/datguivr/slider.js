@@ -1,7 +1,8 @@
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';
-
+import * as Layout from './layout';
+import * as SharedMaterials from './sharedmaterials';
 
 export default function createSlider( {
   guiState,
@@ -10,9 +11,15 @@ export default function createSlider( {
   propertyName = 'undefined',
   initialValue = 0.0,
   min, max,
-  width = 4
+  width = Layout.PANEL_WIDTH,
+  height = Layout.PANEL_HEIGHT,
+  depth = Layout.PANEL_DEPTH
 } = {} ){
 
+
+  const SLIDER_WIDTH = width * 0.5 - Layout.PANEL_MARGIN;
+  const SLIDER_HEIGHT = height - Layout.PANEL_MARGIN;
+  const SLIDER_DEPTH = depth;
 
   const state = {
     alpha: 1.0,
@@ -27,37 +34,52 @@ export default function createSlider( {
   const group = new THREE.Group();
 
   //  filled volume
-  const rect = new THREE.BoxGeometry( 0.1, 0.08, 0.1, 1, 1, 1 );
-  rect.applyMatrix( new THREE.Matrix4().makeTranslation( -0.05, 0, 0 ) );
+  const rect = new THREE.BoxGeometry( SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_DEPTH );
+  rect.translate(SLIDER_WIDTH*0.5,0,0);
+  // Layout.alignLeft( rect );
 
-  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
-  const filledVolume = new THREE.Mesh( rect, material );
-  filledVolume.scale.x = width;
 
   const hitscanMaterial = new THREE.MeshBasicMaterial();
   hitscanMaterial.visible = false;
 
   //  outline volume
-  const hitscanVolume = new THREE.Mesh( rect, hitscanMaterial );
-  hitscanVolume.scale.x = width;
+  const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
+  hitscanVolume.position.z = depth;
+  hitscanVolume.position.x = width * 0.5;
 
   const outline = new THREE.BoxHelper( hitscanVolume );
   outline.material.color.setHex( Colors.OUTLINE_COLOR );
 
-  const endLocator = new THREE.Mesh( new THREE.BoxGeometry( 0.05, 0.05, 0.1, 1, 1, 1 ), new THREE.MeshBasicMaterial() );
-  endLocator.position.x = -0.1 * width;
+  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
+  const filledVolume = new THREE.Mesh( rect.clone(), material );
+  hitscanVolume.add( filledVolume );
+
+  const endLocator = new THREE.Mesh( new THREE.BoxGeometry( 0.05, 0.05, 0.05, 1, 1, 1 ), SharedMaterials.LOCATOR );
+  endLocator.position.x = SLIDER_WIDTH;
+  hitscanVolume.add( endLocator );
   endLocator.visible = false;
 
-
-  const descriptorLabel = createTextLabel( textCreator, propertyName );
-  descriptorLabel.position.x = 0.03;
-  descriptorLabel.position.z = 0.05 - 0.015;
+  const valueLabel = textCreator.create( state.value.toString() );
+  valueLabel.position.x = Layout.PANEL_TEXT_MARGIN + width * 0.5;
+  valueLabel.position.z = depth*2;
+  valueLabel.position.y = -0.03;
   updateValueLabel( state.value );
 
-  group.add( filledVolume, outline, hitscanVolume, endLocator, descriptorLabel );
 
 
-  filledVolume.scale.x = state.alpha * width;
+  const descriptorLabel = textCreator.create( propertyName );
+  descriptorLabel.position.x = Layout.PANEL_TEXT_MARGIN;
+  descriptorLabel.position.z = depth;
+  descriptorLabel.position.y = -0.03;
+
+  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, height, depth ), SharedMaterials.PANEL );
+  panel.geometry.translate( width * 0.5, 0, 0 );
+  panel.add( descriptorLabel, hitscanVolume, outline, valueLabel );
+
+  group.add( panel )
+
+
+  filledVolume.scale.x = 0.5;//state.alpha * width;
 
   const interaction = createInteraction( guiState, hitscanVolume );
   interaction.events.on( 'pressed', handlePress );
@@ -81,7 +103,7 @@ export default function createSlider( {
     const pointAlpha = getPointAlpha( intersectionPoint, {a,b} );
     state.alpha = pointAlpha;
 
-    filledVolume.scale.x = state.alpha * width;
+    filledVolume.scale.x = Math.max( state.alpha * width, 0.000001 );
 
     state.value = map_range( state.alpha, 0.0, 1.0, min, max );
     if( state.value < min ){
@@ -103,7 +125,7 @@ export default function createSlider( {
   }
 
   function updateValueLabel( value ){
-    descriptorLabel.setString( propertyName + ': ' + parseFloat( value ) );
+    valueLabel.update( parseFloat( value ).toString() );
   }
 
   function updateView(){

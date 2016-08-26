@@ -1,7 +1,8 @@
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';
-
+import * as Layout from './layout';
+import * as SharedMaterials from './sharedmaterials';
 
 export default function createFolder({
   guiState,
@@ -9,7 +10,9 @@ export default function createFolder({
   name
 } = {} ){
 
-  const spacingPerController = 0.1;
+  const width = Layout.PANEL_WIDTH + Layout.PANEL_MARGIN * 2;
+
+  const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
 
   const state = {
     collapsed: false,
@@ -25,18 +28,21 @@ export default function createFolder({
   addOriginal.call( group, collapseGroup );
 
   const descriptorLabel = createTextLabel( textCreator, '- ' + name, 0.6 );
-  descriptorLabel.position.x = -0.4;
-  descriptorLabel.position.y = 0;
+  descriptorLabel.position.y = Layout.PANEL_HEIGHT * 0.5;
 
-  group.add( descriptorLabel );
+  addOriginal.call( group, descriptorLabel );
 
-  const interactionVolume = new THREE.Mesh( new THREE.BoxGeometry(0.5, 1, 0.05 ), new THREE.MeshBasicMaterial({color:0x000000}) );
-  interactionVolume.position.z = -0.1;
-  addOriginal.call( group, interactionVolume );
+  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), SharedMaterials.FOLDER );
+  panel.geometry.translate( width * 0.5 - Layout.PANEL_MARGIN, 0, -Layout.PANEL_DEPTH );
+  addOriginal.call( group, panel );
+
+  // const interactionVolume = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), new THREE.MeshBasicMaterial({color:0x000000}) );
+  // interactionVolume.geometry.translate( width * 0.5 - Layout.PANEL_MARGIN, 0, -Layout.PANEL_DEPTH );
+  // addOriginal.call( group, interactionVolume );
   // interactionVolume.visible = false;
 
-  const interaction = createInteraction( guiState, interactionVolume );
-  interaction.events.on( 'onPressed', handlePress );
+  const interaction = createInteraction( guiState, descriptorLabel );
+  // interaction.events.on( 'onPressed', handlePress );
 
   interaction.events.on( 'onGrip', handleOnGrip );
   interaction.events.on( 'releaseGrip', handleReleaseGrip );
@@ -63,7 +69,7 @@ export default function createFolder({
 
   function performLayout(){
     collapseGroup.children.forEach( function( child, index ){
-      child.position.y = -(index+1) * spacingPerController;
+      child.position.y = -(index+1) * spacingPerController + Layout.PANEL_HEIGHT * 0.5;
       if( state.collapsed ){
         child.children[0].visible = false;
       }
@@ -79,19 +85,23 @@ export default function createFolder({
       descriptorLabel.setString( '- ' + name );
     }
 
+    const totalHeight = collapseGroup.children.length * spacingPerController;
+    panel.geometry = new THREE.BoxGeometry( width, totalHeight, Layout.PANEL_DEPTH );
+    panel.geometry.translate( width * 0.5 - Layout.PANEL_MARGIN, -totalHeight * 0.5, -Layout.PANEL_DEPTH );
+    panel.geometry.computeBoundingBox();
   }
 
   function updateLabel(){
-    if( interaction.hovering() ){
-      descriptorLabel.back.material.color.setHex( Colors.HIGHLIGHT_BACK );
-    }
-    else{
+    // if( interaction.hovering() ){
+    //   descriptorLabel.back.material.color.setHex( Colors.HIGHLIGHT_BACK );
+    // }
+    // else{
       descriptorLabel.back.material.color.setHex( Colors.DEFAULT_BACK );
-    }
+    // }
   }
 
   function handleOnGrip( object, box, intersectionPoint, otherObject ){
-
+    console.log('gripping');
     otherObject.updateMatrixWorld();
     group.updateMatrixWorld();
 
@@ -134,7 +144,7 @@ export default function createFolder({
     return oldParent;
   };
 
-  group.hitscan = interactionVolume;
+  group.hitscan = descriptorLabel;
 
   return group;
 }

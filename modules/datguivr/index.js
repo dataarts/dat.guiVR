@@ -116,7 +116,9 @@ export default function DATGUIVR(){
     });
 
     controllers.push( folder );
-    hitscanObjects.push( folder.hitscan );
+    if( folder.hitscan ){
+      hitscanObjects.push( folder.hitscan );
+    }
 
     return folder;
   }
@@ -142,7 +144,7 @@ export default function DATGUIVR(){
       //  debug...
       // laser.geometry.vertices[ 1 ].copy( tPosition ).add( tDirection.multiplyScalar( 1 ) );
 
-      const intersections = raycast.intersectObjects( hitscanObjects );
+      const intersections = raycast.intersectObjects( hitscanObjects, false );
       if( intersections.length > 0 ){
         const firstHit = intersections[ 0 ];
         laser.geometry.vertices[ 1 ].copy( firstHit.point );

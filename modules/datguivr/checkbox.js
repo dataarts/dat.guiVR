@@ -1,17 +1,25 @@
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';
-
+import * as Layout from './layout';
+import * as SharedMaterials from './sharedmaterials';
 
 export default function createCheckbox( {
   guiState,
   textCreator,
   object,
   propertyName = 'undefined',
-  initialValue = false
+  initialValue = false,
+  width = Layout.PANEL_WIDTH,
+  height = Layout.PANEL_HEIGHT,
+  depth = Layout.PANEL_DEPTH
 } = {} ){
 
-  const INACTIVE_SCALE = 0.25;
+  const CHECKBOX_WIDTH = height - Layout.PANEL_MARGIN;
+  const CHECKBOX_HEIGHT = CHECKBOX_WIDTH;
+  const CHECKBOX_DEPTH = depth;
+
+  const INACTIVE_SCALE = 0.001;
   const ACTIVE_SCALE = 0.9;
 
   const state = {
@@ -20,29 +28,42 @@ export default function createCheckbox( {
 
   const group = new THREE.Group();
 
-  //  filled volume
-  const rect = new THREE.BoxGeometry( 0.1, 0.1, 0.1, 1, 1, 1 );
+  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, height, depth ), SharedMaterials.PANEL );
+  panel.geometry.translate( width * 0.5, 0, 0 );
+  group.add( panel );
 
-  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
-  const filledVolume = new THREE.Mesh( rect, material );
-  filledVolume.scale.set( ACTIVE_SCALE, ACTIVE_SCALE,ACTIVE_SCALE );
-  filledVolume.position.x = -0.05;
+  //  base checkbox
+  const rect = new THREE.BoxGeometry( CHECKBOX_WIDTH, CHECKBOX_HEIGHT, CHECKBOX_DEPTH );
+  rect.translate( CHECKBOX_WIDTH * 0.5, 0, 0 );
 
-  //  outline volume
+
+  //  hitscan volume
   const hitscanMaterial = new THREE.MeshBasicMaterial();
   hitscanMaterial.visible = false;
 
-  const hitscanVolume = new THREE.Mesh( rect, hitscanMaterial );
-  hitscanVolume.position.x = -0.05;
+  const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
+  hitscanVolume.position.z = depth;
+  hitscanVolume.position.x = width * 0.5;
 
+  //  outline volume
   const outline = new THREE.BoxHelper( hitscanVolume );
   outline.material.color.setHex( Colors.OUTLINE_COLOR );
 
-  const descriptorLabel = createTextLabel( textCreator, propertyName );
-  descriptorLabel.position.x = 0.03;
-  descriptorLabel.position.z = 0.05 - 0.015;
+  //  checkbox volume
+  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
+  const filledVolume = new THREE.Mesh( rect.clone(), material );
+  filledVolume.scale.set( ACTIVE_SCALE, ACTIVE_SCALE,ACTIVE_SCALE );
+  hitscanVolume.add( filledVolume );
 
-  group.add( filledVolume, outline, hitscanVolume, descriptorLabel );
+
+  const descriptorLabel = textCreator.create( propertyName );
+  descriptorLabel.position.x = Layout.PANEL_TEXT_MARGIN;
+  descriptorLabel.position.z = depth;
+  descriptorLabel.position.y = -0.03;
+
+  panel.add( descriptorLabel, hitscanVolume, outline );
+
+  // group.add( filledVolume, outline, hitscanVolume, descriptorLabel );
 
   const interaction = createInteraction( guiState, hitscanVolume );
   interaction.events.on( 'onPressed', handleOnPress );

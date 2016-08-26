@@ -41,6 +41,8 @@
       vrpad.events.on( 'connected0', ( pad ) => {
         pad.on('button1Pressed', ()=>controllerModels[0].pressed = true );
         pad.on('button1Released', ()=>controllerModels[0].pressed = false );
+        pad.on('button2Pressed', ()=>controllerModels[0].gripped = true );
+        pad.on('button2Released', ()=>controllerModels[0].gripped = false );
         pad.on('button3Pressed', function( index, value ){
           toggleVR();
         });
@@ -140,7 +142,7 @@
       let pinned = false;
       function pinGUI(){
         if( pinned === false ){
-          folder.position.y = 0;
+          folder.position.y = 0.02;
           folder.position.z = -0.1;
           folder.position.x = 0;
           folder.rotation.x = -Math.PI * 0.5;
