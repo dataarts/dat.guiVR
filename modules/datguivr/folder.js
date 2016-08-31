@@ -144,7 +144,7 @@ export default function createFolder({
     return oldParent;
   };
 
-  group.hitscan = descriptorLabel;
+  group.hitscan = [ panel, descriptorLabel.back ];
 
   return group;
 }

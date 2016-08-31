@@ -81,7 +81,7 @@ export default function DATGUIVR(){
     });
 
     controllers.push( slider );
-    hitscanObjects.push( slider.hitscan )
+    hitscanObjects.push( ...slider.hitscan )
 
     return slider;
   }
@@ -93,7 +93,7 @@ export default function DATGUIVR(){
     });
 
     controllers.push( checkbox );
-    hitscanObjects.push( checkbox.hitscan )
+    hitscanObjects.push( ...checkbox.hitscan )
 
     return checkbox;
   }
@@ -104,7 +104,7 @@ export default function DATGUIVR(){
     });
 
     controllers.push( button );
-    hitscanObjects.push( button.hitscan );
+    hitscanObjects.push( ...button.hitscan );
     return button;
   }
 
@@ -142,7 +142,7 @@ export default function DATGUIVR(){
 
     controllers.push( folder );
     if( folder.hitscan ){
-      hitscanObjects.push( folder.hitscan );
+      hitscanObjects.push( ...folder.hitscan );
     }
 
     return folder;

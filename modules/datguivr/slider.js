@@ -157,7 +157,7 @@ export default function createSlider( {
   };
 
   group.interaction = interaction;
-  group.hitscan = hitscanVolume;
+  group.hitscan = [ hitscanVolume, panel ];
 
   return group;
 }

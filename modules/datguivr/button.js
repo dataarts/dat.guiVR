@@ -90,7 +90,7 @@ export default function createCheckbox( {
   }
 
   group.interaction = interaction;
-  group.hitscan = hitscanVolume;
+  group.hitscan = [ hitscanVolume, panel ];
 
   return group;
 }
