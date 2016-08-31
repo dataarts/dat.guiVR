@@ -54,10 +54,20 @@ export default function DATGUIVR(){
       raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
       laser: createLaser(),
       cursor: createCursor(),
-      object
+      object,
+      pressed: false,
+      gripped: false
     };
 
     set.laser.add( set.cursor );
+
+    set.laser.pressed = function( flag ){
+      set.pressed = flag;
+    };
+
+    set.laser.gripped = function( flag ){
+      set.gripped = flag;
+    };
 
     inputObjects.push( set );
     return set.laser;

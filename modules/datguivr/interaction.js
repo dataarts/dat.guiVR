@@ -38,7 +38,7 @@ export default function createInteraction( guiState, object ){
         }
       }
 
-      if( (hover && set.object.pressed) || (guiState.currentInteraction === interaction && set.object.pressed) ){
+      if( (hover && set.pressed ) || (guiState.currentInteraction === interaction && set.pressed ) ){
         press = true;
         guiState.currentInteraction = interaction;
       }
@@ -46,7 +46,7 @@ export default function createInteraction( guiState, object ){
         press = false
       }
 
-      if( (hover && set.object.gripped) || (guiState.currentInteraction === interaction && set.object.gripped) ){
+      if( (hover && set.gripped ) || (guiState.currentInteraction === interaction && set.gripped ) ){
         grip = true;
         guiState.currentInteraction = interaction;
       }

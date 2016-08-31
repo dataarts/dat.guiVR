@@ -34,14 +34,14 @@ if( window ){
 }
 
 
-function createPadHandler( pad ){
+function createPadHandler( gamePad ){
   const events = new Emitter();
 
-  let lastButtons = cloneButtons( pad.buttons );
+  let lastButtons = cloneButtons( gamePad.buttons );
 
   function update(){
 
-    const buttons = pad.buttons;
+    const buttons = gamePad.buttons;
 
     //  compare
     buttons.forEach( ( button, index )=>{
@@ -61,13 +61,16 @@ function createPadHandler( pad ){
 
     });
 
-    lastButtons = cloneButtons( pad.buttons );
+    lastButtons = cloneButtons( gamePad.buttons );
 
   }
 
-  events.update = update;
+  gamePad.update = update;
+  gamePad.on = function( eventName, callback ){
+    return events.on( eventName, callback );
+  };
 
-  return events;
+  return gamePad;
 }
 
 function cloneButtons( buttons ){
