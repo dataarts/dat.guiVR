@@ -60,7 +60,7 @@ export default function createSlider( {
   endLocator.visible = false;
 
   const valueLabel = textCreator.create( state.value.toString() );
-  valueLabel.position.x = Layout.PANEL_TEXT_MARGIN + width * 0.5;
+  valueLabel.position.x = Layout.PANEL_VALUE_TEXT_MARGIN + width * 0.5;
   valueLabel.position.z = depth*2;
   valueLabel.position.y = -0.03;
   updateValueLabel( state.value );
@@ -68,13 +68,15 @@ export default function createSlider( {
 
 
   const descriptorLabel = textCreator.create( propertyName );
-  descriptorLabel.position.x = Layout.PANEL_TEXT_MARGIN;
+  descriptorLabel.position.x = Layout.PANEL_LABEL_TEXT_MARGIN;
   descriptorLabel.position.z = depth;
   descriptorLabel.position.y = -0.03;
 
-  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, height, depth ), SharedMaterials.PANEL );
-  panel.geometry.translate( width * 0.5, 0, 0 );
-  panel.add( descriptorLabel, hitscanVolume, outline, valueLabel );
+  const controllerID = Layout.createControllerIDBox( height, Colors.CONTROLLER_ID_SLIDER );
+  controllerID.position.z = depth;
+
+  const panel = Layout.createPanel( width, height, depth );
+  panel.add( descriptorLabel, hitscanVolume, outline, valueLabel, controllerID );
 
   group.add( panel )
 

@@ -10,7 +10,7 @@ export default function createFolder({
   name
 } = {} ){
 
-  const width = Layout.PANEL_WIDTH + Layout.PANEL_MARGIN * 2;
+  const width = Layout.PANEL_WIDTH;
 
   const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
 
@@ -33,7 +33,7 @@ export default function createFolder({
   addOriginal.call( group, descriptorLabel );
 
   const panel = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), SharedMaterials.FOLDER );
-  panel.geometry.translate( width * 0.5 - Layout.PANEL_MARGIN, 0, -Layout.PANEL_DEPTH );
+  panel.geometry.translate( width * 0.5, 0, -Layout.PANEL_DEPTH );
   addOriginal.call( group, panel );
 
   // const interactionVolume = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), new THREE.MeshBasicMaterial({color:0x000000}) );
@@ -87,7 +87,7 @@ export default function createFolder({
 
     const totalHeight = collapseGroup.children.length * spacingPerController;
     panel.geometry = new THREE.BoxGeometry( width, totalHeight, Layout.PANEL_DEPTH );
-    panel.geometry.translate( width * 0.5 - Layout.PANEL_MARGIN, -totalHeight * 0.5, -Layout.PANEL_DEPTH );
+    panel.geometry.translate( width * 0.5, -totalHeight * 0.5, -Layout.PANEL_DEPTH );
     panel.geometry.computeBoundingBox();
   }
 

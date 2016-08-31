@@ -28,8 +28,7 @@ export default function createCheckbox( {
 
   const group = new THREE.Group();
 
-  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, height, depth ), SharedMaterials.PANEL );
-  panel.geometry.translate( width * 0.5, 0, 0 );
+  const panel = Layout.createPanel( width, height, depth );
   group.add( panel );
 
   //  base checkbox
@@ -57,11 +56,14 @@ export default function createCheckbox( {
 
 
   const descriptorLabel = textCreator.create( propertyName );
-  descriptorLabel.position.x = Layout.PANEL_TEXT_MARGIN;
+  descriptorLabel.position.x = Layout.PANEL_LABEL_TEXT_MARGIN;
   descriptorLabel.position.z = depth;
   descriptorLabel.position.y = -0.03;
 
-  panel.add( descriptorLabel, hitscanVolume, outline );
+  const controllerID = Layout.createControllerIDBox( height, Colors.CONTROLLER_ID_CHECKBOX );
+  controllerID.position.z = depth;
+
+  panel.add( descriptorLabel, hitscanVolume, outline, controllerID );
 
   // group.add( filledVolume, outline, hitscanVolume, descriptorLabel );
 
