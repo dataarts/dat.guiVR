@@ -1,3 +1,5 @@
+import * as SharedMaterials from './sharedmaterials';
+
 export function alignLeft( obj ){
   if( obj instanceof THREE.Mesh ){
     obj.geometry.computeBoundingBox();
@@ -11,6 +13,12 @@ export function alignLeft( obj ){
     obj.translate( width, 0, 0 );
     return obj;
   }
+}
+
+export function createPanel( width, height, depth ){
+  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, height, depth ), SharedMaterials.PANEL );
+  panel.geometry.translate( width * 0.5, 0, 0 );
+  return panel;
 }
 
 export const PANEL_WIDTH = 1.0;

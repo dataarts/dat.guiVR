@@ -3,6 +3,7 @@ import Emitter from 'events';
 
 import createSlider from './slider';
 import createCheckbox from './checkbox';
+import createButton from './button';
 import createFolder from './folder';
 import * as SDFText from './sdftext';
 
@@ -97,6 +98,16 @@ export default function DATGUIVR(){
     return checkbox;
   }
 
+  function addButton( object, propertyName ){
+    const button = createButton({
+      guiState, textCreator, propertyName, object
+    });
+
+    controllers.push( button );
+    hitscanObjects.push( button.hitscan );
+    return button;
+  }
+
   function add( object, propertyName, min, max ){
 
     if( object === undefined ){
@@ -116,6 +127,10 @@ export default function DATGUIVR(){
 
     if( isBoolean( object[ propertyName] ) ){
       return addCheckbox( object, propertyName );
+    }
+
+    if( isFunction( object[ propertyName ] ) ){
+      return addButton( object, propertyName );
     }
   }
 
@@ -194,6 +209,11 @@ function isNumber(n) {
 
 function isBoolean(n){
   return typeof n === 'boolean';
+}
+
+function isFunction(functionToCheck) {
+  const getType = {};
+  return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 }
 
 if( window ){

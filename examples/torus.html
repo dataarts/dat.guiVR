@@ -73,10 +73,22 @@
         radialSegments: 8,
         p: 2,
         q: 3,
-        spinning: true
+        spinning: true,
+        reset: function(){
+          state.radius = 10;
+          state.tube = 3;
+          state.tubularSegments = 64;
+          state.radialSegments = 8;
+          state.p = 2;
+          state.q = 3;
+          state.spinning = true;
+          updateMesh();
+        }
       };
 
+      function reset(){
 
+      }
 
 
 
@@ -114,7 +126,6 @@
 
 
 
-
       //  add multiple sliders
       //  updateMesh will be the callback when values are changed
       folder.add(
@@ -125,7 +136,8 @@
         gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
         gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
         gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 ),
-        gui.add( state, 'spinning' )
+        gui.add( state, 'spinning' ),
+        gui.add( state, 'reset' )
       );
 
       function updateMesh(){
