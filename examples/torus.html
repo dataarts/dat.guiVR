@@ -32,36 +32,15 @@
       //  instance of DATGUIVR, only one is needed
       const gui = DATGUIVR();
 
-      //  add an input object (your cursor in 3D)
+      //  add an input object (any Object3D like ViveController or Camera)
       //  you can add multiple objects
       const guiInput = gui.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
 
-      controllers[ 0 ].addEventListener( 'triggerdown', ()=>guiInput.pressed( true ) );
-      controllers[ 0 ].addEventListener( 'triggerup', ()=>guiInput.pressed( false ) );
-      controllers[ 0 ].addEventListener( 'gripsdown', ()=>guiInput.gripped( true ) );
-      controllers[ 0 ].addEventListener( 'gripsup', ()=>guiInput.gripped( false ) );
-
       controllers[ 0 ].addEventListener( 'menudown', ()=>toggleVR() );
 
 
-      // const vrpad = VRPad();
-      // events.on( 'tick', (dt)=>{
-      //   vrpad.update();
-      // });
-
-      // //  set "pressed" on pointer when right trigger is pressed
-      // vrpad.events.on( 'connected0', ( pad ) => {
-      //   pad.on('button1Pressed', ()=>guiInput.pressed( true ) );
-      //   pad.on('button1Released', ()=>guiInput.pressed( false ) );
-      //   pad.on('button2Pressed', ()=>guiInput.gripped( true ) );
-      //   pad.on('button2Released', ()=>guiInput.gripped( false ) );
-      //   pad.on('button3Pressed', function( index, value ){
-      //     toggleVR();
-      //   });
-      // });
-
-      // //  "pin" the GUI on left controller when pressing the left trigger button
+      //  "pin" the GUI on left controller when pressing the left trigger button
       // vrpad.events.on( 'connected1', ( pad ) => {
       //   pad.on('button1Pressed', pinGUI  );
       // });

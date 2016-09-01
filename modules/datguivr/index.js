@@ -69,7 +69,12 @@ export default function DATGUIVR(){
       input.gripped = flag;
     };
 
+    if( THREE.ViveController && object instanceof THREE.ViveController ){
+      bindViveController( object, input.laser.pressed, input.laser.gripped );
+    }
+
     inputObjects.push( input );
+
     return input.laser;
   }
 
@@ -217,4 +222,12 @@ function isFunction(functionToCheck) {
 
 if( window ){
   window.DATGUIVR = DATGUIVR;
+}
+
+function bindViveController( controller, pressed, gripped ){
+  console.log( controller );
+  controller.addEventListener( 'triggerdown', ()=>pressed( true ) );
+  controller.addEventListener( 'triggerup', ()=>pressed( false ) );
+  controller.addEventListener( 'gripsdown', ()=>gripped( true ) );
+  controller.addEventListener( 'gripsup', ()=>gripped( false ) );
 }
