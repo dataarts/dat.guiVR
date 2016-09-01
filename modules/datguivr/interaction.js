@@ -1,106 +1,97 @@
 import Emitter from 'events';
 
-/*
-
-  This is some horrible state machine I'm sorry to have written.
-  Please rewrite this.
-
-*/
-
-export default function createInteraction( guiState, object ){
-  const interactionBounds = new THREE.Box3();
-  interactionBounds.setFromObject( object );
-
+export default function createInteraction( guiState, hitVolume ){
   const events = new Emitter();
 
-  let wasHover = false;
-  let hover = false;
-  let wasPressed = false;
-  let press = false;
-  let wasGripped = false;
-  let grip = false;
+  const state = {
+    hover: false,
+    pressed: false,
+    gripped: false,
+  };
 
-  function update( inputObjects ){
-    wasPressed = press;
-    wasGripped = grip;
-
-    interactionBounds.setFromObject( object );
-
-    inputObjects.forEach( function( set ){
-      if( interactionBounds.intersectsBox( set.box ) && guiState.currentInteraction === undefined && ( guiState.currentHover === undefined || guiState.currentHover === interaction ) ){
-        hover = true;
-        guiState.currentHover = interaction;
-      }
-      else {
-        hover = false
-        if( guiState.currentHover === interaction ){
-          guiState.currentHover = undefined;
-        }
-      }
-
-      if( (hover && set.pressed ) || (guiState.currentInteraction === interaction && set.pressed ) ){
-        press = true;
-        guiState.currentInteraction = interaction;
-      }
-      else{
-        press = false
-      }
-
-      if( (hover && set.gripped ) || (guiState.currentInteraction === interaction && set.gripped ) ){
-        grip = true;
-        guiState.currentInteraction = interaction;
-      }
-      else{
-        grip = false
-      }
-
-      updateAgainst( set );
-
-      if( !( press || grip ) && guiState.currentInteraction === interaction ){
-        guiState.currentInteraction = undefined;
-        if( wasPressed ){
-          events.emit( 'releasePress', object );
-        }
-        if( wasGripped ){
-          events.emit( 'releaseGrip', object );
-        }
-      }
-    });
+  function isMainInteraction(){
+    return ( guiState.currentInteraction === interaction );
   }
 
-  function updateAgainst( set ){
-    const { object:otherObject, box } = set;
+  function hasMainInteraction(){
+    return ( guiState.currentInteraction !== undefined );
+  }
 
-    if( press ){
-      let intersectionPoint = interactionBounds.intersect( box ).center();
-      if( isNaN( intersectionPoint.x ) ){
-        intersectionPoint = box.center();
+  function setMainInteraction(){
+    guiState.currentInteraction = interaction;
+  }
+
+  function clearMainInteraction(){
+    guiState.currentInteraction = undefined;
+  }
+
+  const tVector = new THREE.Vector3();
+
+  function update( inputObjects ){
+
+    state.hover = false;
+
+    inputObjects.forEach( function( input ){
+      let hitPoint;
+      let hitObject;
+
+      if( input.intersections.length <= 0 ){
+        state.hover = false;
+        hitPoint = tVector.setFromMatrixPosition( input.cursor.matrixWorld ).clone();
+        hitObject = input.cursor;
+      }
+      else{
+        hitPoint = input.intersections[ 0 ].point;
+        hitObject = input.intersections[ 0 ].object;
       }
 
-      events.emit( 'pressed', object, box, intersectionPoint, otherObject );
+      if( hasMainInteraction() === false && hitVolume === hitObject ){
+        state.hover = true;
+      }
 
-      if( wasPressed === false && press === true ){
-        events.emit( 'onPressed', object, box, intersectionPoint, otherObject );
+      performStateEvents( input, hitObject, hitPoint, 'pressed', 'onPressed', 'pressing', 'onReleased' );
+      performStateEvents( input, hitObject, hitPoint, 'gripped', 'onGripped', 'gripping', 'onReleaseGrip' );
+
+    });
+
+  }
+
+  function performStateEvents( input, hitObject, hitPoint, stateToCheck, clickName, holdName, releaseName ){
+    if( input[ stateToCheck ] && state.hover && hasMainInteraction() === false ){
+      if( state[ stateToCheck ] === false ){
+        state[ stateToCheck ] = true;
+        setMainInteraction();
+
+        events.emit( clickName, {
+          hitObject,
+          inputObject: input.object,
+          point: hitPoint,
+        });
       }
     }
 
-    if( grip ){
-      let intersectionPoint = interactionBounds.intersect( box ).center();
-      if( isNaN( intersectionPoint.x ) ){
-        intersectionPoint = box.center();
-      }
+    if( input[ stateToCheck ] === false && isMainInteraction() ){
+      state[ stateToCheck ] = false;
+      clearMainInteraction();
+      events.emit( releaseName, {
+        hitObject,
+        inputObject: input.object,
+        point: hitPoint,
+      });
+    }
 
-      events.emit( 'gripped', object, box, intersectionPoint, otherObject );
-
-      if( wasGripped === false && grip === true ){
-        events.emit( 'onGrip', object, box, intersectionPoint, otherObject );
-      }
+    if( state[ stateToCheck ] ){
+      events.emit( holdName, {
+        hitObject,
+        inputObject: input.object,
+        point: hitPoint,
+      });
     }
   }
 
   const interaction = {
-    hovering: ()=>hover,
-    pressing: ()=>press,
+    hovering: ()=>state.hover,
+    pressing: ()=>state.pressed,
     update,
     events
   };

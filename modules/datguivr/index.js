@@ -50,8 +50,7 @@ export default function DATGUIVR(){
   }
 
   function addInputObject( object ){
-    const set = {
-      box: new THREE.Box3(),
+    const input = {
       raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
       laser: createLaser(),
       cursor: createCursor(),
@@ -60,18 +59,18 @@ export default function DATGUIVR(){
       gripped: false
     };
 
-    set.laser.add( set.cursor );
+    input.laser.add( input.cursor );
 
-    set.laser.pressed = function( flag ){
-      set.pressed = flag;
+    input.laser.pressed = function( flag ){
+      input.pressed = flag;
     };
 
-    set.laser.gripped = function( flag ){
-      set.gripped = flag;
+    input.laser.gripped = function( flag ){
+      input.gripped = flag;
     };
 
-    inputObjects.push( set );
-    return set.laser;
+    inputObjects.push( input );
+    return input.laser;
   }
 
   function addSlider( object, propertyName, min = 0.0, max = 100.0 ){
@@ -155,7 +154,7 @@ export default function DATGUIVR(){
   function update() {
     requestAnimationFrame( update );
 
-    inputObjects.forEach( function( {box,object,raycast,laser,cursor} = {} ){
+    inputObjects.forEach( function( {box,object,raycast,laser,cursor} = {}, index ){
       object.updateMatrixWorld();
 
       tPosition.set(0,0,0).setFromMatrixPosition( object.matrixWorld );
@@ -184,8 +183,8 @@ export default function DATGUIVR(){
         laser.visible = false;
         cursor.visible = false;
       }
-      box.setFromObject( cursor );
 
+      inputObjects[ index ].intersections = intersections;
     });
 
     controllers.forEach( function( controller ){

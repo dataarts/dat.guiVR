@@ -63,34 +63,27 @@ export default function create( {
   controls.standing = standing;
 
 
-  const controller1 = new THREE.Group();
-  const controller2 = new THREE.Group();
+  const controller1 = new THREE.ViveController( 0 );
+  const controller2 = new THREE.ViveController( 1 );
   scene.add( controller1, controller2 );
 
-  let c1, c2;
-
   if( loadControllers ){
-    c1 = new THREE.ViveController( 0 );
-    c1.standingMatrix = controls.getStandingMatrix();
-    controller1.add( c1 );
+    controller1.standingMatrix = controls.getStandingMatrix();
+    controller2.standingMatrix = controls.getStandingMatrix();
 
-    c2 = new THREE.ViveController( 1 );
-    c2.standingMatrix = controls.getStandingMatrix();
-    controller2.add( c2 );
-
-    var loader = new THREE.OBJLoader();
+    const loader = new THREE.OBJLoader();
     loader.setPath( pathToControllers );
     loader.load( controllerModelName, function ( object ) {
 
-      var textureLoader = new THREE.TextureLoader();
+      const textureLoader = new THREE.TextureLoader();
       textureLoader.setPath( pathToControllers );
 
-      var controller = object.children[ 0 ];
+      const controller = object.children[ 0 ];
       controller.material.map = textureLoader.load( controllerTextureMap );
       controller.material.specularMap = textureLoader.load( controllerSpecMap );
 
-      c1.add( object.clone() );
-      c2.add( object.clone() );
+      controller1.add( object.clone() );
+      controller2.add( object.clone() );
 
     } );
   }
@@ -124,6 +117,9 @@ export default function create( {
 
     effect.requestAnimationFrame( animate );
 
+    controller1.update();
+    controller2.update();
+
     controls.update();
 
     events.emit( 'tick',  dt );
@@ -146,7 +142,7 @@ export default function create( {
 
   return {
     scene, camera, controls, renderer,
-    controllerModels: [ c1, c2 ],
+    controllers: [ controller1, controller2 ],
     events,
     toggleVR
   };

@@ -84,14 +84,14 @@ export default function createSlider( {
   filledVolume.scale.x = 0.5;//state.alpha * width;
 
   const interaction = createInteraction( guiState, hitscanVolume );
-  interaction.events.on( 'pressed', handlePress );
+  interaction.events.on( 'pressing', handlePress );
 
   group.update = function( inputObjects ){
     interaction.update( inputObjects );
     updateView();
   };
 
-  function handlePress( interactionObject, other, intersectionPoint ){
+  function handlePress( { point } = {} ){
     if( group.visible === false ){
       return;
     }
@@ -102,7 +102,7 @@ export default function createSlider( {
     const a = new THREE.Vector3().setFromMatrixPosition( filledVolume.matrixWorld );
     const b = new THREE.Vector3().setFromMatrixPosition( endLocator.matrixWorld );
 
-    const pointAlpha = getPointAlpha( intersectionPoint, {a,b} );
+    const pointAlpha = getPointAlpha( point, {a,b} );
     state.alpha = pointAlpha;
 
     filledVolume.scale.x = Math.max( state.alpha * width, 0.000001 );

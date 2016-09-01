@@ -41,11 +41,11 @@ export default function createFolder({
   // addOriginal.call( group, interactionVolume );
   // interactionVolume.visible = false;
 
-  const interaction = createInteraction( guiState, descriptorLabel );
+  const interaction = createInteraction( guiState, panel );
   // interaction.events.on( 'onPressed', handlePress );
 
-  interaction.events.on( 'onGrip', handleOnGrip );
-  interaction.events.on( 'releaseGrip', handleReleaseGrip );
+  interaction.events.on( 'onGripped', handleOnGrip );
+  interaction.events.on( 'onReleaseGrip', handleReleaseGrip );
 
   function handlePress(){
     state.collapsed = !state.collapsed;
@@ -100,37 +100,27 @@ export default function createFolder({
     // }
   }
 
-  function handleOnGrip( object, box, intersectionPoint, otherObject ){
-    console.log('gripping');
-    otherObject.updateMatrixWorld();
-    group.updateMatrixWorld();
+  const tempMatrix = new THREE.Matrix4();
 
-    const v1 = new THREE.Vector3().setFromMatrixPosition( group.matrixWorld );
-    const v2 = new THREE.Vector3().setFromMatrixPosition( otherObject.matrixWorld );
-    const delta = new THREE.Vector3().subVectors( v1, v2 ).multiplyScalar( 0.5 );
+  let oldParent;
 
+  function handleOnGrip( {inputObject}={} ){
 
-    state.previousParent = group.pinTo( otherObject );
+    tempMatrix.getInverse( inputObject.matrixWorld );
 
+    group.matrix.premultiply( tempMatrix );
+    group.matrix.decompose( group.position, group.quaternion, group.scale );
 
-    // group.position.set(0,0,0);
-
-    group.position.copy( delta );
-
-    const a = new THREE.Euler().setFromRotationMatrix( otherObject.matrixWorld );
-
-    group.rotation.set( a.x * -1, a.y * -1, a.z * -1 );
+    oldParent = group.parent;
+    inputObject.add( group );
 
   }
 
-  function handleReleaseGrip( object ){
-
-    group.updateMatrixWorld();
-    group.position.copy( new THREE.Vector3().setFromMatrixPosition( group.matrixWorld ) );
-    group.rotation.copy( new THREE.Euler().setFromRotationMatrix( group.matrixWorld ) );
-
-    group.pinTo( state.previousParent );
-    state.previousParent = undefined;
+  function handleReleaseGrip( {inputObject}={} ){
+    group.matrix.premultiply( inputObject.matrixWorld );
+    group.matrix.decompose( group.position, group.quaternion, group.scale );
+    oldParent.add( group );
+    oldParent = undefined;
   }
 
   group.pinTo = function( newParent ){

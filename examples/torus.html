@@ -12,7 +12,6 @@
 
     <script type="text/javascript" src="thirdparty/three.js"></script>
     <script type="text/javascript" src="dist/vrviewer.js"></script>
-    <script type="text/javascript" src="dist/vrpad.js"></script>
     <script type="text/javascript" src="dist/datguivr.js"></script>
 
     <script type="text/javascript" src="js/floorandlights.js"></script>
@@ -20,7 +19,7 @@
     <script type="text/javascript">
 
 
-      const { scene, camera, events, toggleVR, controllerModels, renderer } = VRViewer({
+      const { scene, camera, events, toggleVR, controllers, renderer } = VRViewer({
         autoEnter: true,
         emptyRoom: false
       });
@@ -35,31 +34,37 @@
 
       //  add an input object (your cursor in 3D)
       //  you can add multiple objects
-      const guiInput = gui.addInputObject( controllerModels[ 0 ] );
+      const guiInput = gui.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
 
+      controllers[ 0 ].addEventListener( 'triggerdown', ()=>guiInput.pressed( true ) );
+      controllers[ 0 ].addEventListener( 'triggerup', ()=>guiInput.pressed( false ) );
+      controllers[ 0 ].addEventListener( 'gripsdown', ()=>guiInput.gripped( true ) );
+      controllers[ 0 ].addEventListener( 'gripsup', ()=>guiInput.gripped( false ) );
+
+      controllers[ 0 ].addEventListener( 'menudown', ()=>toggleVR() );
 
 
-      const vrpad = VRPad();
-      events.on( 'tick', (dt)=>{
-        vrpad.update();
-      });
+      // const vrpad = VRPad();
+      // events.on( 'tick', (dt)=>{
+      //   vrpad.update();
+      // });
 
-      //  set "pressed" on pointer when right trigger is pressed
-      vrpad.events.on( 'connected0', ( pad ) => {
-        pad.on('button1Pressed', ()=>guiInput.pressed( true ) );
-        pad.on('button1Released', ()=>guiInput.pressed( false ) );
-        pad.on('button2Pressed', ()=>guiInput.gripped( true ) );
-        pad.on('button2Released', ()=>guiInput.gripped( false ) );
-        pad.on('button3Pressed', function( index, value ){
-          toggleVR();
-        });
-      });
+      // //  set "pressed" on pointer when right trigger is pressed
+      // vrpad.events.on( 'connected0', ( pad ) => {
+      //   pad.on('button1Pressed', ()=>guiInput.pressed( true ) );
+      //   pad.on('button1Released', ()=>guiInput.pressed( false ) );
+      //   pad.on('button2Pressed', ()=>guiInput.gripped( true ) );
+      //   pad.on('button2Released', ()=>guiInput.gripped( false ) );
+      //   pad.on('button3Pressed', function( index, value ){
+      //     toggleVR();
+      //   });
+      // });
 
-      //  "pin" the GUI on left controller when pressing the left trigger button
-      vrpad.events.on( 'connected1', ( pad ) => {
-        pad.on('button1Pressed', pinGUI  );
-      });
+      // //  "pin" the GUI on left controller when pressing the left trigger button
+      // vrpad.events.on( 'connected1', ( pad ) => {
+      //   pad.on('button1Pressed', pinGUI  );
+      // });
 
 
 
@@ -156,7 +161,7 @@
           folder.position.x = 0;
           folder.rotation.x = -Math.PI * 0.5;
           folder.scale.multiplyScalar( 0.25 );
-          folder.pinTo( controllerModels[ 1 ] );
+          folder.pinTo( controllers[ 1 ] );
         }
         else{
           folder.position.y = 1.5;

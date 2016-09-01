@@ -65,7 +65,7 @@ export default function createCheckbox( {
     updateView();
   };
 
-  function handleOnPress( interactionObject, other, intersectionPoint ){
+  function handleOnPress(){
     if( group.visible === false ){
       return;
     }
