@@ -22,9 +22,6 @@ module.exports = function (grunt) {
           './examples/dist/vrviewer.js': [
             'modules/vrviewer/index.js'
           ],
-          './examples/dist/vrpad.js': [
-            'modules/vrpad/index.js'
-          ],
           './examples/dist/datguivr.js': [
             'modules/datguivr/index.js'
           ]

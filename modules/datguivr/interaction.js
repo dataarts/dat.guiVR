@@ -50,7 +50,7 @@ export default function createInteraction( guiState, hitVolume ){
       }
 
       performStateEvents( input, hitObject, hitPoint, 'pressed', 'onPressed', 'pressing', 'onReleased' );
-      performStateEvents( input, hitObject, hitPoint, 'gripped', 'onGripped', 'gripping', 'onReleaseGrip' );
+      // performStateEvents( input, hitObject, hitPoint, 'gripped', 'onGripped', 'gripping', 'onReleaseGrip' );
 
     });
 

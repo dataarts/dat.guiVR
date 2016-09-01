@@ -105,7 +105,7 @@ export default function createFolder({
   let oldParent;
 
   function handleOnGrip( {inputObject}={} ){
-
+    console.log('begin grip');
     tempMatrix.getInverse( inputObject.matrixWorld );
 
     group.matrix.premultiply( tempMatrix );
@@ -117,6 +117,7 @@ export default function createFolder({
   }
 
   function handleReleaseGrip( {inputObject}={} ){
+    console.log('releasing grip');
     group.matrix.premultiply( inputObject.matrixWorld );
     group.matrix.decompose( group.position, group.quaternion, group.scale );
     oldParent.add( group );
