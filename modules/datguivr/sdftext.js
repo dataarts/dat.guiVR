@@ -1,4 +1,4 @@
-import SDFShader from '../shaders/sdf';
+import SDFShader from 'three-bmfont-text/shaders/sdf';
 import createGeometry from 'three-bmfont-text';
 
 export function createMaterial(){
