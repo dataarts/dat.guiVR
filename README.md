@@ -56,11 +56,12 @@ Built on top of [THREE.js](http://threejs.org/)
 ## Build and Run
 
     npm install
-    grunt
+    npm run dev
 
+Wait for the build to complete and a test server will start.
 
 ## Examples ##
-Then navigate to **localhost:8000/torus.html** on VR enabled Chromium build.
+Then navigate to **localhost:8000** on VR enabled Chromium build.
 * vrviewer.html - Simple one-liner to create a WebVR demo.
 * vrpad.html - Example to interface with VRPad module which makes handling controllers easier.
 * torus.html - Example to use DATGUIVR to create sliders and update things in real time.
