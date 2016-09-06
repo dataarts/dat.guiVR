@@ -1,3 +1,8 @@
+/*
+  author @mattdesl
+  Pulled from https://github.com/Jam3/three-bmfont-text/blob/master/shaders/sdf.js
+*/
+
 var assign = require('object-assign')
 
 module.exports = function createSDFShader (opt) {

@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "dev": "./node_modules/.bin/grunt"
+  },
   "dependencies": {
     "events": "^1.0.2",
     "load-bmfont": "^1.2.3",
@@ -19,13 +19,12 @@
     "babelify": "*",
     "express": "*",
     "grunt": "*",
+    "grunt-cli": "*",
     "grunt-browserify": "*",
     "grunt-concurrent": "*",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "*",
     "grunt-express-server": "*",
-    "load-grunt-tasks": "*",
-    "npm": "^3.10.6",
-    "three": "^0.79.0"
+    "load-grunt-tasks": "*"
   }
 }

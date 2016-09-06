@@ -19,10 +19,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          './examples/dist/vrviewer.js': [
-            'modules/vrviewer/index.js'
-          ],
-          './examples/dist/datguivr.js': [
+          './build/datguivr.js': [
             'modules/datguivr/index.js'
           ]
         }
@@ -35,7 +32,7 @@ module.exports = function (grunt) {
         spawn: false
       },
       scripts: {
-        files: ['testserver.js', './examples/dist/*.js' ],
+        files: ['testserver.js', './build/*.js' ],
         tasks: ['copy:main']
       },
       html: {
@@ -57,7 +54,7 @@ module.exports = function (grunt) {
     },
 
     concurrent: {
-      test: {
+      dev: {
         tasks: ['watch', 'browserify', 'express:dev'],
         options: {
           logConcurrentOutput: true
@@ -75,8 +72,8 @@ module.exports = function (grunt) {
       main: {
         expand: true,
         flatten: true,
-        src: 'examples/dist/*.js',
-        dest: 'build/'
+        src: './build/*.js',
+        dest: './examples/js/'
       }
     }
 
@@ -87,6 +84,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-express-server');
 
-  grunt.registerTask('default', ['concurrent:test']);
+  grunt.registerTask('default', ['concurrent:dev']);
   grunt.registerTask('publish', ['concurrent:publish']);
 };
