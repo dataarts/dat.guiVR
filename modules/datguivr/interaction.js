@@ -28,6 +28,7 @@ export default function createInteraction( guiState, hitVolume ){
   const tVector = new THREE.Vector3();
 
   function update( inputObjects ){
+    state.lastHover = state.hover;
 
     state.hover = false;
 
@@ -89,6 +90,8 @@ export default function createInteraction( guiState, hitVolume ){
         inputObject: input.object,
         point: hitPoint,
       });
+
+      guiState.events.emit( 'onControllerHeld', input );
     }
 
     return state[ stateToCheck ];

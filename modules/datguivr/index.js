@@ -22,7 +22,8 @@ export default function DATGUIVR(){
 
   const guiState = {
     currentHover: undefined,
-    currentInteraction: undefined
+    currentInteraction: undefined,
+    events: new Emitter()
   };
 
   loadFont( DEFAULT_FNT, function( err, font ){
@@ -70,7 +71,7 @@ export default function DATGUIVR(){
     };
 
     if( THREE.ViveController && object instanceof THREE.ViveController ){
-      bindViveController( object, input.laser.pressed, input.laser.gripped );
+      bindViveController( guiState, object, input.laser.pressed, input.laser.gripped );
     }
 
     inputObjects.push( input );
@@ -220,11 +221,20 @@ function isFunction(functionToCheck) {
   return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 }
 
-function bindViveController( controller, pressed, gripped ){
+function bindViveController( guiState, controller, pressed, gripped ){
   controller.addEventListener( 'triggerdown', ()=>pressed( true ) );
   controller.addEventListener( 'triggerup', ()=>pressed( false ) );
   controller.addEventListener( 'gripsdown', ()=>gripped( true ) );
   controller.addEventListener( 'gripsup', ()=>gripped( false ) );
+
+  const gamepad = controller.getGamepad();
+  if( gamepad.haptics.length > 0 ){
+    guiState.events.on( 'onControllerHeld', function( input ){
+      if( input.object === controller ){
+        gamepad.haptics[ 0 ].vibrate( 0.3, 0.3 );
+      }
+    });
+  }
 }
 
 if( window ){
