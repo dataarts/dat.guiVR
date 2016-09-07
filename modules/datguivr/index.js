@@ -220,14 +220,13 @@ function isFunction(functionToCheck) {
   return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 }
 
-if( window ){
-  window.DATGUIVR = DATGUIVR;
-}
-
 function bindViveController( controller, pressed, gripped ){
-  console.log( controller );
   controller.addEventListener( 'triggerdown', ()=>pressed( true ) );
   controller.addEventListener( 'triggerup', ()=>pressed( false ) );
   controller.addEventListener( 'gripsdown', ()=>gripped( true ) );
   controller.addEventListener( 'gripsup', ()=>gripped( false ) );
+}
+
+if( window ){
+  window.DATGUIVR = DATGUIVR;
 }

@@ -49,8 +49,12 @@ export default function createInteraction( guiState, hitVolume ){
         state.hover = true;
       }
 
-      performStateEvents( input, hitObject, hitPoint, 'pressed', 'onPressed', 'pressing', 'onReleased' );
-      // performStateEvents( input, hitObject, hitPoint, 'gripped', 'onGripped', 'gripping', 'onReleaseGrip' );
+      let used = performStateEvents( input, hitObject, hitPoint, 'pressed', 'onPressed', 'pressing', 'onReleased' );
+      used = used || performStateEvents( input, hitObject, hitPoint, 'gripped', 'onGripped', 'gripping', 'onReleaseGrip' );
+
+      if( used === false && isMainInteraction() ){
+        clearMainInteraction();
+      }
 
     });
 
@@ -72,7 +76,6 @@ export default function createInteraction( guiState, hitVolume ){
 
     if( input[ stateToCheck ] === false && isMainInteraction() ){
       state[ stateToCheck ] = false;
-      clearMainInteraction();
       events.emit( releaseName, {
         hitObject,
         inputObject: input.object,
@@ -87,6 +90,9 @@ export default function createInteraction( guiState, hitVolume ){
         point: hitPoint,
       });
     }
+
+    return state[ stateToCheck ];
+
   }
 
   const interaction = {

@@ -3,6 +3,7 @@ import createInteraction from './interaction';
 import * as Colors from './colors';
 import * as Layout from './layout';
 import * as SharedMaterials from './sharedmaterials';
+import * as Grab from './grab';
 
 export default function createCheckbox( {
   guiState,
@@ -72,11 +73,6 @@ export default function createCheckbox( {
 
   updateView();
 
-  group.update = function( inputObjects ){
-    interaction.update( inputObjects );
-    updateView();
-  };
-
   function handleOnPress(){
     if( group.visible === false ){
       return;
@@ -127,6 +123,15 @@ export default function createCheckbox( {
 
   group.interaction = interaction;
   group.hitscan = [ hitscanVolume, panel ];
+
+  const grabInteraction = Grab.create( { group, panel, guiState } );
+
+  group.update = function( inputObjects ){
+    interaction.update( inputObjects );
+    grabInteraction.update( inputObjects );
+    updateView();
+  };
+
 
   return group;
 }

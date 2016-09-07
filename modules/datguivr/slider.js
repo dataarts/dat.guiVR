@@ -3,6 +3,7 @@ import createInteraction from './interaction';
 import * as Colors from './colors';
 import * as Layout from './layout';
 import * as SharedMaterials from './sharedmaterials';
+import * as Grab from './grab';
 
 export default function createSlider( {
   guiState,
@@ -86,11 +87,6 @@ export default function createSlider( {
   const interaction = createInteraction( guiState, hitscanVolume );
   interaction.events.on( 'pressing', handlePress );
 
-  group.update = function( inputObjects ){
-    interaction.update( inputObjects );
-    updateView();
-  };
-
   function handlePress( { point } = {} ){
     if( group.visible === false ){
       return;
@@ -160,6 +156,15 @@ export default function createSlider( {
 
   group.interaction = interaction;
   group.hitscan = [ hitscanVolume, panel ];
+
+
+  const grabInteraction = Grab.create( { group, panel, guiState } );
+
+  group.update = function( inputObjects ){
+    interaction.update( inputObjects );
+    grabInteraction.update( inputObjects );
+    updateView();
+  };
 
   return group;
 }

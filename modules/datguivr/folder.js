@@ -3,6 +3,7 @@ import createInteraction from './interaction';
 import * as Colors from './colors';
 import * as Layout from './layout';
 import * as SharedMaterials from './sharedmaterials';
+import * as Grab from './grab';
 
 export default function createFolder({
   guiState,
@@ -44,24 +45,17 @@ export default function createFolder({
   const interaction = createInteraction( guiState, panel );
   // interaction.events.on( 'onPressed', handlePress );
 
-  interaction.events.on( 'onGripped', handleOnGrip );
-  interaction.events.on( 'onReleaseGrip', handleReleaseGrip );
-
   function handlePress(){
     state.collapsed = !state.collapsed;
     performLayout();
   }
-
-  group.update = function( inputObjects ){
-    interaction.update( inputObjects );
-    updateLabel();
-  };
 
   group.add = function( ...args ){
     args.forEach( function( obj ){
       const container = new THREE.Group();
       container.add( obj );
       collapseGroup.add( container );
+      obj.folder = group;
     });
 
     performLayout();
@@ -100,29 +94,14 @@ export default function createFolder({
     // }
   }
 
-  const tempMatrix = new THREE.Matrix4();
+  group.folder = group;
+  const grabInteraction = Grab.create( { group, panel: descriptorLabel.back, guiState } );
 
-  let oldParent;
-
-  function handleOnGrip( {inputObject}={} ){
-    console.log('begin grip');
-    tempMatrix.getInverse( inputObject.matrixWorld );
-
-    group.matrix.premultiply( tempMatrix );
-    group.matrix.decompose( group.position, group.quaternion, group.scale );
-
-    oldParent = group.parent;
-    inputObject.add( group );
-
-  }
-
-  function handleReleaseGrip( {inputObject}={} ){
-    console.log('releasing grip');
-    group.matrix.premultiply( inputObject.matrixWorld );
-    group.matrix.decompose( group.position, group.quaternion, group.scale );
-    oldParent.add( group );
-    oldParent = undefined;
-  }
+  group.update = function( inputObjects ){
+    interaction.update( inputObjects );
+    grabInteraction.update( inputObjects );
+    updateLabel();
+  };
 
   group.pinTo = function( newParent ){
     const oldParent = group.parent;
