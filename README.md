@@ -21,36 +21,38 @@ Built on top of [THREE.js](http://threejs.org/)
 
     //  given any input control object (vive controller, cardboard headset, etc)...
     //  addInputObject returns a live-updating laser pointer
-    const laserPointer = gui.addInputObject( controllerModel[ 0 ] );
-    scene.add( laserPointer );
+      const guiInput = gui.addInputObject( controllers[ 0 ] );
+      scene.add( guiInput );
 
 
+    // folders are just THREE.js Objects that you can attach controllers to
     const folder = gui.addFolder( 'folder settings' );
-    folder.position.y = 1.5;
     scene.add( folder );
+
+    const state = {
+      radius: 5,
+      radialSegments: 4,
+      shading: THREE.SmoothShading,
+      spinning: false,
+      reset: function(){ ... }
+    };
 
 
     folder.add(
       //  sliders for numeric values
       gui.add( state, 'radius', 1, 20 ).onChange( updateMesh ),
-      gui.add( state, 'tube', 0.1, 10 ).onChange( updateMesh ),
-      gui.add( state, 'tubularSegments', 3, 300 ).onChange( updateMesh ),
       gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
-      gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
-      gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
-      gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 ),
 
-      //  booleans also work
+      //  dropdowns for arrays or object maps
+      gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial ),
+      
+      //  checkboxes for booleans
       gui.add( state, 'spinning' )
+      
+      //  buttons for functions to execute
+      gui.add( state, 'reset' )
     );
 
-    function updateMesh(){
-      mesh.geometry = new THREE.TorusKnotGeometry(
-        state.radius, state.tube,
-        state.tubularSegments,
-        state.radialSegments,
-        state.p, state.q );
-    }
 
 
 ## Build and Run
