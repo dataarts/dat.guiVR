@@ -96,26 +96,6 @@ export default function createCheckbox( {
 
   collapseOptions();
 
-
-  const rect = new THREE.BoxGeometry( DROPDOWN_WIDTH, DROPDOWN_HEIGHT, DROPDOWN_DEPTH );
-  rect.translate( DROPDOWN_WIDTH * 0.5, 0, 0 );
-
-
-  //  hitscan volume
-  // const hitscanMaterial = new THREE.MeshBasicMaterial();
-  // hitscanMaterial.visible = false;
-
-  // const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
-  // hitscanVolume.position.z = depth;
-  // hitscanVolume.position.x = width * 0.5;
-
-  //  outline volume
-  // const outline = new THREE.BoxHelper( hitscanVolume );
-  // outline.material.color.setHex( Colors.OUTLINE_COLOR );
-
-  //  option volume
-  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
-
   const descriptorLabel = textCreator.create( propertyName );
   descriptorLabel.position.x = Layout.PANEL_LABEL_TEXT_MARGIN;
   descriptorLabel.position.z = depth;
@@ -124,13 +104,8 @@ export default function createCheckbox( {
   const controllerID = Layout.createControllerIDBox( height, Colors.CONTROLLER_ID_SLIDER );
   controllerID.position.z = depth;
 
-
   panel.add( descriptorLabel, controllerID, selectedLabel );
 
-  // group.add( filledVolume, outline, hitscanVolume, descriptorLabel );
-
-  // const interaction = createInteraction( guiState, hitscanVolume );
-  // interaction.events.on( 'onPressed', handleOnPress );
 
   updateView();
 
