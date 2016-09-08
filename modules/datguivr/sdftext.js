@@ -1,7 +1,7 @@
 import SDFShader from 'three-bmfont-text/shaders/sdf';
 import createGeometry from 'three-bmfont-text';
 
-export function createMaterial(){
+export function createMaterial( color ){
 
   const loader = new THREE.TextureLoader();
   loader.load( 'fonts/lucidasansunicode.png', function( texture ){
@@ -19,7 +19,7 @@ export function createMaterial(){
   const material = new THREE.RawShaderMaterial(SDFShader({
     side: THREE.DoubleSide,
     transparent: true,
-    color: 'rgb(255, 255, 255)'
+    color: color
   }));
 
   return material;
@@ -34,7 +34,9 @@ export function creator( material, events ){
     font = font;
   });
 
-  function createText( str, font ){
+  const colorMaterials = {};
+
+  function createText( str, font, color = 0xffffff ){
 
     const geometry = createGeometry({
       text: str,
@@ -47,6 +49,10 @@ export function creator( material, events ){
 
     const layout = geometry.layout;
 
+    let material = colorMaterials[ color ];
+    if( material === undefined ){
+      material = colorMaterials[ color ] = createMaterial( color );
+    }
     const mesh = new THREE.Mesh( geometry, material );
     mesh.scale.multiply( new THREE.Vector3(1,-1,1) );
     mesh.scale.multiplyScalar( 0.001 );
@@ -57,20 +63,20 @@ export function creator( material, events ){
   }
 
 
-  function create( str ){
+  function create( str, { color=0xffffff } = {} ){
     const group = new THREE.Group();
     let lateText = str;
 
     let mesh;
 
     if( font ){
-      mesh = createText( lateText, font );
+      mesh = createText( lateText, font, color );
       group.add( mesh );
       group.layout = mesh.geometry.layout;
     }
     else{
       function fontLoadedCB( font ){
-        mesh = createText( lateText, font );
+        mesh = createText( lateText, font, color );
         group.add( mesh );
         group.layout = mesh.geometry.layout;
         events.removeListener( 'fontLoaded', fontLoadedCB );

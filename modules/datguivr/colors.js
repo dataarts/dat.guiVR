@@ -11,6 +11,8 @@ export const CONTROLLER_ID_SLIDER = 0x2fa1d6;
 export const CONTROLLER_ID_CHECKBOX = 0x806787;
 export const CONTROLLER_ID_BUTTON = 0xe61d5f;
 export const CONTROLLER_ID_TEXT = 0x1ed36f;
+export const DROPDOWN_BG_COLOR = 0xffffff;
+export const DROPDOWN_FG_COLOR = 0x000000;
 
 export function colorizeGeometry( geometry, color ){
   geometry.faces.forEach( function(face){

@@ -90,7 +90,7 @@ export default function createFolder({
     //   descriptorLabel.back.material.color.setHex( Colors.HIGHLIGHT_BACK );
     // }
     // else{
-      descriptorLabel.back.material.color.setHex( Colors.DEFAULT_BACK );
+      // descriptorLabel.back.material.color.setHex( Colors.DEFAULT_BACK );
     // }
   }
 

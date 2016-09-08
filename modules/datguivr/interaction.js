@@ -72,6 +72,7 @@ export default function createInteraction( guiState, hitVolume ){
           inputObject: input.object,
           point: hitPoint,
         });
+
       }
     }
 

@@ -5,6 +5,7 @@ import createSlider from './slider';
 import createCheckbox from './checkbox';
 import createButton from './button';
 import createFolder from './folder';
+import createDropdown from './dropdown';
 import * as SDFText from './sdftext';
 
 export default function DATGUIVR(){
@@ -113,7 +114,17 @@ export default function DATGUIVR(){
     return button;
   }
 
-  function add( object, propertyName, min, max ){
+  function addDropdown( object, propertyName, options ){
+    const dropdown = createDropdown({
+      guiState, textCreator, propertyName, object, options
+    });
+
+    controllers.push( dropdown );
+    hitscanObjects.push( ...dropdown.hitscan );
+    return dropdown;
+  }
+
+  function add( object, propertyName, arg3, arg4 ){
 
     if( object === undefined ){
       console.warn( 'object is undefined' );
@@ -125,9 +136,12 @@ export default function DATGUIVR(){
       return new THREE.Group();
     }
 
+    if( isObject( arg3 ) ){
+      return addDropdown( object, propertyName, arg3 );
+    }
 
     if( isNumber( object[ propertyName] ) ){
-      return addSlider( object, propertyName, min, max );
+      return addSlider( object, propertyName, arg3, arg4 );
     }
 
     if( isBoolean( object[ propertyName] ) ){
@@ -221,6 +235,12 @@ function isFunction(functionToCheck) {
   return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 }
 
+//  only {} objects not arrays
+//                    which are technically objects but you're just being pedantic
+function isObject (item) {
+  return (typeof item === 'object' && !Array.isArray(item) && item !== null);
+}
+
 function bindViveController( guiState, controller, pressed, gripped ){
   controller.addEventListener( 'triggerdown', ()=>pressed( true ) );
   controller.addEventListener( 'triggerup', ()=>pressed( false ) );
@@ -228,13 +248,14 @@ function bindViveController( guiState, controller, pressed, gripped ){
   controller.addEventListener( 'gripsup', ()=>gripped( false ) );
 
   const gamepad = controller.getGamepad();
-  if( gamepad.haptics.length > 0 ){
-    guiState.events.on( 'onControllerHeld', function( input ){
-      if( input.object === controller ){
+  guiState.events.on( 'onControllerHeld', function( input ){
+    if( input.object === controller ){
+      if( gamepad && gamepad.haptics.length > 0 ){
         gamepad.haptics[ 0 ].vibrate( 0.3, 0.3 );
       }
-    });
-  }
+    }
+  });
+
 }
 
 if( window ){

@@ -59,6 +59,9 @@
         p: 2,
         q: 3,
         spinning: true,
+        wireframe: false,
+        shading: THREE.SmoothShading,
+
         reset: function(){
           state.radius = 10;
           state.tube = 3;
@@ -67,13 +70,12 @@
           state.p = 2;
           state.q = 3;
           state.spinning = true;
+          state.wireframe = false;
+          state.shading = THREE.SmoothShading;
           updateMesh();
+          updateMaterial();
         }
       };
-
-      function reset(){
-
-      }
 
 
 
@@ -82,7 +84,9 @@
         .setPath( 'textures/cube/pisa/' )
         .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
 
-      const material = new THREE.MeshStandardMaterial();
+      let material = new THREE.MeshStandardMaterial({
+        shading: THREE.SmoothShading
+      });
       material.roughness = 1.0;
       material.metalness = 1;
       material.envMap = textureCube;
@@ -121,12 +125,25 @@
         gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
         gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
         gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 ),
+        gui.add( state, 'wireframe' ).onChange( updateMaterial ),
+        gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial ),
+        // gui.add( state, 'color' ),
         gui.add( state, 'spinning' ),
         gui.add( state, 'reset' )
       );
 
       function updateMesh(){
         mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );
+      }
+
+      function updateMaterial(){
+        material = mesh.material = new THREE.MeshStandardMaterial({
+          shading: state.shading
+        });
+        material.roughness = 1.0;
+        material.metalness = 1;
+        material.envMap = textureCube;
+        material.wireframe = state.wireframe;
       }
 
 
