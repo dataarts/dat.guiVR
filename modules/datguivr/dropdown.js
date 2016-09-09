@@ -17,6 +17,11 @@ export default function createCheckbox( {
   depth = Layout.PANEL_DEPTH
 } = {} ){
 
+
+  const state = {
+    open: false,
+  };
+
   const DROPDOWN_WIDTH = width * 0.5 - Layout.PANEL_MARGIN;
   const DROPDOWN_HEIGHT = height - Layout.PANEL_MARGIN;
   const DROPDOWN_DEPTH = depth;
@@ -49,17 +54,33 @@ export default function createCheckbox( {
     if( isOption ){
       labelInteraction.events.on( 'onPressed', function(){
         selectedLabel.setString( labelText );
-        object[ propertyName ] = options[ labelText ];
+
+        const propertyChanged = object[ propertyName ] !== options[ labelText ];
+
+        if( propertyChanged ){
+          object[ propertyName ] = options[ labelText ];
+        }
+
         collapseOptions();
-        if( onChangedCB ){
+        state.open = false;
+
+        if( onChangedCB && propertyChanged ){
           onChangedCB( object[ propertyName ] );
         }
+
       });
     }
     else{
       labelInteraction.events.on( 'onPressed', function(){
-        openOptions();
-      })
+        if( state.open === false ){
+          openOptions();
+          state.open = true;
+        }
+        else{
+          collapseOptions();
+          state.open = false;
+        }
+      });
     }
     label.isOption = isOption;
     return label;
@@ -85,7 +106,7 @@ export default function createCheckbox( {
 
   //  base option
   const selectedLabel = createOption( initialLabel, false );
-  selectedLabel.position.x = Layout.PANEL_MARGIN + width * 0.5;
+  selectedLabel.position.x = Layout.PANEL_MARGIN * 2 + width * 0.5;
   selectedLabel.position.z = depth;
 
   selectedLabel.add((function createDownArrow(){
