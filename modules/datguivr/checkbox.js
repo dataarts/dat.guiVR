@@ -24,7 +24,8 @@ export default function createCheckbox( {
   const ACTIVE_SCALE = 0.9;
 
   const state = {
-    value: initialValue
+    value: initialValue,
+    listen: false
   };
 
   const group = new THREE.Group();
@@ -126,7 +127,15 @@ export default function createCheckbox( {
 
   const grabInteraction = Grab.create( { group, panel, guiState } );
 
+  group.listen = function(){
+    state.listen = true;
+    return group;
+  };
+
   group.update = function( inputObjects ){
+    if( state.listen ){
+      state.value = object[ propertyName ];
+    }
     interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
     updateView();

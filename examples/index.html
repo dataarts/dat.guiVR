@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>VR Dat GUI Examples</title>
+    <title>VR Dat GUI Basic Example</title>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui" name="viewport" />
     <meta name="mobile-web-app-capable" content="yes">
@@ -11,7 +11,7 @@
   <body>
 
     <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/master/build/three-vr-viewer.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/master/three-vr-viewer.js"></script>
 
     <script type="text/javascript" src="js/datguivr.js"></script>
 
@@ -22,7 +22,8 @@
 
       const { scene, camera, events, toggleVR, controllers, renderer } = VRViewer({
         autoEnter: true,
-        emptyRoom: false
+        emptyRoom: false,
+        THREE
       });
 
       renderer.shadowMap.enabled = true;

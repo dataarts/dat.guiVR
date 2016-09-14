@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VR Dat GUI Listen Example</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui" name="viewport" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/master/three-vr-viewer.js"></script>
+
+    <script type="text/javascript" src="js/datguivr.js"></script>
+
+    <script type="text/javascript" src="js/floorandlights.js"></script>
+
+    <script type="text/javascript">
+
+      const { scene, camera, events, toggleVR, controllers, renderer } = VRViewer({
+        autoEnter: true,
+        emptyRoom: false,
+        THREE
+      });
+
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      scene.add( createFloorAndLights() );
+
+
+      const gui = DATGUIVR();
+      const guiInput = gui.addInputObject( controllers[ 0 ] );
+      scene.add( guiInput );
+
+
+      controllers[ 0 ].addEventListener( 'menudown', ()=>toggleVR() );
+
+      let material = new THREE.MeshStandardMaterial({color:0xff6699});
+      material.roughness = 1.0;
+      material.metalness = 1;
+
+      const mesh = new THREE.Mesh( new THREE.SphereGeometry( 1,24,32 ), material );
+      mesh.position.z = -2.5;
+      mesh.position.y = 4.5;
+      mesh.castShadow = true;
+      scene.add( mesh );
+
+      let t = 0;
+      events.on('tick', function( dt ){
+        t += dt * animation.speed;
+        mesh.position.y = ( Math.sin( t * 2.0 ) + 0.5 ) *4 + 2;
+      });
+
+      setInterval(function(){
+        material.wireframe = !material.wireframe;
+      }, 2000);
+
+      const animation = {
+        speed: 1
+      };
+
+      setInterval(function(){
+        if( animation.speed === 0.1 ){
+          animation.speed = 1;
+        }
+        else{
+          animation.speed = 0.1;
+        }
+      }, 6000);
+
+      //  create a GUI folder
+      const folder = gui.addFolder( 'folder settings' );
+      folder.position.y = 1.5;
+      scene.add( folder );
+
+      folder.add(
+        gui.add( mesh.position, 'y', 2, 6 ).listen(),
+        gui.add( material, 'wireframe' ).listen(),
+        gui.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen()
+      );
+
+
+
+    </script>
+
+  </body>
+</html>

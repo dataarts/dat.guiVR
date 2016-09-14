@@ -25,7 +25,8 @@ export default function createSlider( {
   const state = {
     alpha: 1.0,
     value: initialValue,
-    step: 3
+    step: 3,
+    listen: false
   };
 
   state.value = state.value.toFixed( state.step-1 );
@@ -154,6 +155,11 @@ export default function createSlider( {
     return group;
   };
 
+  group.listen = function(){
+    state.listen = true;
+    return group;
+  };
+
   group.interaction = interaction;
   group.hitscan = [ hitscanVolume, panel ];
 
@@ -163,6 +169,18 @@ export default function createSlider( {
   group.update = function( inputObjects ){
     interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
+    if( state.listen ){
+      state.value = parseFloat( object[ propertyName ] );
+      updateValueLabel( state.value );
+      state.alpha = map_range( state.value, min, max, 0.0, 1.0 );
+      if( state.alpha > 1 ){
+        state.alpha = 1;
+      }
+      if( state.alpha < 0 ){
+        state.alpha = 0;
+      }
+      filledVolume.scale.x = Math.max( state.alpha * width, 0.000001 );
+    }
     updateView();
   };
 

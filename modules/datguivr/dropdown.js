@@ -20,6 +20,7 @@ export default function createCheckbox( {
 
   const state = {
     open: false,
+    listen: false
   };
 
   const DROPDOWN_WIDTH = width * 0.5 - Layout.PANEL_MARGIN;
@@ -39,9 +40,13 @@ export default function createCheckbox( {
   const optionLabels = [];
 
   //  find actually which label is selected
-  const initialLabel = Object.keys(options).find( function( optionName ){
-    return object[propertyName] === options[ optionName ];
-  });
+  const initialLabel = findLabelFromProp();
+
+  function findLabelFromProp(){
+    return Object.keys(options).find( function( optionName ){
+        return object[propertyName] === options[ optionName ];
+    });
+  }
 
   function createOption( labelText, isOption ){
     const label = createTextLabel( textCreator, labelText, DROPDOWN_WIDTH, depth, Colors.DROPDOWN_FG_COLOR, Colors.DROPDOWN_BG_COLOR )
@@ -172,7 +177,15 @@ export default function createCheckbox( {
 
   const grabInteraction = Grab.create( { group, panel, guiState } );
 
+  group.listen = function(){
+    state.listen = true;
+    return group;
+  };
+
   group.update = function( inputObjects ){
+    if( state.listen ){
+      selectedLabel.setString( findLabelFromProp() );
+    }
     labelInteractions.forEach( function( labelInteraction ){
       labelInteraction.update( inputObjects );
     });
