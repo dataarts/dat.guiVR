@@ -32,16 +32,16 @@ export default function createFolder({
 
   addOriginal.call( group, descriptorLabel );
 
-  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), SharedMaterials.FOLDER );
-  panel.geometry.translate( width * 0.5, 0, -Layout.PANEL_DEPTH );
-  addOriginal.call( group, panel );
+  // const panel = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), SharedMaterials.FOLDER );
+  // panel.geometry.translate( width * 0.5, 0, -Layout.PANEL_DEPTH );
+  // addOriginal.call( group, panel );
 
   // const interactionVolume = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), new THREE.MeshBasicMaterial({color:0x000000}) );
   // interactionVolume.geometry.translate( width * 0.5 - Layout.PANEL_MARGIN, 0, -Layout.PANEL_DEPTH );
   // addOriginal.call( group, interactionVolume );
   // interactionVolume.visible = false;
 
-  const interaction = createInteraction( panel );
+  // const interaction = createInteraction( panel );
   // interaction.events.on( 'onPressed', handlePress );
 
   function handlePress(){
@@ -78,10 +78,10 @@ export default function createFolder({
       descriptorLabel.setString( '- ' + name );
     }
 
-    const totalHeight = collapseGroup.children.length * spacingPerController;
-    panel.geometry = new THREE.BoxGeometry( width, totalHeight, Layout.PANEL_DEPTH );
-    panel.geometry.translate( width * 0.5, -totalHeight * 0.5, -Layout.PANEL_DEPTH );
-    panel.geometry.computeBoundingBox();
+    // const totalHeight = collapseGroup.children.length * spacingPerController;
+    // panel.geometry = new THREE.BoxGeometry( width, totalHeight, Layout.PANEL_DEPTH );
+    // panel.geometry.translate( width * 0.5, -totalHeight * 0.5, -Layout.PANEL_DEPTH );
+    // panel.geometry.computeBoundingBox();
   }
 
   function updateLabel(){
@@ -97,7 +97,6 @@ export default function createFolder({
   const grabInteraction = Grab.create( { group, panel: descriptorLabel.back } );
 
   group.update = function( inputObjects ){
-    interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
     updateLabel();
   };
@@ -113,7 +112,7 @@ export default function createFolder({
     return oldParent;
   };
 
-  group.hitscan = [ panel, descriptorLabel.back ];
+  group.hitscan = [ descriptorLabel.back ];
 
   return group;
 }
