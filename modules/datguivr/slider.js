@@ -6,7 +6,6 @@ import * as SharedMaterials from './sharedmaterials';
 import * as Grab from './grab';
 
 export default function createSlider( {
-  guiState,
   textCreator,
   object,
   propertyName = 'undefined',
@@ -85,7 +84,7 @@ export default function createSlider( {
 
   filledVolume.scale.x = 0.5;//state.alpha * width;
 
-  const interaction = createInteraction( guiState, hitscanVolume );
+  const interaction = createInteraction( hitscanVolume );
   interaction.events.on( 'pressing', handlePress );
 
   function handlePress( { point } = {} ){
@@ -164,7 +163,7 @@ export default function createSlider( {
   group.hitscan = [ hitscanVolume, panel ];
 
 
-  const grabInteraction = Grab.create( { group, panel, guiState } );
+  const grabInteraction = Grab.create( { group, panel } );
 
   group.update = function( inputObjects ){
     interaction.update( inputObjects );

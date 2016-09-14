@@ -6,7 +6,6 @@ import * as SharedMaterials from './sharedmaterials';
 import * as Grab from './grab';
 
 export default function createCheckbox( {
-  guiState,
   textCreator,
   object,
   propertyName = 'undefined',
@@ -51,7 +50,7 @@ export default function createCheckbox( {
   function createOption( labelText, isOption ){
     const label = createTextLabel( textCreator, labelText, DROPDOWN_WIDTH, depth, Colors.DROPDOWN_FG_COLOR, Colors.DROPDOWN_BG_COLOR )
     group.hitscan.push( label.back );
-    const labelInteraction = createInteraction( guiState, label.back );
+    const labelInteraction = createInteraction( label.back );
     labelInteractions.push( labelInteraction );
     optionLabels.push( label );
 
@@ -175,7 +174,7 @@ export default function createCheckbox( {
     return group;
   };
 
-  const grabInteraction = Grab.create( { group, panel, guiState } );
+  const grabInteraction = Grab.create( { group, panel } );
 
   group.listen = function(){
     state.listen = true;

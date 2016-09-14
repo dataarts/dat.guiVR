@@ -36,8 +36,11 @@
 
       //  add an input object (any Object3D like ViveController or Camera)
       //  you can add multiple objects
-      const guiInput = gui.addInputObject( controllers[ 0 ] );
-      scene.add( guiInput );
+      const guiInputRight = gui.addInputObject( controllers[ 0 ] );
+      scene.add( guiInputRight );
+
+      const guiInputLeft = gui.addInputObject( controllers[ 1 ] );
+      scene.add( guiInputLeft );
 
       controllers[ 0 ].addEventListener( 'menudown', ()=>toggleVR() );
 

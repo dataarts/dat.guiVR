@@ -21,11 +21,46 @@ export default function DATGUIVR(){
 
   const DEFAULT_FNT = 'fonts/lucidasansunicode.fnt';
 
-  const guiState = {
-    currentHover: undefined,
-    currentInteraction: undefined,
-    events: new Emitter()
-  };
+  function createInput(){
+    return {
+      raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
+      laser: createLaser(),
+      cursor: createCursor(),
+      object: new THREE.Group(),
+      pressed: false,
+      gripped: false,
+      state: {
+        currentHover: undefined,
+        currentInteraction: undefined,
+        events: new Emitter()
+      }
+    };
+  }
+
+  const mouseInput = createMouseInput();
+
+  function createMouseInput(){
+    const mouse = new THREE.Vector2();
+
+    window.addEventListener( 'mousemove', function( event ){
+      mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+      mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    }, false );
+
+    window.addEventListener( 'mousedown', function( event ){
+      input.pressed = true;
+    }, false );
+
+    window.addEventListener( 'mouseup', function( event ){
+      input.pressed = false;
+    }, false );
+
+    const input = createInput();
+
+    input.mouse = mouse;
+
+    return input;
+  }
 
   loadFont( DEFAULT_FNT, function( err, font ){
     if( err ){
@@ -52,14 +87,7 @@ export default function DATGUIVR(){
   }
 
   function addInputObject( object ){
-    const input = {
-      raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
-      laser: createLaser(),
-      cursor: createCursor(),
-      object,
-      pressed: false,
-      gripped: false
-    };
+    const input = createInput();
 
     input.laser.add( input.cursor );
 
@@ -72,7 +100,7 @@ export default function DATGUIVR(){
     };
 
     if( THREE.ViveController && object instanceof THREE.ViveController ){
-      bindViveController( guiState, object, input.laser.pressed, input.laser.gripped );
+      bindViveController( input.state, object, input.laser.pressed, input.laser.gripped );
     }
 
     inputObjects.push( input );
@@ -82,7 +110,7 @@ export default function DATGUIVR(){
 
   function addSlider( object, propertyName, min = 0.0, max = 100.0 ){
     const slider = createSlider( {
-      guiState, textCreator, propertyName, object, min, max,
+      textCreator, propertyName, object, min, max,
       initialValue: object[ propertyName ]
     });
 
@@ -94,7 +122,7 @@ export default function DATGUIVR(){
 
   function addCheckbox( object, propertyName ){
     const checkbox = createCheckbox({
-      guiState, textCreator, propertyName, object,
+      textCreator, propertyName, object,
       initialValue: object[ propertyName ]
     });
 
@@ -106,7 +134,7 @@ export default function DATGUIVR(){
 
   function addButton( object, propertyName ){
     const button = createButton({
-      guiState, textCreator, propertyName, object
+      textCreator, propertyName, object
     });
 
     controllers.push( button );
@@ -116,7 +144,7 @@ export default function DATGUIVR(){
 
   function addDropdown( object, propertyName, options ){
     const dropdown = createDropdown({
-      guiState, textCreator, propertyName, object, options
+      textCreator, propertyName, object, options
     });
 
     controllers.push( dropdown );
@@ -155,7 +183,7 @@ export default function DATGUIVR(){
 
   function addFolder( name ){
     const folder = createFolder({
-      guiState, textCreator,
+      textCreator,
       name
     });
 
@@ -174,6 +202,8 @@ export default function DATGUIVR(){
   function update() {
     requestAnimationFrame( update );
 
+    mouseInput.intersections = performMouseInput( hitscanObjects, mouseInput );
+
     inputObjects.forEach( function( {box,object,raycast,laser,cursor} = {}, index ){
       object.updateMatrixWorld();
 
@@ -189,27 +219,41 @@ export default function DATGUIVR(){
       // laser.geometry.vertices[ 1 ].copy( tPosition ).add( tDirection.multiplyScalar( 1 ) );
 
       const intersections = raycast.intersectObjects( hitscanObjects, false );
-      if( intersections.length > 0 ){
-        const firstHit = intersections[ 0 ];
-        laser.geometry.vertices[ 1 ].copy( firstHit.point );
-        laser.visible = true;
-        laser.geometry.computeBoundingSphere();
-        laser.geometry.computeBoundingBox();
-        laser.geometry.verticesNeedUpdate = true;
-        cursor.position.copy( firstHit.point );
-        cursor.visible = true;
-      }
-      else{
-        laser.visible = false;
-        cursor.visible = false;
-      }
+      parseIntersections( intersections, laser, cursor );
 
       inputObjects[ index ].intersections = intersections;
     });
 
+    const inputs = inputObjects.slice();
+    inputs.push( mouseInput );
+
     controllers.forEach( function( controller ){
-      controller.update( inputObjects );
+      controller.update( inputs );
     });
+  }
+
+  function parseIntersections( intersections, laser, cursor ){
+    if( intersections.length > 0 ){
+      const firstHit = intersections[ 0 ];
+      laser.geometry.vertices[ 1 ].copy( firstHit.point );
+      laser.visible = true;
+      laser.geometry.computeBoundingSphere();
+      laser.geometry.computeBoundingBox();
+      laser.geometry.verticesNeedUpdate = true;
+      cursor.position.copy( firstHit.point );
+      cursor.visible = true;
+    }
+    else{
+      laser.visible = false;
+      cursor.visible = false;
+    }
+  }
+
+  function performMouseInput( hitscanObjects, {box,object,raycast,laser,cursor,mouse} = {} ){
+    raycast.setFromCamera( mouse, camera );
+    const intersections = raycast.intersectObjects( hitscanObjects, false );
+    parseIntersections( intersections, laser, cursor );
+    return intersections;
   }
 
   update();
@@ -241,14 +285,14 @@ function isObject (item) {
   return (typeof item === 'object' && !Array.isArray(item) && item !== null);
 }
 
-function bindViveController( guiState, controller, pressed, gripped ){
+function bindViveController( inputState, controller, pressed, gripped ){
   controller.addEventListener( 'triggerdown', ()=>pressed( true ) );
   controller.addEventListener( 'triggerup', ()=>pressed( false ) );
   controller.addEventListener( 'gripsdown', ()=>gripped( true ) );
   controller.addEventListener( 'gripsup', ()=>gripped( false ) );
 
   const gamepad = controller.getGamepad();
-  guiState.events.on( 'onControllerHeld', function( input ){
+  inputState.events.on( 'onControllerHeld', function( input ){
     if( input.object === controller ){
       if( gamepad && gamepad.haptics.length > 0 ){
         gamepad.haptics[ 0 ].vibrate( 0.3, 0.3 );

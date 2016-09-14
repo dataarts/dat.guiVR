@@ -1,8 +1,8 @@
 import createInteraction from './interaction';
 
-export function create( { group, panel, guiState } = {} ){
+export function create( { group, panel } = {} ){
 
-  const interaction = createInteraction( guiState, panel );
+  const interaction = createInteraction( panel );
 
   interaction.events.on( 'onGripped', handleOnGrip );
   interaction.events.on( 'onReleaseGrip', handleReleaseGrip );

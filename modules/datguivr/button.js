@@ -6,7 +6,6 @@ import * as SharedMaterials from './sharedmaterials';
 import * as Grab from './grab';
 
 export default function createCheckbox( {
-  guiState,
   textCreator,
   object,
   propertyName = 'undefined',
@@ -56,7 +55,7 @@ export default function createCheckbox( {
 
   panel.add( descriptorLabel, hitscanVolume, outline, controllerID );
 
-  const interaction = createInteraction( guiState, hitscanVolume );
+  const interaction = createInteraction( hitscanVolume );
   interaction.events.on( 'onPressed', handleOnPress );
 
   updateView();
@@ -91,7 +90,7 @@ export default function createCheckbox( {
   group.interaction = interaction;
   group.hitscan = [ hitscanVolume, panel ];
 
-  const grabInteraction = Grab.create( { group, panel, guiState } );
+  const grabInteraction = Grab.create( { group, panel } );
 
   group.update = function( inputObjects ){
     interaction.update( inputObjects );

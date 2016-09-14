@@ -6,7 +6,6 @@ import * as SharedMaterials from './sharedmaterials';
 import * as Grab from './grab';
 
 export default function createFolder({
-  guiState,
   textCreator,
   name
 } = {} ){
@@ -42,7 +41,7 @@ export default function createFolder({
   // addOriginal.call( group, interactionVolume );
   // interactionVolume.visible = false;
 
-  const interaction = createInteraction( guiState, panel );
+  const interaction = createInteraction( panel );
   // interaction.events.on( 'onPressed', handlePress );
 
   function handlePress(){
@@ -95,7 +94,7 @@ export default function createFolder({
   }
 
   group.folder = group;
-  const grabInteraction = Grab.create( { group, panel: descriptorLabel.back, guiState } );
+  const grabInteraction = Grab.create( { group, panel: descriptorLabel.back } );
 
   group.update = function( inputObjects ){
     interaction.update( inputObjects );
