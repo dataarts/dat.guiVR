@@ -122,11 +122,11 @@
       //  add multiple sliders
       //  updateMesh will be the callback when values are changed
       folder.add(
-        gui.add( state, 'radius', 1, 20 ).onChange( updateMesh ),
-        gui.add( state, 'tube', 0.1, 10 ).onChange( updateMesh ),
-        gui.add( state, 'tubularSegments', 3, 300 ).onChange( updateMesh ),
-        gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
-        gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
+        gui.add( state, 'radius', 1, 20 ).step(0.01).onChange( updateMesh ),
+        gui.add( state, 'tube', 0.1, 10 ).step(0.01).onChange( updateMesh ),
+        gui.add( state, 'tubularSegments', 3, 300 ).step(1).onChange( updateMesh ),
+        gui.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh ),
+        gui.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh ),
         gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
         gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 ),
         gui.add( state, 'wireframe' ).onChange( updateMaterial ),

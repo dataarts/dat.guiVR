@@ -40,7 +40,7 @@ export default function DATGUIVR(){
   const mouseInput = createMouseInput();
 
   function createMouseInput(){
-    const mouse = new THREE.Vector2();
+    const mouse = new THREE.Vector2(-1,-1);
 
     window.addEventListener( 'mousemove', function( event ){
       mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;

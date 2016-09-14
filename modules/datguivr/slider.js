@@ -10,7 +10,8 @@ export default function createSlider( {
   object,
   propertyName = 'undefined',
   initialValue = 0.0,
-  min, max,
+  min = 0.0, max = 1.0,
+  step = 0.1,
   width = Layout.PANEL_WIDTH,
   height = Layout.PANEL_HEIGHT,
   depth = Layout.PANEL_DEPTH
@@ -24,13 +25,18 @@ export default function createSlider( {
   const state = {
     alpha: 1.0,
     value: initialValue,
-    step: 3,
-    listen: false
+    step: step,
+    precision: 1,
+    listen: false,
+    min: min,
+    max: max,
+    onChangedCB: undefined,
+    onFinishedChange: undefined
   };
 
-  state.value = state.value.toFixed( state.step-1 );
-  state.alpha = map_range( initialValue, min, max, 0.0, 1.0 );
-
+  state.step = getImpliedStep( state.value );
+  state.precision = numDecimals( state.step );
+  state.alpha = getAlphaFromValue( state.value, state.min, state.max );
 
   const group = new THREE.Group();
 
@@ -38,7 +44,6 @@ export default function createSlider( {
   const rect = new THREE.BoxGeometry( SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_DEPTH );
   rect.translate(SLIDER_WIDTH*0.5,0,0);
   // Layout.alignLeft( rect );
-
 
   const hitscanMaterial = new THREE.MeshBasicMaterial();
   hitscanMaterial.visible = false;
@@ -64,9 +69,6 @@ export default function createSlider( {
   valueLabel.position.x = Layout.PANEL_VALUE_TEXT_MARGIN + width * 0.5;
   valueLabel.position.z = depth*2;
   valueLabel.position.y = -0.03;
-  updateValueLabel( state.value );
-
-
 
   const descriptorLabel = textCreator.create( propertyName );
   descriptorLabel.position.x = Layout.PANEL_LABEL_TEXT_MARGIN;
@@ -81,49 +83,11 @@ export default function createSlider( {
 
   group.add( panel )
 
-
-  filledVolume.scale.x = 0.5;//state.alpha * width;
-
-  const interaction = createInteraction( hitscanVolume );
-  interaction.events.on( 'pressing', handlePress );
-
-  function handlePress( { point } = {} ){
-    if( group.visible === false ){
-      return;
-    }
-
-    filledVolume.updateMatrixWorld();
-    endLocator.updateMatrixWorld();
-
-    const a = new THREE.Vector3().setFromMatrixPosition( filledVolume.matrixWorld );
-    const b = new THREE.Vector3().setFromMatrixPosition( endLocator.matrixWorld );
-
-    const pointAlpha = getPointAlpha( point, {a,b} );
-    state.alpha = pointAlpha;
-
-    filledVolume.scale.x = Math.max( state.alpha * width, 0.000001 );
-
-    state.value = map_range( state.alpha, 0.0, 1.0, min, max );
-    if( state.value < min ){
-      state.value = min;
-    }
-    if( state.value > max ){
-      state.value = max;
-    }
-
-    state.value = parseFloat( state.value.toFixed( state.step-1 ) );
-
-    object[ propertyName ] = state.value;
-
-    updateValueLabel( state.value );
-
-    if( onChangedCB ){
-      onChangedCB( state.value );
-    }
-  }
+  updateValueLabel( state.value );
+  updateSlider( state.alpha );
 
   function updateValueLabel( value ){
-    valueLabel.update( parseFloat( value ).toString() );
+    valueLabel.update( roundToDecimal( state.value, state.precision ).toString() );
   }
 
   function updateView(){
@@ -141,16 +105,39 @@ export default function createSlider( {
     }
   }
 
-  let onChangedCB;
-  let onFinishChangeCB;
+  function updateSlider( alpha ){
+    filledVolume.scale.x = Math.max( alpha * width, 0.000001 );
+  }
+
+  function updateObject( value ){
+    object[ propertyName ] = value;
+  }
+
+  function updateStateFromAlpha( alpha ){
+    state.alpha = getClampedAlpha( alpha );
+    state.value = getValueFromAlpha( state.alpha, state.min, state.max );
+    state.value = getSteppedValue( state.value, state.step );
+    state.value = getClampedValue( state.value, state.min, state.max );
+  }
+
+  function listenUpdate(){
+    state.value = getValueFromObject();
+    state.alpha = getAlphaFromValue( state.value, state.min, state.max );
+    state.alpha = getClampedAlpha( state.alpha );
+  }
+
+  function getValueFromObject(){
+    return parseFloat( object[ propertyName ] );
+  }
 
   group.onChange = function( callback ){
-    onChangedCB = callback;
+    state.onChangedCB = callback;
     return group;
   };
 
-  group.step = function( stepCount ){
-    state.step = stepCount;
+  group.step = function( step ){
+    state.step = step;
+    state.precision = numDecimals( state.step )
     return group;
   };
 
@@ -159,9 +146,34 @@ export default function createSlider( {
     return group;
   };
 
+  const interaction = createInteraction( hitscanVolume );
+  interaction.events.on( 'pressing', handlePress );
+
+  function handlePress( { point } = {} ){
+    if( group.visible === false ){
+      return;
+    }
+
+    filledVolume.updateMatrixWorld();
+    endLocator.updateMatrixWorld();
+
+    const a = new THREE.Vector3().setFromMatrixPosition( filledVolume.matrixWorld );
+    const b = new THREE.Vector3().setFromMatrixPosition( endLocator.matrixWorld );
+
+    const previousValue = state.value;
+
+    updateStateFromAlpha( getPointAlpha( point, {a,b} ) );
+    updateValueLabel( state.value );
+    updateSlider( state.alpha );
+    updateObject( state.value );
+
+    if( previousValue !== state.value && state.onChangedCB ){
+      state.onChangedCB( state.value );
+    }
+  }
+
   group.interaction = interaction;
   group.hitscan = [ hitscanVolume, panel ];
-
 
   const grabInteraction = Grab.create( { group, panel } );
 
@@ -169,16 +181,9 @@ export default function createSlider( {
     interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
     if( state.listen ){
-      state.value = parseFloat( object[ propertyName ] );
+      listenUpdate();
       updateValueLabel( state.value );
-      state.alpha = map_range( state.value, min, max, 0.0, 1.0 );
-      if( state.alpha > 1 ){
-        state.alpha = 1;
-      }
-      if( state.alpha < 0 ){
-        state.alpha = 0;
-      }
-      filledVolume.scale.x = Math.max( state.alpha * width, 0.000001 );
+      updateSlider( state.alpha );
     }
     updateView();
   };
@@ -209,4 +214,62 @@ function lerp(min, max, value) {
 
 function map_range(value, low1, high1, low2, high2) {
     return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+}
+
+function getClampedAlpha( alpha ){
+  if( alpha > 1 ){
+    return 1
+  }
+  if( alpha < 0 ){
+    return 0;
+  }
+  return alpha;
+}
+
+function getClampedValue( value, min, max ){
+  if( value < min ){
+    return min;
+  }
+  if( value > max ){
+    return max;
+  }
+  return value;
+}
+
+function getImpliedStep( value ){
+  if( value === 0 ){
+    return 1; // What are we, psychics?
+  } else {
+    // Hey Doug, check this out.
+    return Math.pow(10, Math.floor(Math.log(Math.abs(value))/Math.LN10))/10;
+  }
+}
+
+function getValueFromAlpha( alpha, min, max ){
+  return map_range( alpha, 0.0, 1.0, min, max )
+}
+
+function getAlphaFromValue( value, min, max ){
+  return map_range( value, min, max, 0.0, 1.0 );
+}
+
+function getSteppedValue( value, step ){
+  if( value % step != 0) {
+    return Math.round( value / step ) * step;
+  }
+  return value;
+}
+
+function numDecimals(x) {
+  x = x.toString();
+  if (x.indexOf('.') > -1) {
+    return x.length - x.indexOf('.') - 1;
+  } else {
+    return 0;
+  }
+}
+
+function roundToDecimal(value, decimals) {
+  const tenTo = Math.pow(10, decimals);
+  return Math.round(value * tenTo) / tenTo;
 }
