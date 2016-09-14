@@ -21,12 +21,12 @@ export default function DATGUIVR(){
 
   const DEFAULT_FNT = 'fonts/lucidasansunicode.fnt';
 
-  function createInput(){
+  function createInput( inputObject = new THREE.Group() ){
     return {
       raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
       laser: createLaser(),
       cursor: createCursor(),
-      object: new THREE.Group(),
+      object: inputObject,
       pressed: false,
       gripped: false,
       state: {
@@ -87,7 +87,7 @@ export default function DATGUIVR(){
   }
 
   function addInputObject( object ){
-    const input = createInput();
+    const input = createInput( object );
 
     input.laser.add( input.cursor );
 

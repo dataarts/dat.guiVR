@@ -4,8 +4,8 @@ export function create( { group, panel } = {} ){
 
   const interaction = createInteraction( panel );
 
-  interaction.events.on( 'onGripped', handleOnGrip );
-  interaction.events.on( 'onReleaseGrip', handleReleaseGrip );
+  interaction.events.on( 'onPressed', handleOnGrip );
+  interaction.events.on( 'onReleased', handleReleaseGrip );
 
   const tempMatrix = new THREE.Matrix4();
 
