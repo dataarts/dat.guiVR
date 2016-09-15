@@ -55,7 +55,8 @@ Wait for the build to complete and a test server will start.
 
 ## Examples ##
 Then navigate to **localhost:8000** on VR enabled Chromium build.
-* Index.html - Example to use DATGUIVR to create sliders and update things in real time.
+* index.html - Example to use DATGUIVR to create sliders and update things in real time.
+* listen.html - Example of DATGUIVR listening to changes in the object.
 
 
 
