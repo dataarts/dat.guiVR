@@ -10,17 +10,84 @@ import * as SDFText from './sdftext';
 
 export default function DATGUIVR(){
 
-  const textMaterial = SDFText.createMaterial();
-
-  const inputObjects = [];
-  const controllers = [];
-  const hitscanObjects = [];
-
+  /*
+    SDF font loading
+  */
   const events = new Emitter();
   events.setMaxListeners( 100 );
 
   const DEFAULT_FNT = 'fonts/lucidasansunicode.fnt';
+  const textMaterial = SDFText.createMaterial();
+  const textCreator = SDFText.creator( textMaterial, events );
 
+
+
+
+
+  /*
+    Begin loading fonts
+    A fontLoaded event will notify all labels that its font is ready
+  */
+  loadFont( DEFAULT_FNT, function( err, font ){
+    if( err ){
+      console.warn( err );
+      return;
+    }
+    events.emit( 'fontLoaded', font );
+  });
+
+
+
+
+  /*
+    Lists.
+    InputObjects are things like VIVE controllers, cardboard headsets, etc.
+    Controllers are the DAT GUI sliders, checkboxes, etc.
+    HitscanObjects are anything raycasts will hit-test against.
+  */
+  const inputObjects = [];
+  const controllers = [];
+  const hitscanObjects = [];
+
+
+
+
+
+
+  /*
+    The default laser pointer coming out of each InputObject.
+  */
+  const laserMaterial = new THREE.LineBasicMaterial({color:0x55aaff, transparent: true, blending: THREE.AdditiveBlending });
+  function createLaser(){
+    const g = new THREE.Geometry();
+    g.vertices.push( new THREE.Vector3() );
+    g.vertices.push( new THREE.Vector3(0,0,0) );
+    return new THREE.Line( g, laserMaterial );
+  }
+
+
+
+
+
+  /*
+    A "cursor", eg the ball that appears at the end of your laser.
+  */
+  const cursorMaterial = new THREE.MeshBasicMaterial({color:0x444444, transparent: true, blending: THREE.AdditiveBlending } );
+  function createCursor(){
+    return new THREE.Mesh( new THREE.SphereGeometry(0.006, 4, 4 ), cursorMaterial );
+  }
+
+
+
+
+  /*
+    Creates a generic Input type.
+    Takes any THREE.Object3D type object and uses its position
+    and orientation as an input device.
+
+    A laser pointer is included and will be updated.
+    Contains state about which Interaction is currently being used or hover.
+  */
   function createInput( inputObject = new THREE.Group() ){
     return {
       raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
@@ -37,6 +104,14 @@ export default function DATGUIVR(){
     };
   }
 
+
+
+
+
+  /*
+    MouseInput is a special input type that is on by default.
+    Allows you to click on the screen when not in VR for debugging.
+  */
   const mouseInput = createMouseInput();
 
   function createMouseInput(){
@@ -56,36 +131,29 @@ export default function DATGUIVR(){
     }, false );
 
     const input = createInput();
-
     input.mouse = mouse;
-
     return input;
   }
 
-  loadFont( DEFAULT_FNT, function( err, font ){
-    if( err ){
-      console.warn( err );
-    }
-    events.emit( 'fontLoaded', font );
-  });
 
-  const textCreator = SDFText.creator( textMaterial, events );
 
-  const cursorMaterial = new THREE.MeshBasicMaterial({color:0x444444, transparent: true, blending: THREE.AdditiveBlending } );
 
-  function createCursor(){
-    return new THREE.Mesh( new THREE.SphereGeometry(0.006, 4, 4 ), cursorMaterial );
-  }
 
-  const laserMaterial = new THREE.LineBasicMaterial({color:0x55aaff, transparent: true, blending: THREE.AdditiveBlending });
-  function createLaser(){
-    const g = new THREE.Geometry();
-    g.vertices.push( new THREE.Vector3() );
-    g.vertices.push( new THREE.Vector3(0,0,0) );
+  /*
+    Public function users run to give DAT GUI an input device.
+    Automatically detects for ViveController and binds buttons + haptic feedback.
 
-    return new THREE.Line( g, laserMaterial );
-  }
+    Returns a laser pointer so it can be directly added to scene.
 
+    The laser will then have two methods:
+    laser.pressed(), laser.gripped()
+
+    These can then be bound to any button the user wants. Useful for binding to
+    cardboard or alternate input devices.
+
+    For example...
+      document.addEventListener( 'mousedown', function(){ laser.pressed( true ); } );
+  */
   function addInputObject( object ){
     const input = createInput( object );
 
@@ -107,6 +175,13 @@ export default function DATGUIVR(){
 
     return input.laser;
   }
+
+
+
+
+  /*
+    Here are the main dat gui controller types.
+  */
 
   function addSlider( object, propertyName, min = 0.0, max = 100.0 ){
     const slider = createSlider( {
@@ -152,6 +227,27 @@ export default function DATGUIVR(){
     return dropdown;
   }
 
+
+
+
+
+  /*
+    An implicit Add function which detects for property type
+    and gives you the correct controller.
+
+    Dropdown:
+      add( object, propertyName, objectType )
+
+    Slider:
+      add( object, propertyOfNumberType, min, max )
+
+    Checkbox:
+      add( object, propertyOfBooleanType )
+
+    Button:
+      add( object, propertyOfFunctionType )
+  */
+
   function add( object, propertyName, arg3, arg4 ){
 
     if( object === undefined ){
@@ -181,6 +277,16 @@ export default function DATGUIVR(){
     }
   }
 
+
+
+
+  /*
+    Creates a folder with the name.
+
+    Folders are THREE.Group type objects and can do group.add() for siblings.
+    Folders will automatically attempt to lay its children out in sequence.
+  */
+
   function addFolder( name ){
     const folder = createFolder({
       textCreator,
@@ -194,6 +300,14 @@ export default function DATGUIVR(){
 
     return folder;
   }
+
+
+
+
+
+  /*
+    Perform the necessary updates, raycasts on its own RAF.
+  */
 
   const tPosition = new THREE.Vector3();
   const tDirection = new THREE.Vector3( 0, 0, -1 );
@@ -258,6 +372,14 @@ export default function DATGUIVR(){
 
   update();
 
+
+
+
+
+  /*
+    Public methods.
+  */
+
   return {
     addInputObject,
     add,
@@ -265,6 +387,23 @@ export default function DATGUIVR(){
   };
 
 }
+
+
+
+/*
+  Set to global scope if exporting as a standalone.
+*/
+
+if( window ){
+  window.DATGUIVR = DATGUIVR;
+}
+
+
+
+
+/*
+  Bunch of state-less utility functions.
+*/
 
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -285,6 +424,16 @@ function isObject (item) {
   return (typeof item === 'object' && !Array.isArray(item) && item !== null);
 }
 
+
+
+
+
+
+
+/*
+  Controller-specific support.
+*/
+
 function bindViveController( inputState, controller, pressed, gripped ){
   controller.addEventListener( 'triggerdown', ()=>pressed( true ) );
   controller.addEventListener( 'triggerup', ()=>pressed( false ) );
@@ -300,8 +449,4 @@ function bindViveController( inputState, controller, pressed, gripped ){
     }
   });
 
-}
-
-if( window ){
-  window.DATGUIVR = DATGUIVR;
 }
