@@ -8,27 +8,25 @@ import createFolder from './folder';
 import createDropdown from './dropdown';
 import * as SDFText from './sdftext';
 
-export default function DATGUIVR(){
+export default function DATGUIVR({
+  fontPath = 'fonts/',
+  fontName = 'lucidasansunicode'
+} = {} ){
+
+
 
   /*
     SDF font loading
+    A fontLoaded event will notify all labels that its font is ready.
   */
   const events = new Emitter();
   events.setMaxListeners( 100 );
 
-  const DEFAULT_FNT = 'fonts/lucidasansunicode.fnt';
-  const textMaterial = SDFText.createMaterial();
-  const textCreator = SDFText.creator( textMaterial, events );
+  const FNT_PATH = fontPath + fontName + '.fnt';
+  const PNG_PATH = fontPath + fontName + '.png';
 
-
-
-
-
-  /*
-    Begin loading fonts
-    A fontLoaded event will notify all labels that its font is ready
-  */
-  loadFont( DEFAULT_FNT, function( err, font ){
+  const textCreator = SDFText.creator( PNG_PATH, events );
+  loadFont( FNT_PATH, function( err, font ){
     if( err ){
       console.warn( err );
       return;

@@ -1,10 +1,10 @@
 import SDFShader from 'three-bmfont-text/shaders/sdf';
 import createGeometry from 'three-bmfont-text';
 
-export function createMaterial( color ){
+export function createMaterial( color, pngPath ){
 
   const loader = new THREE.TextureLoader();
-  loader.load( 'fonts/lucidasansunicode.png', function( texture ){
+  loader.load( pngPath, function( texture ){
     texture.needsUpdate = true;
     texture.minFilter = THREE.LinearMipMapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
@@ -26,7 +26,7 @@ export function createMaterial( color ){
 
 }
 
-export function creator( material, events ){
+export function creator( pngPath, events ){
 
   let font;
 
@@ -51,7 +51,7 @@ export function creator( material, events ){
 
     let material = colorMaterials[ color ];
     if( material === undefined ){
-      material = colorMaterials[ color ] = createMaterial( color );
+      material = colorMaterials[ color ] = createMaterial( color, pngPath );
     }
     const mesh = new THREE.Mesh( geometry, material );
     mesh.scale.multiply( new THREE.Vector3(1,-1,1) );
