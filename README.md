@@ -1,4 +1,4 @@
-## DAT.GUI for WebVR
+# DAT.GUI for WebVR
 
 ![Preview Image](http://i.imgur.com/BJ5u8Lz.png?2)
 
@@ -6,56 +6,47 @@ A [dat-gui](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage)
 
 Built on top of [THREE.js](http://threejs.org/)
 
-## How to use: ##
-    const state = {
-      radius: 10,
-      tube: 3,
-      tubularSegments: 64,
-      radialSegments: 8,
-      p: 2,
-      q: 3
-    };
+# Examples
 
+## Initializing ##
 
     const gui = DATGUIVR();
 
-    //  given any input control object (vive controller, cardboard headset, etc)...
-    //  addInputObject returns a live-updating laser pointer
+## Adding Inputs (Vive controllers, cardboard, etc) ##
+
       const guiInput = gui.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
+      
+`addInputObject` returns a live-updating laser pointer which you can add to the scene.
+    
+## Creating a slider ##    
 
+      gui.add( state, 'radius', 1, 20 );
 
-    // folders are just THREE.js Objects that you can attach controllers to
+## Creating a dropdown ##    
+
+      gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } );
+
+## Reacting to Changes ##    
+
+      gui.add( state, 'radius', 1, 20 ).onChange( updateMesh );
+
+## Listen for Changes ##    
+
+      gui.add( state, 'radius', 1, 20 ).listen();
+
+The slider will now update itself if the property itself changes.
+
+## Creating Folders ##
+
     const folder = gui.addFolder( 'folder settings' );
+    folder.add( sliderController );
     scene.add( folder );
-
-    const state = {
-      radius: 5,
-      radialSegments: 4,
-      shading: THREE.SmoothShading,
-      spinning: false,
-      reset: function(){ ... }
-    };
+    
+Folders are just THREE.js Objects that you can attach sliders, etc to.
 
 
-    folder.add(
-      //  sliders for numeric values
-      gui.add( state, 'radius', 1, 20 ).onChange( updateMesh ),
-      gui.add( state, 'radialSegments', 3, 20 ).onChange( updateMesh ),
-
-      //  dropdowns for arrays or object maps
-      gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial ),
-      
-      //  checkboxes for booleans
-      gui.add( state, 'spinning' )
-      
-      //  buttons for functions to execute
-      gui.add( state, 'reset' )
-    );
-
-
-
-## Build and Run
+# Build and Run 
 
     npm install
     npm run dev
