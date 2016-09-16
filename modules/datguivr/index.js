@@ -165,6 +165,8 @@ export default function DATGUIVR({
       input.gripped = flag;
     };
 
+    input.laser.cursor = input.cursor;
+
     if( THREE.ViveController && object instanceof THREE.ViveController ){
       bindViveController( input.state, object, input.laser.pressed, input.laser.gripped );
     }
