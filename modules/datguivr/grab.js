@@ -4,14 +4,14 @@ export function create( { group, panel } = {} ){
 
   const interaction = createInteraction( panel );
 
-  interaction.events.on( 'onPressed', handleOnGrip );
-  interaction.events.on( 'onReleased', handleReleaseGrip );
+  interaction.events.on( 'onPressed', handleOnPress );
+  interaction.events.on( 'onReleased', handleOnRelease );
 
   const tempMatrix = new THREE.Matrix4();
 
   let oldParent;
 
-  function handleOnGrip( {inputObject}={} ){
+  function handleOnPress( {inputObject}={} ){
 
     const folder = group.folder;
     if( folder === undefined ){
@@ -28,7 +28,7 @@ export function create( { group, panel } = {} ){
 
   }
 
-  function handleReleaseGrip( {inputObject}={} ){
+  function handleOnRelease( {inputObject}={} ){
     const folder = group.folder;
     if( folder === undefined ){
       return;

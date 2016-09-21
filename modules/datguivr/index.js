@@ -450,8 +450,8 @@ function bindViveController( inputState, controller, pressed, gripped ){
   const gamepad = controller.getGamepad();
   inputState.events.on( 'onControllerHeld', function( input ){
     if( input.object === controller ){
-      if( gamepad && gamepad.haptics.length > 0 ){
-        gamepad.haptics[ 0 ].vibrate( 0.3, 0.3 );
+      if( gamepad && gamepad.hapticActuators.length > 0 ){
+        gamepad.hapticActuators[ 0 ].pulse( 0.3, 0.3 );
       }
     }
   });
