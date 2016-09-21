@@ -41,10 +41,19 @@ export default function createCheckbox( {
   //  find actually which label is selected
   const initialLabel = findLabelFromProp();
 
+
+
   function findLabelFromProp(){
-    return Object.keys(options).find( function( optionName ){
+    if( Array.isArray( options ) ){
+      return options.find( function( optionName ){
+        return optionName === object[ propertyName ]
+      });
+    }
+    else{
+      return Object.keys(options).find( function( optionName ){
         return object[propertyName] === options[ optionName ];
-    });
+      });
+    }
   }
 
   function createOption( labelText, isOption ){
@@ -59,11 +68,21 @@ export default function createCheckbox( {
       labelInteraction.events.on( 'onPressed', function(){
         selectedLabel.setString( labelText );
 
-        const propertyChanged = object[ propertyName ] !== options[ labelText ];
+        let propertyChanged = false;
 
-        if( propertyChanged ){
-          object[ propertyName ] = options[ labelText ];
+        if( Array.isArray( options ) ){
+          propertyChanged = object[ propertyName ] !== labelText;
+          if( propertyChanged ){
+            object[ propertyName ] = labelText;
+          }
         }
+        else{
+          propertyChanged = object[ propertyName ] !== options[ labelText ];
+          if( propertyChanged ){
+            object[ propertyName ] = options[ labelText ];
+          }
+        }
+
 
         collapseOptions();
         state.open = false;
@@ -129,12 +148,25 @@ export default function createCheckbox( {
     return new THREE.Mesh( geo, SharedMaterials.PANEL );
   })());
 
-  selectedLabel.add( ...Object.keys(options).map( function( optionName, index ){
+
+  function configureLabelPosition( label, index ){
+    label.position.y = -DROPDOWN_MARGIN - (index+1) * ( DROPDOWN_OPTION_HEIGHT );
+    label.position.z = depth * 2;
+  }
+
+  function optionToLabel( optionName, index ){
     const optionLabel = createOption( optionName, true );
-    optionLabel.position.y = -DROPDOWN_MARGIN - (index+1) * ( DROPDOWN_OPTION_HEIGHT );
-    optionLabel.position.z = depth;
+    configureLabelPosition( optionLabel, index );
     return optionLabel;
-  }));
+  }
+
+  if( Array.isArray( options ) ){
+    selectedLabel.add( ...options.map( optionToLabel ) );
+  }
+  else{
+    selectedLabel.add( ...Object.keys(options).map( optionToLabel ) );
+  }
+
 
   collapseOptions();
 

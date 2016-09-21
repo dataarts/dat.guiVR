@@ -63,6 +63,7 @@
         p: 2,
         q: 3,
         spinning: true,
+        spinSpeed: 'fast',
         wireframe: false,
         shading: THREE.SmoothShading,
 
@@ -74,6 +75,7 @@
           state.p = 2;
           state.q = 3;
           state.spinning = true;
+          state.spinSpeed = 'fast';
           state.wireframe = false;
           state.shading = THREE.SmoothShading;
           updateMesh();
@@ -102,7 +104,12 @@
       mesh.castShadow = true;
       events.on( 'tick', (dt)=>{
         if( state.spinning ){
-          mesh.rotation.y += 0.4 * dt;
+          if( state.spinSpeed === 'slow' ){
+            mesh.rotation.y += 0.05 * dt;
+          }
+          else{
+            mesh.rotation.y += 0.4 * dt;
+          }
         }
       });
 
@@ -133,6 +140,7 @@
         gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial ),
         // gui.add( state, 'color' ),
         gui.add( state, 'spinning' ),
+        gui.add( state, 'spinSpeed', ['slow','fast'] ),
         gui.add( state, 'reset' )
       );
 

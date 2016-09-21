@@ -260,7 +260,7 @@ export default function DATGUIVR({
       return new THREE.Group();
     }
 
-    if( isObject( arg3 ) ){
+    if( isObject( arg3 ) || isArray( arg3 ) ){
       return addDropdown( object, propertyName, arg3 );
     }
 
@@ -275,6 +275,9 @@ export default function DATGUIVR({
     if( isFunction( object[ propertyName ] ) ){
       return addButton( object, propertyName );
     }
+
+    //  add couldn't figure it out, so at least add something THREE understands
+    return new THREE.Group();
   }
 
 
@@ -422,6 +425,10 @@ function isFunction(functionToCheck) {
 //                    which are technically objects but you're just being pedantic
 function isObject (item) {
   return (typeof item === 'object' && !Array.isArray(item) && item !== null);
+}
+
+function isArray( o ){
+  return Array.isArray( o );
 }
 
 
