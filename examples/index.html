@@ -34,6 +34,21 @@
       //  instance of DATGUIVR, only one is needed
       const gui = DATGUIVR();
 
+      //  you can use the mouse to interact with the GUI on-screen!
+      gui.setMouseEnabled( true );
+
+      //  or turn it off when going into VR
+      window.addEventListener( 'vrdisplaypresentchange', function( e ){
+        if( e.display.isPresenting ){
+          gui.setMouseEnabled( false );
+        }
+        else{
+          gui.setMouseEnabled( true );
+        }
+      }, false );
+
+
+
       //  add an input object (any Object3D like ViveController or Camera)
       //  you can add multiple objects
       const guiInputRight = gui.addInputObject( controllers[ 0 ] );

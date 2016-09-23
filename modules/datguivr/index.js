@@ -47,7 +47,11 @@ export default function DATGUIVR({
   const controllers = [];
   const hitscanObjects = [];
 
+  let mouseEnabled = false;
 
+  function setMouseEnabled( flag ){
+    mouseEnabled = flag;
+  }
 
 
 
@@ -319,7 +323,9 @@ export default function DATGUIVR({
   function update() {
     requestAnimationFrame( update );
 
-    mouseInput.intersections = performMouseInput( hitscanObjects, mouseInput );
+    if( mouseEnabled ){
+      mouseInput.intersections = performMouseInput( hitscanObjects, mouseInput );
+    }
 
     inputObjects.forEach( function( {box,object,raycast,laser,cursor} = {}, index ){
       object.updateMatrixWorld();
@@ -342,7 +348,10 @@ export default function DATGUIVR({
     });
 
     const inputs = inputObjects.slice();
-    inputs.push( mouseInput );
+
+    if( mouseEnabled ){
+      inputs.push( mouseInput );
+    }
 
     controllers.forEach( function( controller ){
       controller.update( inputs );
@@ -386,7 +395,8 @@ export default function DATGUIVR({
   return {
     addInputObject,
     add,
-    addFolder
+    addFolder,
+    setMouseEnabled
   };
 
 }
