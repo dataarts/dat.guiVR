@@ -1,40 +1,18 @@
-import loadFont from 'load-bmfont';
 import Emitter from 'events';
-
 import createSlider from './slider';
 import createCheckbox from './checkbox';
 import createButton from './button';
 import createFolder from './folder';
 import createDropdown from './dropdown';
 import * as SDFText from './sdftext';
+import * as Font from './font';
 
-export default function DATGUIVR({
-  fontPath = 'fonts/',
-  fontName = 'lucidasansunicode'
-} = {} ){
-
-
+export default function DATGUIVR(){
 
   /*
-    SDF font loading
-    A fontLoaded event will notify all labels that its font is ready.
+    SDF font
   */
-  const events = new Emitter();
-  events.setMaxListeners( 100 );
-
-  const FNT_PATH = fontPath + fontName + '.fnt';
-  const PNG_PATH = fontPath + fontName + '.png';
-
-  const textCreator = SDFText.creator( PNG_PATH, events );
-  loadFont( FNT_PATH, function( err, font ){
-    if( err ){
-      console.warn( err );
-      return;
-    }
-    events.emit( 'fontLoaded', font );
-  });
-
-
+  const textCreator = SDFText.creator();
 
 
   /*

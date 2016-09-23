@@ -1,38 +1,32 @@
 import SDFShader from 'three-bmfont-text/shaders/sdf';
 import createGeometry from 'three-bmfont-text';
+import parseASCII from 'parse-bmfont-ascii';
 
-export function createMaterial( color, pngPath ){
+import * as Font from './font';
 
-  const loader = new THREE.TextureLoader();
-  loader.load( pngPath, function( texture ){
-    texture.needsUpdate = true;
-    texture.minFilter = THREE.LinearMipMapLinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.generateMipmaps = true;
-    material.uniforms.map.value = texture;
+export function createMaterial( color ){
 
-    //  TODO
-    //  add aniso
+  const texture = new THREE.Texture();
+  const image = Font.image();
+  texture.image = image;
+  texture.needsUpdate = true;
+  texture.minFilter = THREE.LinearMipMapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
 
-  } );
+  //  and what about anisotropic filtering?
 
-  const material = new THREE.RawShaderMaterial(SDFShader({
+  return new THREE.RawShaderMaterial(SDFShader({
     side: THREE.DoubleSide,
     transparent: true,
-    color: color
+    color: color,
+    map: texture
   }));
-
-  return material;
-
 }
 
-export function creator( pngPath, events ){
+export function creator(){
 
-  let font;
-
-  events.on( 'fontLoaded', function( font ){
-    font = font;
-  });
+  const font = parseASCII( Font.fnt() );
 
   const colorMaterials = {};
 
@@ -51,7 +45,7 @@ export function creator( pngPath, events ){
 
     let material = colorMaterials[ color ];
     if( material === undefined ){
-      material = colorMaterials[ color ] = createMaterial( color, pngPath );
+      material = colorMaterials[ color ] = createMaterial( color );
     }
     const mesh = new THREE.Mesh( geometry, material );
     mesh.scale.multiply( new THREE.Vector3(1,-1,1) );
@@ -65,32 +59,13 @@ export function creator( pngPath, events ){
 
   function create( str, { color=0xffffff } = {} ){
     const group = new THREE.Group();
-    let lateText = str;
 
-    let mesh;
-
-    if( font ){
-      mesh = createText( lateText, font, color );
-      group.add( mesh );
-      group.layout = mesh.geometry.layout;
-    }
-    else{
-      function fontLoadedCB( font ){
-        mesh = createText( lateText, font, color );
-        group.add( mesh );
-        group.layout = mesh.geometry.layout;
-        events.removeListener( 'fontLoaded', fontLoadedCB );
-      };
-      events.on( 'fontLoaded', fontLoadedCB );
-    }
+    let mesh = createText( str, font, color );
+    group.add( mesh );
+    group.layout = mesh.geometry.layout;
 
     group.update = function( str ){
-      if( mesh ){
-        mesh.geometry.update( str );
-      }
-      else{
-        lateText = str;
-      }
+      mesh.geometry.update( str );
     };
 
     return group;
