@@ -79,12 +79,14 @@ export default function createCheckbox( {
 
   updateView();
 
-  function handleOnPress(){
+  function handleOnPress( p ){
     if( group.visible === false ){
       return;
     }
 
     object[ propertyName ]();
+
+    p.locked = true;
   }
 
   function updateView(){

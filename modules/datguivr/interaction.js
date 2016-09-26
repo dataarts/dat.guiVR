@@ -87,48 +87,49 @@ export default function createInteraction( hitVolume ){
     hitObject, hitPoint, 
     buttonName, interactionName, downName, holdName, upName
   } = {} ){
-    
-    // if( hover && input[ 'gripped' ] && interactionName === 'grip' ){
-    //   debugger;
-    // }
+        
 
     //  hovering and button down but no interactions active yet
-    if( hover && input[ buttonName ] === true && input.interaction[ interactionName ] === undefined ){      
-      // if( events.listenerCount( downName ) > 0 ){        
-        input.interaction[ interactionName ] = interaction;
-        events.emit( downName, {
-          hitObject,
-          point: hitPoint,
-          inputObject: input.object
-        });
-        anyPressing = true;
-        anyActive = true;
-      // }
+    if( hover && input[ buttonName ] === true && input.interaction[ interactionName ] === undefined ){            
+
+      const payload = {
+        hitObject,
+        point: hitPoint,
+        inputObject: input.object,
+        locked: false
+      };
+      events.emit( downName, payload );
+
+      if( payload.locked ){
+        input.interaction[ interactionName ] = interaction;        
+      }   
+
+      anyPressing = true;
+      anyActive = true;    
     }    
 
     //  button still down and this is the active interaction
-    if( input[ buttonName ] && input.interaction[ interactionName ] === interaction ){
-      // if( events.listenerCount( holdName ) > 0 ){        
-        events.emit( holdName, {
-          hitObject,
-          point: hitPoint,
-          inputObjet: input.object
-        });
-        anyPressing = true;
-      // }
-      // input.events.emit( 'onControllerHeld', input );
+    if( input[ buttonName ] && input.interaction[ interactionName ] === interaction ){      
+      const payload = {
+        hitObject,
+        point: hitPoint,
+        inputObject: input.object,
+        locked: false
+      };
+
+      events.emit( holdName, payload );      
+      
+      anyPressing = true;      
     }
 
     //  button not down and this is the active interaction
-    if( input[ buttonName ] === false && input.interaction[ interactionName ] === interaction ){
-      // if( events.listenerCount( upName ) > 0 ){
-        input.interaction[ interactionName ] = undefined;      
-        events.emit( upName, {
-          hitObject,
-          point: hitPoint,
-          inputObject: input.object
-        });
-      // }
+    if( input[ buttonName ] === false && input.interaction[ interactionName ] === interaction ){      
+      input.interaction[ interactionName ] = undefined;      
+      events.emit( upName, {
+        hitObject,
+        point: hitPoint,
+        inputObject: input.object
+      });      
     }
 
   }

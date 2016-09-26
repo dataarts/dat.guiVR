@@ -51,7 +51,8 @@ export default function createSlider( {
     min: min,
     max: max,
     onChangedCB: undefined,
-    onFinishedChange: undefined
+    onFinishedChange: undefined,
+    pressing: false
   };
 
   state.step = getImpliedStep( state.value );
@@ -111,8 +112,8 @@ export default function createSlider( {
   }
 
   function updateView(){
-    if( interaction.pressing() ){
-      material.color.setHex( Colors.INTERACTION_COLOR );
+    if( state.pressing ){
+      material.color.setHex( Colors.INTERACTION_COLOR );      
     }
     else
     if( interaction.hovering() ){
@@ -167,12 +168,24 @@ export default function createSlider( {
   };
 
   const interaction = createInteraction( hitscanVolume );
-  interaction.events.on( 'pressing', handlePress );
+  interaction.events.on( 'onPressed', handlePress );
+  interaction.events.on( 'pressing', handleHold );  
+  interaction.events.on( 'onReleased', handleRelease );  
 
-  function handlePress( { point } = {} ){
+  function handlePress( p ){
+    if( group.visible === false ){
+      return;
+    }    
+    state.pressing = true;
+    p.locked = true;
+  }
+
+  function handleHold( { point } = {} ){
     if( group.visible === false ){
       return;
     }
+
+    state.pressing = true;    
 
     filledVolume.updateMatrixWorld();
     endLocator.updateMatrixWorld();
@@ -190,6 +203,10 @@ export default function createSlider( {
     if( previousValue !== state.value && state.onChangedCB ){
       state.onChangedCB( state.value );
     }
+  }
+
+  function handleRelease(){
+    state.pressing = false;
   }
 
   group.interaction = interaction;

@@ -30,7 +30,9 @@ export function create( { group, panel } = {} ){
 
   let oldParent;
 
-  function handleOnPress( {inputObject}={} ){
+  function handleOnPress( p ){
+
+    const { inputObject } = p;
 
     const folder = group.folder;
     if( folder === undefined ){
@@ -45,6 +47,7 @@ export function create( { group, panel } = {} ){
     oldParent = folder.parent;
     inputObject.add( folder );
 
+    p.locked = true;
   }
 
   function handleOnRelease( {inputObject}={} ){

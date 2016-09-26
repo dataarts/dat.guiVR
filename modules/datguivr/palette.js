@@ -35,7 +35,9 @@ export function create( { group, panel } = {} ){
   rotationGroup.position.set( -0.015, 0.015, 0.0 );
 
 
-  function handleOnGrip( {inputObject}={} ){
+  function handleOnGrip( p ){
+
+    const { inputObject } = p;    
     
     const folder = group.folder;
     if( folder === undefined ){
@@ -53,6 +55,8 @@ export function create( { group, panel } = {} ){
     rotationGroup.add( folder );
 
     inputObject.add( rotationGroup );
+
+    p.locked = true;
 
   }
 

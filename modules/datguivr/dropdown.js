@@ -84,7 +84,7 @@ export default function createCheckbox( {
 
 
     if( isOption ){
-      labelInteraction.events.on( 'onPressed', function(){
+      labelInteraction.events.on( 'onPressed', function( p ){
         selectedLabel.setString( labelText );
 
         let propertyChanged = false;
@@ -110,10 +110,12 @@ export default function createCheckbox( {
           onChangedCB( object[ propertyName ] );
         }
 
+        p.locked = true;
+
       });
     }
     else{
-      labelInteraction.events.on( 'onPressed', function(){
+      labelInteraction.events.on( 'onPressed', function( p ){
         if( state.open === false ){
           openOptions();
           state.open = true;
@@ -122,6 +124,8 @@ export default function createCheckbox( {
           collapseOptions();
           state.open = false;
         }
+
+        p.locked = true;
       });
     }
     label.isOption = isOption;

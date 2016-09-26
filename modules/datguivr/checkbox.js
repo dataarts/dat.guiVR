@@ -92,7 +92,7 @@ export default function createCheckbox( {
 
   updateView();
 
-  function handleOnPress(){
+  function handleOnPress( p ){
     if( group.visible === false ){
       return;
     }
@@ -104,6 +104,8 @@ export default function createCheckbox( {
     if( onChangedCB ){
       onChangedCB( state.value );
     }
+
+    p.locked = true;
   }
 
   function updateView(){
