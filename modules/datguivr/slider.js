@@ -23,6 +23,7 @@ import * as Colors from './colors';
 import * as Layout from './layout';
 import * as SharedMaterials from './sharedmaterials';
 import * as Grab from './grab';
+import * as Palette from './palette';
 
 export default function createSlider( {
   textCreator,
@@ -195,10 +196,13 @@ export default function createSlider( {
   group.hitscan = [ hitscanVolume, panel ];
 
   const grabInteraction = Grab.create( { group, panel } );
+  const paletteInteraction = Palette.create( { group, panel } );
 
   group.update = function( inputObjects ){
     interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
+    paletteInteraction.update( inputObjects );
+
     if( state.listen ){
       listenUpdate();
       updateValueLabel( state.value );

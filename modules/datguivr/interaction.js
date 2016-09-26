@@ -19,128 +19,123 @@
 import Emitter from 'events';
 
 export default function createInteraction( hitVolume ){
-  const events = new Emitter();
-
-  const states = new WeakMap();
+  const events = new Emitter();  
 
   let anyHover = false;
   let anyPressing = false;
 
-  // const state = {
-  //   hover: false,
-  //   pressed: false,
-  //   gripped: false,
-  // };
+  let hover = false;
+  let anyActive = false;
 
-  function isMainInteraction( guiState ){
-    return ( guiState.currentInteraction === interaction );
-  }
-
-  function hasMainInteraction( guiState ){
-    return ( guiState.currentInteraction !== undefined );
-  }
-
-  function setMainInteraction( guiState ){
-    guiState.currentInteraction = interaction;
-  }
-
-  function clearMainInteraction( guiState ){
-    guiState.currentInteraction = undefined;
-  }
-
-  const tVector = new THREE.Vector3();
+  const tVector = new THREE.Vector3();  
 
   function update( inputObjects ){
 
-    anyHover = false;
+    hover = false;    
     anyPressing = false;
+    anyActive = false;    
 
     inputObjects.forEach( function( input ){
 
-      let state = states.get( input );
-      if( state === undefined ){
-        states.set( input, {
-          hover: false,
-          pressed: false,
-          gripped: false,
-        });
-        state = states.get( input );
-      }
+      const { hitObject, hitPoint } = extractHit( input );
 
-      state.lastHover = state.hover;
-      state.hover = false;
+      hover = hover || hitVolume === hitObject;
+      
+      performStateEvents({
+        input,
+        hover,
+        hitObject, hitPoint,
+        buttonName: 'pressed',
+        interactionName: 'press',
+        downName: 'onPressed',
+        holdName: 'pressing',
+        upName: 'onReleased'
+      });
 
-      let hitPoint;
-      let hitObject;
-
-      if( input.intersections.length <= 0 ){
-        state.hover = false;
-        hitPoint = tVector.setFromMatrixPosition( input.cursor.matrixWorld ).clone();
-        hitObject = input.cursor;
-      }
-      else{
-        hitPoint = input.intersections[ 0 ].point;
-        hitObject = input.intersections[ 0 ].object;
-      }
-
-      if( hasMainInteraction( input.state ) === false && hitVolume === hitObject ){
-        state.hover = true;
-        anyHover = true;
-      }
-
-      let used = performStateEvents( input, state, hitObject, hitPoint, 'pressed', 'onPressed', 'pressing', 'onReleased' );
-      used = used || performStateEvents( input, state, hitObject, hitPoint, 'gripped', 'onGripped', 'gripping', 'onReleaseGrip' );
-
-      if( used === false && isMainInteraction(  input.state  ) ){
-        clearMainInteraction( input.state );
-      }
+      performStateEvents({
+        input,
+        hover,
+        hitObject, hitPoint,
+        buttonName: 'gripped',
+        interactionName: 'grip',
+        downName: 'onGripped',
+        holdName: 'gripping',
+        upName: 'onReleaseGrip'
+      });      
 
     });
 
   }
 
-  function performStateEvents( input, state, hitObject, hitPoint, stateToCheck, clickName, holdName, releaseName ){
-    if( input[ stateToCheck ] && state.hover && hasMainInteraction( input.state ) === false ){
-      if( state[ stateToCheck ] === false ){
-        state[ stateToCheck ] = true;
-        setMainInteraction( input.state );
+  function extractHit( input ){
+    if( input.intersections.length <= 0 ){      
+      return {
+        hitPoint: tVector.setFromMatrixPosition( input.cursor.matrixWorld ).clone(),
+        hitObject: input.cursor,
+      };      
+    }
+    else{
+      return {
+        hitPoint: input.intersections[ 0 ].point,
+        hitObject: input.intersections[ 0 ].object
+      };
+    }        
+  }
 
-        events.emit( clickName, {
+  function performStateEvents({
+    input, hover, 
+    hitObject, hitPoint, 
+    buttonName, interactionName, downName, holdName, upName
+  } = {} ){
+    
+    // if( hover && input[ 'gripped' ] && interactionName === 'grip' ){
+    //   debugger;
+    // }
+
+    //  hovering and button down but no interactions active yet
+    if( hover && input[ buttonName ] === true && input.interaction[ interactionName ] === undefined ){      
+      // if( events.listenerCount( downName ) > 0 ){        
+        input.interaction[ interactionName ] = interaction;
+        events.emit( downName, {
           hitObject,
-          inputObject: input.object,
           point: hitPoint,
+          inputObject: input.object
         });
+        anyPressing = true;
+        anyActive = true;
+      // }
+    }    
 
-      }
+    //  button still down and this is the active interaction
+    if( input[ buttonName ] && input.interaction[ interactionName ] === interaction ){
+      // if( events.listenerCount( holdName ) > 0 ){        
+        events.emit( holdName, {
+          hitObject,
+          point: hitPoint,
+          inputObjet: input.object
+        });
+        anyPressing = true;
+      // }
+      // input.events.emit( 'onControllerHeld', input );
     }
 
-    if( input[ stateToCheck ] === false && isMainInteraction( input.state ) ){
-      state[ stateToCheck ] = false;
-      events.emit( releaseName, {
-        hitObject,
-        inputObject: input.object,
-        point: hitPoint,
-      });
+    //  button not down and this is the active interaction
+    if( input[ buttonName ] === false && input.interaction[ interactionName ] === interaction ){
+      // if( events.listenerCount( upName ) > 0 ){
+        input.interaction[ interactionName ] = undefined;      
+        events.emit( upName, {
+          hitObject,
+          point: hitPoint,
+          inputObject: input.object
+        });
+      // }
     }
-
-    if( state[ stateToCheck ] ){
-      events.emit( holdName, {
-        hitObject,
-        inputObject: input.object,
-        point: hitPoint,
-      });
-
-      anyPressing = true;
-
-      input.state.events.emit( 'onControllerHeld', input );
-    }
-
-    return state[ stateToCheck ];
 
   }
 
+
   const interaction = {
-    hovering: ()=>anyHover,
+    hovering: ()=>hover,
     pressing: ()=>anyPressing,
     update,
     events

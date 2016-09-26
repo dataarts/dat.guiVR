@@ -95,10 +95,10 @@ export default function DATGUIVR(){
       object: inputObject,
       pressed: false,
       gripped: false,
-      state: {
-        currentHover: undefined,
-        currentInteraction: undefined,
-        events: new Emitter()
+      events: new Emitter(),
+      interaction: {        
+        grip: undefined,        
+        press: undefined
       }
     };
   }
@@ -122,11 +122,11 @@ export default function DATGUIVR(){
     }, false );
 
     window.addEventListener( 'mousedown', function( event ){
-      input.pressed = true;
+      input.pressed = true;      
     }, false );
 
     window.addEventListener( 'mouseup', function( event ){
-      input.pressed = false;
+      input.pressed = false;      
     }, false );
 
     const input = createInput();
@@ -169,7 +169,7 @@ export default function DATGUIVR(){
     input.laser.cursor = input.cursor;
 
     if( THREE.ViveController && object instanceof THREE.ViveController ){
-      bindViveController( input.state, object, input.laser.pressed, input.laser.gripped );
+      bindViveController( input, object, input.laser.pressed, input.laser.gripped );
     }
 
     inputObjects.push( input );
@@ -448,17 +448,17 @@ function isArray( o ){
   Controller-specific support.
 */
 
-function bindViveController( inputState, controller, pressed, gripped ){
+function bindViveController( input, controller, pressed, gripped ){
   controller.addEventListener( 'triggerdown', ()=>pressed( true ) );
   controller.addEventListener( 'triggerup', ()=>pressed( false ) );
   controller.addEventListener( 'gripsdown', ()=>gripped( true ) );
   controller.addEventListener( 'gripsup', ()=>gripped( false ) );
 
   const gamepad = controller.getGamepad();
-  inputState.events.on( 'onControllerHeld', function( input ){
+  input.events.on( 'onControllerHeld', function( input ){
     if( input.object === controller ){
-      if( gamepad && gamepad.hapticActuators.length > 0 ){
-        gamepad.hapticActuators[ 0 ].pulse( 0.3, 0.3 );
+      if( gamepad && gamepad.haptics.length > 0 ){
+        gamepad.haptics[ 0 ].vibrate( 0.3, 0.3 );
       }
     }
   });

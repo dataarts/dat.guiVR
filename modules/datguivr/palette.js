@@ -27,21 +27,32 @@ export function create( { group, panel } = {} ){
   interaction.events.on( 'onReleaseGrip', handleOnGripRelease );
 
   let oldParent;
-  let oldPosition = new THREE.Vector3();
+  let oldPosition = new THREE.Vector3();  
+  let oldRotation = new THREE.Euler();
+
+  const rotationGroup = new THREE.Group();
+  rotationGroup.scale.set( 0.3, 0.3, 0.3 );
+  rotationGroup.position.set( -0.015, 0.015, 0.0 );
+
 
   function handleOnGrip( {inputObject}={} ){
-
-    console.log('gripping');
+    
     const folder = group.folder;
     if( folder === undefined ){
       return;
     }
 
-    oldPosition.copy( folder.position );
-    folder.position.set( 0,0,0 );
+    oldPosition.copy( folder.position );    
+    oldRotation.copy( folder.rotation );
+
+    folder.position.set( 0,0.0,0 );    
+    folder.rotation.x = -Math.PI * 0.5;    
 
     oldParent = folder.parent;
-    inputObject.add( folder );
+
+    rotationGroup.add( folder );
+
+    inputObject.add( rotationGroup );
 
   }
 
@@ -58,6 +69,9 @@ export function create( { group, panel } = {} ){
 
     oldParent.add( folder );
     oldParent = undefined;
+
+    folder.position.copy( oldPosition );    
+    folder.rotation.copy( oldRotation );
   }
 
   return interaction;

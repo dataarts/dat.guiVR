@@ -23,6 +23,7 @@ import * as Colors from './colors';
 import * as Layout from './layout';
 import * as SharedMaterials from './sharedmaterials';
 import * as Grab from './grab';
+import * as Palette from './palette';
 
 export default function createFolder({
   textCreator,
@@ -114,9 +115,11 @@ export default function createFolder({
 
   group.folder = group;
   const grabInteraction = Grab.create( { group, panel: descriptorLabel.back } );
+  const paletteInteraction = Palette.create( { group, panel: descriptorLabel.back } );
 
   group.update = function( inputObjects ){
     grabInteraction.update( inputObjects );
+    paletteInteraction.update( inputObjects );
     updateLabel();
   };
 
