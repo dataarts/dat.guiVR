@@ -52,7 +52,7 @@ module.exports = function (grunt) {
       },
       scripts: {
         files: ['testserver.js', './build/*.js' ],
-        tasks: ['copy:main']
+        tasks: []
       },
       html: {
         files: [ 'examples/*.html', 'examples/*.css' ],
@@ -87,20 +87,10 @@ module.exports = function (grunt) {
       }
     },
 
-    copy: {
-      main: {
-        expand: true,
-        flatten: true,
-        src: './build/*.js',
-        dest: './examples/js/'
-      }
-    }
-
   });
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-express-server');
 
   grunt.registerTask('default', ['concurrent:dev']);
