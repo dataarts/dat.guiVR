@@ -59,14 +59,6 @@
       controllers[ 0 ].addEventListener( 'menudown', ()=>toggleVR() );
 
 
-      //  "pin" the GUI on left controller when pressing the left trigger button
-      // vrpad.events.on( 'connected1', ( pad ) => {
-      //   pad.on('button1Pressed', pinGUI  );
-      // });
-
-
-
-
 
       //  state that dat gui is changing
       const state = {
@@ -75,7 +67,7 @@
         tubularSegments: 64,
         radialSegments: 8,
         p: 2,
-        q: 50,
+        q: 5,
         spinning: true,
         spinSpeed: 'fast',
         wireframe: false,
@@ -172,30 +164,6 @@
         material.wireframe = state.wireframe;
       }
 
-
-
-
-
-      let pinned = false;
-      function pinGUI(){
-        if( pinned === false ){
-          folder.position.y = 0.02;
-          folder.position.z = -0.1;
-          folder.position.x = 0;
-          folder.rotation.x = -Math.PI * 0.5;
-          folder.scale.multiplyScalar( 0.25 );
-          folder.pinTo( controllers[ 1 ] );
-        }
-        else{
-          folder.position.y = 1.5;
-          folder.position.z = 0;
-          folder.position.x = 0;
-          folder.rotation.x = 0;
-          folder.scale.set( 1, 1, 1 );
-          folder.pinTo( scene );
-        }
-        pinned = !pinned;
-      }
 
 
     </script>

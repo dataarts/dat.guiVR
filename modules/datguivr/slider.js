@@ -46,6 +46,7 @@ export default function createSlider( {
     alpha: 1.0,
     value: initialValue,
     step: step,
+    useStep: false,
     precision: 1,
     listen: false,
     min: min,
@@ -108,7 +109,12 @@ export default function createSlider( {
   updateSlider( state.alpha );
 
   function updateValueLabel( value ){
-    valueLabel.update( roundToDecimal( state.value, state.precision ).toString() );
+    if( state.useStep ){
+      valueLabel.update( roundToDecimal( state.value, state.precision ).toString() );
+    }
+    else{
+      valueLabel.update( state.value.toString() );
+    }
   }
 
   function updateView(){
@@ -138,7 +144,9 @@ export default function createSlider( {
   function updateStateFromAlpha( alpha ){
     state.alpha = getClampedAlpha( alpha );
     state.value = getValueFromAlpha( state.alpha, state.min, state.max );
-    state.value = getSteppedValue( state.value, state.step );
+    if( state.useStep ){
+      state.value = getSteppedValue( state.value, state.step );
+    }
     state.value = getClampedValue( state.value, state.min, state.max );
   }
 
@@ -160,6 +168,7 @@ export default function createSlider( {
   group.step = function( step ){
     state.step = step;
     state.precision = numDecimals( state.step )
+    state.useStep = true;
     return group;
   };
 
