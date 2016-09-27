@@ -3,13 +3,13 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -113,7 +113,7 @@ export default function createSlider( {
 
   function updateView(){
     if( state.pressing ){
-      material.color.setHex( Colors.INTERACTION_COLOR );      
+      material.color.setHex( Colors.INTERACTION_COLOR );
     }
     else
     if( interaction.hovering() ){
@@ -127,6 +127,7 @@ export default function createSlider( {
   }
 
   function updateSlider( alpha ){
+    alpha = getClampedAlpha( alpha );
     filledVolume.scale.x = Math.max( alpha * width, 0.000001 );
   }
 
@@ -169,13 +170,13 @@ export default function createSlider( {
 
   const interaction = createInteraction( hitscanVolume );
   interaction.events.on( 'onPressed', handlePress );
-  interaction.events.on( 'pressing', handleHold );  
-  interaction.events.on( 'onReleased', handleRelease );  
+  interaction.events.on( 'pressing', handleHold );
+  interaction.events.on( 'onReleased', handleRelease );
 
   function handlePress( p ){
     if( group.visible === false ){
       return;
-    }    
+    }
     state.pressing = true;
     p.locked = true;
   }
@@ -185,7 +186,7 @@ export default function createSlider( {
       return;
     }
 
-    state.pressing = true;    
+    state.pressing = true;
 
     filledVolume.updateMatrixWorld();
     endLocator.updateMatrixWorld();
