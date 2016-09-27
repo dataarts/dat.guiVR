@@ -3,13 +3,13 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -96,8 +96,8 @@ export default function DATGUIVR(){
       pressed: false,
       gripped: false,
       events: new Emitter(),
-      interaction: {        
-        grip: undefined,        
+      interaction: {
+        grip: undefined,
         press: undefined
       }
     };
@@ -122,11 +122,11 @@ export default function DATGUIVR(){
     }, false );
 
     window.addEventListener( 'mousedown', function( event ){
-      input.pressed = true;      
+      input.pressed = true;
     }, false );
 
     window.addEventListener( 'mouseup', function( event ){
-      input.pressed = false;      
+      input.pressed = false;
     }, false );
 
     const input = createInput();
@@ -455,12 +455,52 @@ function bindViveController( input, controller, pressed, gripped ){
   controller.addEventListener( 'gripsup', ()=>gripped( false ) );
 
   const gamepad = controller.getGamepad();
-  input.events.on( 'onControllerHeld', function( input ){
-    if( input.object === controller ){
-      if( gamepad && gamepad.haptics.length > 0 ){
-        gamepad.haptics[ 0 ].vibrate( 0.3, 0.3 );
-      }
+  function vibrate( t, a ){
+    if( gamepad && gamepad.haptics.length > 0 ){
+      gamepad.haptics[ 0 ].vibrate( t, a );
     }
+  }
+
+  function hapticsTap(){
+    setIntervalTimes( (x,t,a)=>vibrate(1-a, 0.5), 10, 20 );
+  }
+
+  function hapticsEcho(){
+    setIntervalTimes( (x,t,a)=>vibrate(4, 1.0 * (1-a)), 100, 4 );
+  }
+
+  input.events.on( 'onControllerHeld', function( input ){
+    vibrate( 0.3, 0.3 );
   });
 
+  input.events.on( 'grabbed', function(){
+    hapticsTap();
+  });
+
+  input.events.on( 'grabReleased', function(){
+    hapticsEcho();
+  });
+
+  input.events.on( 'pinned', function(){
+    hapticsTap();
+  });
+
+  input.events.on( 'pinReleased', function(){
+    hapticsEcho();
+  });
+
+
+
+}
+
+function setIntervalTimes( cb, delay, times ){
+  let x = 0;
+  let id = setInterval( function(){
+    cb( x, times, x/times );
+    x++;
+    if( x>=times ){
+      clearInterval( id );
+    }
+  }, delay );
+  return id;
 }
