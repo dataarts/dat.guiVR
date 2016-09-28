@@ -56,6 +56,12 @@
       			  gui.add( object.position, 'z', -1, 1 ).step(0.001),
       			  gui.add( object.rotation, 'y', -Math.PI, Math.PI).step(0.001)
       			 )
+
+      			const guiInputController1 = gui.addInputObject( controller1 );
+			    scene.add( guiInputController1 );
+
+			    const guiInputController2 = gui.addInputObject( controller2 );
+			    scene.add( guiInputController2 );
 			}
 
 		</script>
@@ -141,6 +147,9 @@
 				}
 
 
+				var gun = new THREE.Group(); // DAT MODIFIED
+				room.add(gun); // DAT MODIFIED
+
 				var material = new THREE.MeshStandardMaterial();
 
 				var loader = new THREE.OBJLoader();
@@ -178,8 +187,9 @@
 
 					group.position.y = - 2;
 					group.rotation.y = - Math.PI / 2;
-					room.add( group );
 
+					//room.add( group );
+					gun.add(group);// DAT MODIFIED
 				} );
 
 				var loader = new THREE.CubeTextureLoader();
@@ -241,7 +251,7 @@
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
-				createDatGUI(scene, camera, room, controller1, controller2); // DAT MODIFICATION
+				createDatGUI(scene, camera, gun, controller1, controller2); // DAT MODIFICATION
 			}
 
 			function onWindowResize() {
