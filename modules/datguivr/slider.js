@@ -70,13 +70,15 @@ export default function createSlider( {
   const hitscanMaterial = new THREE.MeshBasicMaterial();
   hitscanMaterial.visible = false;
 
-  //  outline volume
   const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
   hitscanVolume.position.z = depth;
   hitscanVolume.position.x = width * 0.5;
 
-  const outline = new THREE.BoxHelper( hitscanVolume );
-  outline.material.color.setHex( Colors.OUTLINE_COLOR );
+  //  sliderBG volume
+  const sliderBG = new THREE.Mesh( rect.clone(), SharedMaterials.PANEL );
+  Colors.colorizeGeometry( sliderBG.geometry, Colors.SLIDER_BG );
+  sliderBG.position.z = depth * 0.5;
+  sliderBG.position.x = SLIDER_WIDTH + Layout.PANEL_MARGIN;
 
   const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
   const filledVolume = new THREE.Mesh( rect.clone(), material );
@@ -101,7 +103,7 @@ export default function createSlider( {
   controllerID.position.z = depth;
 
   const panel = Layout.createPanel( width, height, depth );
-  panel.add( descriptorLabel, hitscanVolume, outline, valueLabel, controllerID );
+  panel.add( descriptorLabel, hitscanVolume, sliderBG, valueLabel, controllerID );
 
   group.add( panel )
 

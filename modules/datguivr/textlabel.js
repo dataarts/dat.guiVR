@@ -3,13 +3,13 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,14 +20,15 @@
 import * as Colors from './colors';
 import * as SharedMaterials from './sharedmaterials';
 
-export default function createTextLabel( textCreator, str, width = 0.4, depth = 0.029, fgColor = 0xffffff, bgColor = Colors.DEFAULT_BACK ){
+export default function createTextLabel( textCreator, str, width = 0.4, depth = 0.029, fgColor = 0xffffff, bgColor = Colors.DEFAULT_BACK, scale = 1.0 ){
 
   const group = new THREE.Group();
   const internalPositioning = new THREE.Group();
   group.add( internalPositioning );
 
-  const text = textCreator.create( str, { color: fgColor } );
+  const text = textCreator.create( str, { color: fgColor, scale } );
   internalPositioning.add( text );
+
 
   group.setString = function( str ){
     text.update( str.toString() );
@@ -50,12 +51,8 @@ export default function createTextLabel( textCreator, str, width = 0.4, depth = 
   Colors.colorizeGeometry( labelBackMesh.geometry, bgColor );
 
   labelBackMesh.position.y = 0.03;
-  // labelBackMesh.position.x = width * 0.5;
   internalPositioning.add( labelBackMesh );
   internalPositioning.position.y = -totalHeight * 0.5;
-
-  // labelGroup.position.x = labelBounds.width * 0.5;
-  // labelGroup.position.y = labelBounds.height * 0.5;
 
   group.back = labelBackMesh;
 

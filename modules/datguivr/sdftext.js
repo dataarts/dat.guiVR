@@ -3,13 +3,13 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,13 +43,15 @@ export function createMaterial( color ){
   }));
 }
 
+const textScale = 0.0012;
+
 export function creator(){
 
   const font = parseASCII( Font.fnt() );
 
   const colorMaterials = {};
 
-  function createText( str, font, color = 0xffffff ){
+  function createText( str, font, color = 0xffffff, scale = 1.0 ){
 
     const geometry = createGeometry({
       text: str,
@@ -68,18 +70,21 @@ export function creator(){
     }
     const mesh = new THREE.Mesh( geometry, material );
     mesh.scale.multiply( new THREE.Vector3(1,-1,1) );
-    mesh.scale.multiplyScalar( 0.001 );
 
-    mesh.position.y = layout.height * 0.5 * 0.001;
+    const finalScale = scale * textScale;
+
+    mesh.scale.multiplyScalar( finalScale );
+
+    mesh.position.y = layout.height * 0.5 * finalScale;
 
     return mesh;
   }
 
 
-  function create( str, { color=0xffffff } = {} ){
+  function create( str, { color=0xffffff, scale=1.0 } = {} ){
     const group = new THREE.Group();
 
-    let mesh = createText( str, font, color );
+    let mesh = createText( str, font, color, scale );
     group.add( mesh );
     group.layout = mesh.geometry.layout;
 

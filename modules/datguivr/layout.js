@@ -3,13 +3,13 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,11 +50,12 @@ export function createControllerIDBox( height, color ){
 }
 
 export const PANEL_WIDTH = 1.0;
-export const PANEL_HEIGHT = 0.07;
-export const PANEL_DEPTH = 0.01;
+export const PANEL_HEIGHT = 0.08;
+export const PANEL_DEPTH = 0.001;
 export const PANEL_SPACING = 0.002;
-export const PANEL_MARGIN = 0.005;
+export const PANEL_MARGIN = 0.015;
 export const PANEL_LABEL_TEXT_MARGIN = 0.06;
 export const PANEL_VALUE_TEXT_MARGIN = 0.02;
 export const CONTROLLER_ID_WIDTH = 0.02;
-export const CONTROLLER_ID_DEPTH = 0.005;
+export const CONTROLLER_ID_DEPTH = 0.001;
+export const BUTTON_DEPTH = 0.01;

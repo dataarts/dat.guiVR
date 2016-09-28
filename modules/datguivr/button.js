@@ -3,19 +3,21 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import * as SubdivisionModifier from '../thirdparty/SubdivisionModifier';
 
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
@@ -35,7 +37,7 @@ export default function createCheckbox( {
 
   const BUTTON_WIDTH = width * 0.5 - Layout.PANEL_MARGIN;
   const BUTTON_HEIGHT = height - Layout.PANEL_MARGIN;
-  const BUTTON_DEPTH = depth;
+  const BUTTON_DEPTH = Layout.BUTTON_DEPTH;
 
   const group = new THREE.Group();
 
@@ -43,7 +45,11 @@ export default function createCheckbox( {
   group.add( panel );
 
   //  base checkbox
-  const rect = new THREE.BoxGeometry( BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_DEPTH );
+  const divisions = 4;
+  const aspectRatio = BUTTON_WIDTH / BUTTON_HEIGHT;
+  const rect = new THREE.BoxGeometry( BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_DEPTH, Math.floor( divisions * aspectRatio ), divisions, divisions );
+  const modifier = new THREE.SubdivisionModifier( 1 );
+  modifier.modify( rect );
   rect.translate( BUTTON_WIDTH * 0.5, 0, 0 );
 
   //  hitscan volume
@@ -51,17 +57,19 @@ export default function createCheckbox( {
   hitscanMaterial.visible = false;
 
   const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
-  hitscanVolume.position.z = depth;
+  hitscanVolume.position.z = BUTTON_DEPTH * 0.5;
   hitscanVolume.position.x = width * 0.5;
 
-  //  outline volume
-  const outline = new THREE.BoxHelper( hitscanVolume );
-  outline.material.color.setHex( Colors.OUTLINE_COLOR );
-
-  //  checkbox volume
-  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
+  const material = new THREE.MeshPhongMaterial({ color: Colors.BUTTON_COLOR, emissive: Colors.EMISSIVE_COLOR });
   const filledVolume = new THREE.Mesh( rect.clone(), material );
   hitscanVolume.add( filledVolume );
+
+
+  const buttonLabel = textCreator.create( propertyName, { scale: 0.866 } );
+  buttonLabel.position.x = BUTTON_WIDTH * 0.5 - buttonLabel.layout.width * 0.00011 * 0.5;
+  buttonLabel.position.z = BUTTON_DEPTH * 1.2;
+  buttonLabel.position.y = -0.025;
+  filledVolume.add( buttonLabel );
 
 
   const descriptorLabel = textCreator.create( propertyName );
@@ -72,10 +80,11 @@ export default function createCheckbox( {
   const controllerID = Layout.createControllerIDBox( height, Colors.CONTROLLER_ID_BUTTON );
   controllerID.position.z = depth;
 
-  panel.add( descriptorLabel, hitscanVolume, outline, controllerID );
+  panel.add( descriptorLabel, hitscanVolume, controllerID );
 
   const interaction = createInteraction( hitscanVolume );
   interaction.events.on( 'onPressed', handleOnPress );
+  interaction.events.on( 'onReleased', handleOnRelease );
 
   updateView();
 
@@ -86,7 +95,13 @@ export default function createCheckbox( {
 
     object[ propertyName ]();
 
+    hitscanVolume.position.z = BUTTON_DEPTH * 0.1;
+
     p.locked = true;
+  }
+
+  function handleOnRelease(){
+    hitscanVolume.position.z = BUTTON_DEPTH * 0.5;
   }
 
   function updateView(){
@@ -96,14 +111,8 @@ export default function createCheckbox( {
       material.emissive.setHex( Colors.HIGHLIGHT_EMISSIVE_COLOR );
     }
     else{
+      material.color.setHex( Colors.BUTTON_COLOR );
       material.emissive.setHex( Colors.EMISSIVE_COLOR );
-
-      if( state.value ){
-        material.color.setHex( Colors.DEFAULT_COLOR );
-      }
-      else{
-        material.color.setHex( Colors.INACTIVE_COLOR );
-      }
     }
 
   }

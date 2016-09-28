@@ -3,13 +3,13 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,8 +44,8 @@ export default function createCheckbox( {
   const DROPDOWN_WIDTH = width * 0.5 - Layout.PANEL_MARGIN;
   const DROPDOWN_HEIGHT = height - Layout.PANEL_MARGIN;
   const DROPDOWN_DEPTH = depth;
-  const DROPDOWN_OPTION_HEIGHT = height - Layout.PANEL_MARGIN * 1.8;
-  const DROPDOWN_MARGIN = Layout.PANEL_MARGIN;
+  const DROPDOWN_OPTION_HEIGHT = height - Layout.PANEL_MARGIN * 1.2;
+  const DROPDOWN_MARGIN = Layout.PANEL_MARGIN * -0.4;
 
   const group = new THREE.Group();
 
@@ -76,7 +76,12 @@ export default function createCheckbox( {
   }
 
   function createOption( labelText, isOption ){
-    const label = createTextLabel( textCreator, labelText, DROPDOWN_WIDTH, depth, Colors.DROPDOWN_FG_COLOR, Colors.DROPDOWN_BG_COLOR )
+    const label = createTextLabel(
+      textCreator, labelText,
+      DROPDOWN_WIDTH, depth,
+      Colors.DROPDOWN_FG_COLOR, Colors.DROPDOWN_BG_COLOR,
+      0.866
+    );
     group.hitscan.push( label.back );
     const labelInteraction = createInteraction( label.back );
     labelInteractions.push( labelInteraction );
@@ -152,7 +157,7 @@ export default function createCheckbox( {
 
   //  base option
   const selectedLabel = createOption( initialLabel, false );
-  selectedLabel.position.x = Layout.PANEL_MARGIN * 2 + width * 0.5;
+  selectedLabel.position.x = Layout.PANEL_MARGIN * 0.5 + width * 0.5;
   selectedLabel.position.z = depth;
 
   selectedLabel.add((function createDownArrow(){
@@ -174,7 +179,7 @@ export default function createCheckbox( {
 
   function configureLabelPosition( label, index ){
     label.position.y = -DROPDOWN_MARGIN - (index+1) * ( DROPDOWN_OPTION_HEIGHT );
-    label.position.z = depth * 2;
+    label.position.z = depth * 24;
   }
 
   function optionToLabel( optionName, index ){
@@ -198,7 +203,7 @@ export default function createCheckbox( {
   descriptorLabel.position.z = depth;
   descriptorLabel.position.y = -0.03;
 
-  const controllerID = Layout.createControllerIDBox( height, Colors.CONTROLLER_ID_SLIDER );
+  const controllerID = Layout.createControllerIDBox( height, Colors.CONTROLLER_ID_DROPDOWN );
   controllerID.position.z = depth;
 
   panel.add( descriptorLabel, controllerID, selectedLabel );
