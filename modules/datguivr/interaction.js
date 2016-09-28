@@ -28,6 +28,7 @@ export default function createInteraction( hitVolume ){
   let anyActive = false;
 
   const tVector = new THREE.Vector3();
+  const availableInputs = [];
 
   function update( inputObjects ){
 
@@ -36,6 +37,10 @@ export default function createInteraction( hitVolume ){
     anyActive = false;
 
     inputObjects.forEach( function( input ){
+
+      if( availableInputs.indexOf( input ) < 0 ){
+        availableInputs.push( input );
+      }
 
       const { hitObject, hitPoint } = extractHit( input );
 
@@ -71,7 +76,7 @@ export default function createInteraction( hitVolume ){
     if( input.intersections.length <= 0 ){
       return {
         hitPoint: tVector.setFromMatrixPosition( input.cursor.matrixWorld ).clone(),
-        hitObject: input.cursor,
+        hitObject: undefined,
       };
     }
     else{
@@ -88,6 +93,9 @@ export default function createInteraction( hitVolume ){
     buttonName, interactionName, downName, holdName, upName
   } = {} ){
 
+    if( hitObject === undefined ){
+      return;
+    }
 
     //  hovering and button down but no interactions active yet
     if( hover && input[ buttonName ] === true && input.interaction[ interactionName ] === undefined ){
@@ -103,6 +111,7 @@ export default function createInteraction( hitVolume ){
 
       if( payload.locked ){
         input.interaction[ interactionName ] = interaction;
+        input.interaction.hover = interaction;
       }
 
       anyPressing = true;
@@ -129,6 +138,7 @@ export default function createInteraction( hitVolume ){
     //  button not down and this is the active interaction
     if( input[ buttonName ] === false && input.interaction[ interactionName ] === interaction ){
       input.interaction[ interactionName ] = undefined;
+      input.interaction.hover = undefined;
       events.emit( upName, {
         input,
         hitObject,
@@ -139,9 +149,32 @@ export default function createInteraction( hitVolume ){
 
   }
 
+  function isMainHover(){
+
+    let noMainHover = true;
+    for( let i=0; i<availableInputs.length; i++ ){
+      if( availableInputs[ i ].interaction.hover !== undefined ){
+        noMainHover = false;
+        break;
+      }
+    }
+
+    if( noMainHover ){
+      return hover;
+    }
+
+    if( availableInputs.filter( function( input ){
+      return input.interaction.hover === interaction;
+    }).length > 0 ){
+      return true;
+    }
+
+    return false;
+  }
+
 
   const interaction = {
-    hovering: ()=>hover,
+    hovering: isMainHover,
     pressing: ()=>anyPressing,
     update,
     events

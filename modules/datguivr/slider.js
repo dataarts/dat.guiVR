@@ -240,15 +240,42 @@ export default function createSlider( {
     updateView();
   };
 
+  group.name = function( str ){
+    descriptorLabel.update( str );
+    return group;
+  };
+
+  group.min = function( m ){
+    state.min = m;
+    return group;
+  };
+
+  group.max = function( m ){
+    state.max = m;
+    return group;
+  };
+
   return group;
 }
 
-function getPointAlpha( point, segment ){
-  const a = new THREE.Vector3().copy( segment.b ).sub( segment.a );
-  const b = new THREE.Vector3().copy( point ).sub( segment.a );
-  const projected = b.projectOnVector( a );
+const ta = new THREE.Vector3();
+const tb = new THREE.Vector3();
+const tToA = new THREE.Vector3();
+const aToB = new THREE.Vector3();
 
-  const length = segment.a.distanceTo( segment.b );
+function getPointAlpha( point, segment ){
+  ta.copy( segment.b ).sub( segment.a );
+  tb.copy( point ).sub( segment.a );
+
+  const projected = tb.projectOnVector( ta );
+
+  tToA.copy( point ).sub( segment.a );
+
+  aToB.copy( segment.b ).sub( segment.a ).normalize();
+
+  const side = tToA.normalize().dot( aToB ) >= 0 ? 1 : -1;
+
+  const length = segment.a.distanceTo( segment.b ) * side;
 
   let alpha = projected.length() / length;
   if( alpha > 1.0 ){
