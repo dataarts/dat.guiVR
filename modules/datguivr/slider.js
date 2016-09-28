@@ -245,6 +245,16 @@ export default function createSlider( {
     return group;
   };
 
+  group.min = function( m ){
+    state.min = m;
+    return group;
+  };
+
+  group.max = function( m ){
+    state.max = m;
+    return group;
+  };
+
   return group;
 }
 
