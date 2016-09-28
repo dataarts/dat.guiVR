@@ -252,6 +252,11 @@ export default function createCheckbox( {
     updateView();
   };
 
+  group.name = function( str ){
+    descriptorLabel.update( str );
+    return group;
+  };
+
 
   return group;
 }

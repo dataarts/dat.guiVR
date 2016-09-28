@@ -240,6 +240,11 @@ export default function createSlider( {
     updateView();
   };
 
+  group.name = function( str ){
+    descriptorLabel.update( str );
+    return group;
+  };
+
   return group;
 }
 

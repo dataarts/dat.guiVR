@@ -123,15 +123,9 @@ export default function createFolder({
     updateLabel();
   };
 
-  group.pinTo = function( newParent ){
-    const oldParent = group.parent;
-
-    if( group.parent ){
-      group.parent.remove( group );
-    }
-    newParent.add( group );
-
-    return oldParent;
+  group.name = function( str ){
+    descriptorLabel.update( str );
+    return group;
   };
 
   group.hitscan = [ descriptorLabel.back ];
