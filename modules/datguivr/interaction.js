@@ -93,7 +93,7 @@ export default function createInteraction( hitVolume ){
     buttonName, interactionName, downName, holdName, upName
   } = {} ){
 
-    if( hitObject === undefined ){
+    if( input[ buttonName ] === true && hitObject === undefined ){
       return;
     }
 

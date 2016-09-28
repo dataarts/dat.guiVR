@@ -49,6 +49,21 @@ export function createControllerIDBox( height, color ){
   return panel;
 }
 
+export function createDownArrow(){
+  const w = 0.0096;
+  const h = 0.016;
+  const sh = new THREE.Shape();
+  sh.moveTo(0,0);
+  sh.lineTo(-w,h);
+  sh.lineTo(w,h);
+  sh.lineTo(0,0);
+
+  const geo = new THREE.ShapeGeometry( sh );
+  geo.translate( 0, -h * 0.5, 0 );
+
+  return new THREE.Mesh( geo, SharedMaterials.PANEL );
+}
+
 export const PANEL_WIDTH = 1.0;
 export const PANEL_HEIGHT = 0.08;
 export const PANEL_DEPTH = 0.001;
@@ -59,3 +74,5 @@ export const PANEL_VALUE_TEXT_MARGIN = 0.02;
 export const CONTROLLER_ID_WIDTH = 0.02;
 export const CONTROLLER_ID_DEPTH = 0.001;
 export const BUTTON_DEPTH = 0.01;
+export const FOLDER_WIDTH = 1.026;
+export const FOLDER_HEIGHT = 0.08;

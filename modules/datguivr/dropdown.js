@@ -160,21 +160,10 @@ export default function createCheckbox( {
   selectedLabel.position.x = Layout.PANEL_MARGIN * 0.5 + width * 0.5;
   selectedLabel.position.z = depth;
 
-  selectedLabel.add((function createDownArrow(){
-    const w = 0.015;
-    const h = 0.03;
-    const sh = new THREE.Shape();
-    sh.moveTo(0,0);
-    sh.lineTo(-w,h);
-    sh.lineTo(w,h);
-    sh.lineTo(0,0);
-
-    const geo = new THREE.ShapeGeometry( sh );
-    Colors.colorizeGeometry( geo, Colors.DROPDOWN_FG_COLOR );
-    geo.translate( DROPDOWN_WIDTH - w * 4, -DROPDOWN_HEIGHT * 0.5 + h * 0.5 , depth * 1.01 );
-
-    return new THREE.Mesh( geo, SharedMaterials.PANEL );
-  })());
+  const downArrow = Layout.createDownArrow();
+  Colors.colorizeGeometry( downArrow.geometry, Colors.DROPDOWN_FG_COLOR );
+  downArrow.position.set( DROPDOWN_WIDTH - 0.04, 0, depth * 1.01 );
+  selectedLabel.add( downArrow );
 
 
   function configureLabelPosition( label, index ){

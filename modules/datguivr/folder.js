@@ -30,7 +30,8 @@ export default function createFolder({
   name
 } = {} ){
 
-  const width = Layout.PANEL_WIDTH;
+  const width = Layout.FOLDER_WIDTH;
+  const depth = Layout.PANEL_DEPTH;
 
   const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
 
@@ -45,29 +46,26 @@ export default function createFolder({
 
   //  Yeah. Gross.
   const addOriginal = THREE.Group.prototype.add;
-  addOriginal.call( group, collapseGroup );
 
-  const descriptorLabel = createTextLabel( textCreator, '- ' + name, 0.6 );
-  descriptorLabel.position.y = Layout.PANEL_HEIGHT * 0.5;
-
-  addOriginal.call( group, descriptorLabel );
-
-  // const panel = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), SharedMaterials.FOLDER );
-  // panel.geometry.translate( width * 0.5, 0, -Layout.PANEL_DEPTH );
-  // addOriginal.call( group, panel );
-
-  // const interactionVolume = new THREE.Mesh( new THREE.BoxGeometry( width, 1, Layout.PANEL_DEPTH ), new THREE.MeshBasicMaterial({color:0x000000}) );
-  // interactionVolume.geometry.translate( width * 0.5 - Layout.PANEL_MARGIN, 0, -Layout.PANEL_DEPTH );
-  // addOriginal.call( group, interactionVolume );
-  // interactionVolume.visible = false;
-
-  // const interaction = createInteraction( panel );
-  // interaction.events.on( 'onPressed', handlePress );
-
-  function handlePress(){
-    state.collapsed = !state.collapsed;
-    performLayout();
+  function addImpl( o ){
+    addOriginal.call( group, o );
   }
+
+  addImpl( collapseGroup );
+
+  const panel = Layout.createPanel( width, Layout.FOLDER_HEIGHT, depth );
+  addImpl( panel );
+
+  const descriptorLabel = textCreator.create( name );
+  descriptorLabel.position.x = Layout.PANEL_LABEL_TEXT_MARGIN * 1.5;
+  descriptorLabel.position.y = -0.03;
+  descriptorLabel.position.z = depth;
+  panel.add( descriptorLabel );
+
+  const downArrow = Layout.createDownArrow();
+  Colors.colorizeGeometry( downArrow.geometry, 0xffffff );
+  downArrow.position.set( 0.05, 0, depth  * 1.01 );
+  panel.add( downArrow );
 
   group.add = function( ...args ){
     args.forEach( function( obj ){
@@ -82,7 +80,8 @@ export default function createFolder({
 
   function performLayout(){
     collapseGroup.children.forEach( function( child, index ){
-      child.position.y = -(index+1) * spacingPerController + Layout.PANEL_HEIGHT * 0.5;
+      child.position.y = -(index+1) * spacingPerController ;
+      child.position.x = 0.026;
       if( state.collapsed ){
         child.children[0].visible = false;
       }
@@ -92,35 +91,29 @@ export default function createFolder({
     });
 
     if( state.collapsed ){
-      descriptorLabel.setString( '+ ' + name );
+      downArrow.rotation.z = Math.PI * 0.5;
     }
     else{
-      descriptorLabel.setString( '- ' + name );
+      downArrow.rotation.z = 0;
     }
-
-    // const totalHeight = collapseGroup.children.length * spacingPerController;
-    // panel.geometry = new THREE.BoxGeometry( width, totalHeight, Layout.PANEL_DEPTH );
-    // panel.geometry.translate( width * 0.5, -totalHeight * 0.5, -Layout.PANEL_DEPTH );
-    // panel.geometry.computeBoundingBox();
   }
 
-  function updateLabel(){
-    // if( interaction.hovering() ){
-    //   descriptorLabel.back.material.color.setHex( Colors.HIGHLIGHT_BACK );
-    // }
-    // else{
-      // descriptorLabel.back.material.color.setHex( Colors.DEFAULT_BACK );
-    // }
-  }
+  const interaction = createInteraction( panel );
+  interaction.events.on( 'onPressed', function( p ){
+    state.collapsed = !state.collapsed;
+    performLayout();
+    p.locked = true;
+  });
 
   group.folder = group;
-  const grabInteraction = Grab.create( { group, panel: descriptorLabel.back } );
-  const paletteInteraction = Palette.create( { group, panel: descriptorLabel.back } );
+
+  // const grabInteraction = Grab.create( { group, panel } );
+  const paletteInteraction = Palette.create( { group, panel } );
 
   group.update = function( inputObjects ){
-    grabInteraction.update( inputObjects );
+    interaction.update( inputObjects );
+    // grabInteraction.update( inputObjects );
     paletteInteraction.update( inputObjects );
-    updateLabel();
   };
 
   group.name = function( str ){
@@ -128,7 +121,7 @@ export default function createFolder({
     return group;
   };
 
-  group.hitscan = [ descriptorLabel.back ];
+  group.hitscan = [ panel ];
 
   group.beingMoved = false;
 
