@@ -76,7 +76,7 @@ export default function createInteraction( hitVolume ){
     if( input.intersections.length <= 0 ){
       return {
         hitPoint: tVector.setFromMatrixPosition( input.cursor.matrixWorld ).clone(),
-        hitObject: input.cursor,
+        hitObject: undefined,
       };
     }
     else{
@@ -93,6 +93,9 @@ export default function createInteraction( hitVolume ){
     buttonName, interactionName, downName, holdName, upName
   } = {} ){
 
+    if( hitObject === undefined ){
+      return;
+    }
 
     //  hovering and button down but no interactions active yet
     if( hover && input[ buttonName ] === true && input.interaction[ interactionName ] === undefined ){
