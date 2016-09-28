@@ -171,6 +171,10 @@ export default function createSlider( {
     state.step = step;
     state.precision = numDecimals( state.step )
     state.useStep = true;
+
+    updateStateFromAlpha( state.alpha );
+    updateValueLabel( state.value );
+    updateSlider( state.alpha );
     return group;
   };
 
