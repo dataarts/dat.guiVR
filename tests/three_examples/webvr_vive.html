@@ -19,7 +19,7 @@
 	</head>
 	<body>
 
-		<script src="../utils/loading.js"></script>
+		<script src="../utils/loading.js"></script> 
 		<script>
 			//var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/r81/";
 			var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/dev/";
@@ -67,7 +67,7 @@
 		</script>
 
 		<script>
-		function createThreeExample() {
+		function createThreeExample() { // DAT MODIFIED
 			if ( WEBVR.isLatestAvailable() === false ) {
 
 				document.body.appendChild( WEBVR.getMessage() );
@@ -153,14 +153,14 @@
 				var material = new THREE.MeshStandardMaterial();
 
 				var loader = new THREE.OBJLoader();
-				loader.setPath(threeJSExamplesPath + 'models/obj/cerberus/' );
+				loader.setPath(threeJSExamplesPath + 'models/obj/cerberus/' ); // DAT MODIFIED
 				loader.load( 'Cerberus.obj', function ( group ) {
 
 					// var material = new THREE.MeshBasicMaterial( { wireframe: true } );
 
 					var loader = new THREE.TextureLoader();
 					loader.setCrossOrigin( 'anonymous' );
-					loader.setPath( threeJSExamplesPath +'models/obj/cerberus/' );
+					loader.setPath( threeJSExamplesPath +'models/obj/cerberus/' ); // DAT MODIFIED
 
 					material.roughness = 1;
 					material.metalness = 1;
@@ -194,7 +194,7 @@
 
 				var loader = new THREE.CubeTextureLoader();
 				loader.setCrossOrigin( 'anonymous' );
-				loader.setPath( threeJSExamplesPath +  'textures/cube/pisa/' );
+				loader.setPath( threeJSExamplesPath +  'textures/cube/pisa/' ); // DAT MODIFIED
 				material.envMap = loader.load( [
 					"px.png", "nx.png",
 					"py.png", "ny.png",
@@ -224,11 +224,11 @@
 				scene.add( controller2 );
 
 				var loader = new THREE.OBJLoader();
-				loader.setPath( threeJSExamplesPath + 'models/obj/vive-controller/' );
+				loader.setPath( threeJSExamplesPath + 'models/obj/vive-controller/' ); // DAT MODIFIED
 				loader.load( 'vr_controller_vive_1_5.obj', function ( object ) {
 
 					var loader = new THREE.TextureLoader();
-					loader.setPath( threeJSExamplesPath + 'models/obj/vive-controller/' );
+					loader.setPath( threeJSExamplesPath + 'models/obj/vive-controller/' ); // DAT MODIFIED
 
 					var controller = object.children[ 0 ];
 					controller.material.map = loader.load( 'onepointfive_texture.png' );
@@ -251,7 +251,7 @@
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
-				createDatGUI(scene, camera, gun, controller1, controller2); // DAT MODIFICATION
+				createDatGUI(scene, camera, gun, controller1, controller2); // DAT MODIFIED
 			}
 
 			function onWindowResize() {
@@ -317,7 +317,7 @@
 				effect.render( scene, camera );
 
 			}
-		};
+		};// DAT MODIFIED
 		</script>
 	</body>
 </html>
