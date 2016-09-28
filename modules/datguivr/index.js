@@ -98,7 +98,8 @@ export default function DATGUIVR(){
       events: new Emitter(),
       interaction: {
         grip: undefined,
-        press: undefined
+        press: undefined,
+        hover: undefined
       }
     };
   }
