@@ -3,13 +3,13 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,10 +45,26 @@ module.exports = function (grunt) {
       }
     },
 
+    uglify: {
+      target: {
+        options: {
+          sourceMap: true,
+          sourceMapName: './build/datguivr.map'
+        },
+        files: {
+          './build/datguivr.min.js': ['./build/datguivr.js']
+        }
+      }
+    },
+
     watch: {
       options: {
         livereload: true,
         spawn: false
+      },
+      min: {
+        files: ['./build/datguivr.js'],
+        tasks: ['uglify:target']
       },
       scripts: {
         files: ['testserver.js', './build/*.js' ],
@@ -92,6 +108,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-express-server');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('default', ['concurrent:dev']);
   grunt.registerTask('publish', ['concurrent:publish']);

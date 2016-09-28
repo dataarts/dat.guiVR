@@ -9,20 +9,19 @@
     "dev": "./node_modules/.bin/grunt"
   },
   "dependencies": {
-    "events": "^1.0.2",
-    "object-assign": "^4.0.1",
     "parse-bmfont-ascii": "^1.0.6",
     "three-bmfont-text": "^2.1.0"
   },
   "devDependencies": {
     "babel-preset-es2015": "*",
-    "babelify": "*",
+    "babelify": "^7.3.0",
     "express": "*",
     "grunt": "*",
-    "grunt-cli": "*",
     "grunt-browserify": "*",
+    "grunt-cli": "*",
     "grunt-concurrent": "*",
     "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "*",
     "grunt-express-server": "*",
     "load-grunt-tasks": "*"
