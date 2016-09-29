@@ -73,6 +73,7 @@ export default function createSlider( {
   const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
   hitscanVolume.position.z = depth;
   hitscanVolume.position.x = width * 0.5;
+  hitscanVolume.name = 'hitscanVolume';
 
   //  sliderBG volume
   const sliderBG = new THREE.Mesh( rect.clone(), SharedMaterials.PANEL );
@@ -103,6 +104,7 @@ export default function createSlider( {
   controllerID.position.z = depth;
 
   const panel = Layout.createPanel( width, height, depth );
+  panel.name = 'panel';
   panel.add( descriptorLabel, hitscanVolume, sliderBG, valueLabel, controllerID );
 
   group.add( panel )
