@@ -24,12 +24,16 @@
 			var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/dev/";
 			var threeJSExamplesPath = threeJSPath + 'examples/';
 
+			var webVRPolyfillPath = "https://cdn.rawgit.com/borismus/webvr-polyfill/v1.0.0/build/";
+
 			ready(function() {
 				loadThreeAndDependents(threeJSPath + 'build/three.js',
 					[
 						threeJSExamplesPath + 'js/vr/WebVR.js',
 						threeJSExamplesPath + 'js/effects/VREffect.js',
 						threeJSExamplesPath + 'js/controls/VRControls.js',
+						
+						webVRPolyfillPath + 'webvr-polyfill.js',
 
 						'../../build/datguivr.js'
 				]).then(function(){
