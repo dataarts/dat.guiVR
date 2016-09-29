@@ -54,7 +54,7 @@ export default function createFolder({
 
   addImpl( collapseGroup );
 
-  const panel = Layout.createPanel( width, Layout.FOLDER_HEIGHT, depth );
+  const panel = Layout.createPanel( width, Layout.FOLDER_HEIGHT, depth, true );
   addImpl( panel );
 
   const descriptorLabel = textCreator.create( name );
@@ -68,7 +68,7 @@ export default function createFolder({
   downArrow.position.set( 0.05, 0, depth  * 1.01 );
   panel.add( downArrow );
 
-  const grabber = Layout.createPanel( width, Layout.FOLDER_GRAB_HEIGHT, depth );
+  const grabber = Layout.createPanel( width, Layout.FOLDER_GRAB_HEIGHT, depth, true );
   grabber.position.y = Layout.FOLDER_HEIGHT * 0.86;
   grabber.name = 'grabber';
   addImpl( grabber );
@@ -108,6 +108,22 @@ export default function createFolder({
     }
   }
 
+  function updateView(){
+    if( interaction.hovering() ){
+      panel.material.color.setHex( Colors.HIGHLIGHT_BACK );
+    }
+    else{
+      panel.material.color.setHex( Colors.DEFAULT_BACK );
+    }
+
+    if( grabInteraction.hovering() ){
+      grabber.material.color.setHex( Colors.HIGHLIGHT_BACK );
+    }
+    else{
+      grabber.material.color.setHex( Colors.DEFAULT_BACK );
+    }
+  }
+
   const interaction = createInteraction( panel );
   interaction.events.on( 'onPressed', function( p ){
     state.collapsed = !state.collapsed;
@@ -124,6 +140,8 @@ export default function createFolder({
     interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
     paletteInteraction.update( inputObjects );
+
+    updateView();
   };
 
   group.name = function( str ){

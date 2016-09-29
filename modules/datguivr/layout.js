@@ -35,10 +35,18 @@ export function alignLeft( obj ){
   }
 }
 
-export function createPanel( width, height, depth ){
-  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, height, depth ), SharedMaterials.PANEL );
+export function createPanel( width, height, depth, uniqueMaterial ){
+  const material = uniqueMaterial ? new THREE.MeshBasicMaterial({color:0xffffff}) : SharedMaterials.PANEL;
+  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, height, depth ), material );
   panel.geometry.translate( width * 0.5, 0, 0 );
-  Colors.colorizeGeometry( panel.geometry, Colors.DEFAULT_BACK );
+
+  if( uniqueMaterial ){
+    material.color.setHex( Colors.DEFAULT_BACK );
+  }
+  else{
+    Colors.colorizeGeometry( panel.geometry, Colors.DEFAULT_BACK );
+  }
+
   return panel;
 }
 
