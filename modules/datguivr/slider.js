@@ -110,7 +110,7 @@ export default function createSlider( {
   group.add( panel )
 
   updateValueLabel( state.value );
-  updateSlider( state.alpha );
+  updateSlider();
 
   function updateValueLabel( value ){
     if( state.useStep ){
@@ -134,9 +134,8 @@ export default function createSlider( {
     }
   }
 
-  function updateSlider( alpha ){
-    alpha = getClampedAlpha( alpha );
-    filledVolume.scale.x = Math.max( alpha * width, 0.000001 );
+  function updateSlider(){
+    filledVolume.scale.x = Math.max( getAlphaFromValue( state.value, state.min, state.max ) * width, 0.000001 );
   }
 
   function updateObject( value ){
@@ -176,7 +175,7 @@ export default function createSlider( {
 
     updateStateFromAlpha( state.alpha );
     updateValueLabel( state.value );
-    updateSlider( state.alpha );
+    updateSlider( );
     return group;
   };
 
@@ -215,7 +214,7 @@ export default function createSlider( {
 
     updateStateFromAlpha( getPointAlpha( point, {a,b} ) );
     updateValueLabel( state.value );
-    updateSlider( state.alpha );
+    updateSlider( );
     updateObject( state.value );
 
     if( previousValue !== state.value && state.onChangedCB ){
@@ -241,7 +240,7 @@ export default function createSlider( {
     if( state.listen ){
       listenUpdate();
       updateValueLabel( state.value );
-      updateSlider( state.alpha );
+      updateSlider( );
     }
     updateView();
   };
@@ -256,7 +255,7 @@ export default function createSlider( {
     state.alpha = getAlphaFromValue( state.value, state.min, state.max );
     updateStateFromAlpha( state.alpha );
     updateValueLabel( state.value );
-    updateSlider( state.alpha );
+    updateSlider( );
     return group;
   };
 
@@ -265,7 +264,7 @@ export default function createSlider( {
     state.alpha = getAlphaFromValue( state.value, state.min, state.max );
     updateStateFromAlpha( state.alpha );
     updateValueLabel( state.value );
-    updateSlider( state.alpha );
+    updateSlider( );
     return group;
   };
 
