@@ -40,8 +40,8 @@
 			function createDatGUI(scene, camera, object) {
 				var gui = DATGUIVR();
 
-				//window.camera = camera; // TODO: get rid of this requirement
-      			//gui.setMouseEnabled( true );
+				window.camera = camera; // TODO: get rid of this requirement
+      			gui.setMouseEnabled( true );
 
       			const folder = gui.addFolder( 'Settings' );
       			folder.position.z = 0.5;
@@ -61,15 +61,15 @@
       			scene.add( gazeInput.cursor );
 
 
-      			//  bind any click or touch on the webpage to a press
-				['mousedown','touchstart']
+      			//  bind any key or touch on the webpage to a press
+				['keydown','touchstart']
 				.forEach( function(e){
 				  window.addEventListener(e, function(){
 				    gazeInput.pressed( true );
 				  }, false );
 				});
 
-				['mouseup','touchend']
+				['keyup','touchend']
 				.forEach( function(e){
 				  window.addEventListener(e, function(){
 				    gazeInput.pressed( false );
