@@ -29,11 +29,9 @@ export function createMaterial( color ){
   const image = Font.image();
   texture.image = image;
   texture.needsUpdate = true;
-  texture.minFilter = THREE.LinearMipMapLinearFilter;
+  texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
-  texture.generateMipmaps = true;
-
-  //  and what about anisotropic filtering?
+  texture.generateMipmaps = false;
 
   return new THREE.RawShaderMaterial(SDFShader({
     side: THREE.DoubleSide,

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "parse-bmfont-ascii": "^1.0.6",
-    "three-bmfont-text": "^2.1.0"
+    "three-bmfont-text": "^2.2.0"
   },
   "devDependencies": {
     "babel-preset-es2015": "*",

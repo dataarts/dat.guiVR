@@ -1,17 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - effects - cardboard</title>
+		<title>three.js webvr - video</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<style>
 			body {
+				font-family: Monospace;
+				background-color: #f0f0f0;
 				margin: 0px;
 				overflow: hidden;
+			}
+			#info {
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				color: #fff;
+				text-align: center;
+			}
+			a {
+				color: #ff0
 			}
 		</style>
 	</head>
 	<body>
+		<div id="container"></div>
+		<div id="info">
+			<a href="http://threejs.org" target="_blank">three.js</a> webgl - vr video<br />
+			stereoscopic panoramic render by <a href="http://pedrofe.com/rendering-for-oculus-rift-with-arnold/" target="_blank">pedrofe</a>. scene from <a href="http://www.meryproject.com/" target="_blank">mery project</a>.
+		</div>
 
 		<script src="../utils/loading.js"></script> 
 		<script>
@@ -29,7 +46,7 @@
 						threeJSExamplesPath + 'js/controls/VRControls.js',
 
 						webVRPolyfillPath + 'webvr-polyfill.js',
-
+						
 						'../../build/datguivr.js'
 				]).then(function(){
 					createThreeExample();
@@ -43,27 +60,18 @@
       			gui.setMouseEnabled( true );
 
       			const folder = gui.addFolder( 'Settings' );
-      			folder.position.z = 1.0;
-      			folder.position.y = 0.5;
-      			//folder.rotation.y = Math.PI;
+      			folder.position.x = -0.0;
+      			folder.position.y = 0.0;
+      			folder.position.z = -1.80;
+      			folder.rotation.y = -Math.PI/4;
       			scene.add( folder );
 
-
       			folder.add(
-      			  gui.add( object.position, 'x', -2, 2 ).step(0.001).listen(),
-      			  gui.add( object.position, 'y', -2, 2 ).step(0.001).listen(),
-      			  gui.add( object.position, 'z', -2, 2 ).step(0.001).listen()
+      			  gui.add( object, 'playbackRate').min(0).max(10).step(1).name("Playback Rate"),
+      			  gui.add( object, 'pause').name('Hold to pause')
       			 )
 
-      			folder.traverse (function (child)
-			      {
-			          if (child.type == "Mesh") {
-			            child.castShadow = true;
-			          }
-			      });
-
       			// GAZE input
-
      			var gazeInput = gui.addInputObject( camera );
       			scene.add( gazeInput.cursor );
 
@@ -87,7 +95,6 @@
 
 		</script>
 
-
 		<script>
 		function createThreeExample() { // DAT MODIFIED
 
@@ -100,65 +107,108 @@
 			//
 
 			var camera, scene, renderer;
-			var effect, controls;
+			var video, texture;
+
+			var controls, effect;
 
 			init();
 			animate();
 
 			function init() {
 
+				var container = document.getElementById( 'container' );
+				container.addEventListener( 'click', function () {
+
+					video.play();
+
+				} );
+
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 ); // DAT MODIFIED
+				camera.layers.enable( 1 ); // render left view when no stereo available
+
+				// video
+
+				video = document.createElement( 'video' );
+				video.loop = true;
+				video.muted = true;
+				video.src = threeJSExamplesPath + 'textures/MaryOculus.webm'; // DAT MODIFIED
+				video.crossOrigin = 'anonymous';
+				video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+				video.play();
+
+				texture = new THREE.VideoTexture( video );
+				texture.minFilter = THREE.NearestFilter;
+				texture.maxFilter = THREE.NearestFilter;
+				texture.format = THREE.RGBFormat;
+				texture.generateMipmaps = false;
+
 				scene = new THREE.Scene();
+				scene.add(camera); // DAT MODIFIED
 
-				var dummy = new THREE.Camera();
-				dummy.position.set( 2, 1, 2 );
-				dummy.lookAt( scene.position );
-				scene.add( dummy );
+				// left
 
-				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
-				dummy.add( camera );
+				var geometry = new THREE.SphereGeometry( 500, 60, 40 );
+				geometry.scale( - 1, 1, 1 );
 
-				var geometry = new THREE.TorusKnotGeometry( 0.4, 0.15, 150, 20 );;
-				var material = new THREE.MeshStandardMaterial( { roughness: 0.01, metalness: 0.2 } );
+				var uvs = geometry.faceVertexUvs[ 0 ];
+
+				for ( var i = 0; i < uvs.length; i ++ ) {
+
+					for ( var j = 0; j < 3; j ++ ) {
+
+						uvs[ i ][ j ].x *= 0.5;
+
+					}
+
+				}
+
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+
 				var mesh = new THREE.Mesh( geometry, material );
-				mesh.position.y = 0.75;
-				mesh.castShadow = true;
-				mesh.receiveShadow = true;
+				mesh.rotation.y = - Math.PI / 2;
+				mesh.layers.set( 1 ); // display in left eye only
 				scene.add( mesh );
-				var torus = mesh; // DAT MODIFIED
 
-				var geometry = new THREE.BoxGeometry( 3, 0.1, 3 );
-				var material = new THREE.MeshStandardMaterial( { roughness: 1.0, metalness: 0.0 } );
+				// right
+
+				var geometry = new THREE.SphereGeometry( 500, 60, 40 );
+				geometry.scale( - 1, 1, 1 );
+
+				var uvs = geometry.faceVertexUvs[ 0 ];
+
+				for ( var i = 0; i < uvs.length; i ++ ) {
+
+					for ( var j = 0; j < 3; j ++ ) {
+
+						uvs[ i ][ j ].x *= 0.5;
+						uvs[ i ][ j ].x += 0.5;
+
+					}
+
+				}
+
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+
 				var mesh = new THREE.Mesh( geometry, material );
-				mesh.position.y = - 0.1;
-				mesh.castShadow = true;
-				mesh.receiveShadow = true;
+				mesh.rotation.y = - Math.PI / 2;
+				mesh.layers.set( 2 ); // display in right eye only
 				scene.add( mesh );
-
-				var light = new THREE.DirectionalLight( 0x8800ff );
-				light.position.set( - 1, 1.5, 0.5 );
-				light.castShadow = true;
-				light.shadow.camera.zoom = 4;
-				scene.add( light );
-
-				var light = new THREE.DirectionalLight( 0xff0000 );
-				light.position.set( 1, 1.5, - 0.5 );
-				light.castShadow = true;
-				light.shadow.camera.zoom = 4;
-				scene.add( light );
 
 				//
 
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer = new THREE.WebGLRenderer();
 				renderer.setClearColor( 0x101010 );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.shadowMap.enabled = true;
-				document.body.appendChild( renderer.domElement );
+				container.appendChild( renderer.domElement );
 
 				//
 
 				controls = new THREE.VRControls( camera );
+
 				effect = new THREE.VREffect( renderer );
+				effect.scale = 0; // video doesn't need eye separation
+				effect.setSize( window.innerWidth, window.innerHeight );
 
 				if ( WEBVR.isAvailable() === true ) {
 
@@ -166,11 +216,12 @@
 
 				}
 
+
 				//
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
-				createDatGUI(scene, camera, torus); // DAT MODIFIED
+				createDatGUI(scene, camera, video); // DAT MODIFIED
 			}
 
 			function onWindowResize() {
@@ -190,11 +241,6 @@
 			}
 
 			function render() {
-
-				var time = performance.now() * 0.0002;
-				var mesh = scene.children[ 1 ];
-				mesh.rotation.x = time * 2;
-				mesh.rotation.y = time * 5;
 
 				controls.update();
 
