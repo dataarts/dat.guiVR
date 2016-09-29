@@ -135,7 +135,11 @@ export default function createSlider( {
   }
 
   function updateSlider(){
-    filledVolume.scale.x = Math.max( getAlphaFromValue( state.value, state.min, state.max ) * width, 0.000001 );
+    filledVolume.scale.x =
+      Math.min(
+        Math.max( getAlphaFromValue( state.value, state.min, state.max ) * width, 0.000001 ),
+        width
+      );
   }
 
   function updateObject( value ){
@@ -240,7 +244,7 @@ export default function createSlider( {
     if( state.listen ){
       listenUpdate();
       updateValueLabel( state.value );
-      updateSlider( );
+      updateSlider();
     }
     updateView();
   };
