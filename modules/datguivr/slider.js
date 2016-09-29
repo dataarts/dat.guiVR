@@ -172,6 +172,8 @@ export default function createSlider( {
     state.precision = numDecimals( state.step )
     state.useStep = true;
 
+    state.alpha = getAlphaFromValue( state.value, state.min, state.max );
+
     updateStateFromAlpha( state.alpha );
     updateValueLabel( state.value );
     updateSlider( state.alpha );
@@ -251,11 +253,19 @@ export default function createSlider( {
 
   group.min = function( m ){
     state.min = m;
+    state.alpha = getAlphaFromValue( state.value, state.min, state.max );
+    updateStateFromAlpha( state.alpha );
+    updateValueLabel( state.value );
+    updateSlider( state.alpha );
     return group;
   };
 
   group.max = function( m ){
     state.max = m;
+    state.alpha = getAlphaFromValue( state.value, state.min, state.max );
+    updateStateFromAlpha( state.alpha );
+    updateValueLabel( state.value );
+    updateSlider( state.alpha );
     return group;
   };
 
