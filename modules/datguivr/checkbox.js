@@ -69,7 +69,7 @@ export default function createCheckbox( {
   outline.material.color.setHex( Colors.OUTLINE_COLOR );
 
   //  checkbox volume
-  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
+  const material = new THREE.MeshBasicMaterial({ color: Colors.DEFAULT_COLOR });
   const filledVolume = new THREE.Mesh( rect.clone(), material );
   filledVolume.scale.set( ACTIVE_SCALE, ACTIVE_SCALE,ACTIVE_SCALE );
   hitscanVolume.add( filledVolume );
@@ -112,11 +112,8 @@ export default function createCheckbox( {
 
     if( interaction.hovering() ){
       material.color.setHex( Colors.HIGHLIGHT_COLOR );
-      material.emissive.setHex( Colors.HIGHLIGHT_EMISSIVE_COLOR );
     }
     else{
-      material.emissive.setHex( Colors.EMISSIVE_COLOR );
-
       if( state.value ){
         material.color.setHex( Colors.DEFAULT_COLOR );
       }

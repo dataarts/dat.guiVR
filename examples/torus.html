@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VR Dat GUI Basic Example</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui" name="viewport" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/415461c0252e865c5c008c074c3255b33c772730/three-vr-viewer.js"></script>
+
+    <script type="text/javascript" src="../build/datguivr.js"></script>
+
+    <script type="text/javascript" src="js/floorandlights.js"></script>
+
+    <script type="text/javascript">
+
+
+      const { scene, camera, events, toggleVR, controllers, renderer } = VRViewer({
+        emptyRoom: false,
+        THREE
+      });
+
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      scene.add( createFloorAndLights() );
+
+
+      //  instance of DATGUIVR, only one is needed
+      const gui = DATGUIVR();
+
+      //  you can use the mouse to interact with the GUI on-screen!
+      gui.setMouseEnabled( true );
+
+      //  or turn it off when going into VR
+      window.addEventListener( 'vrdisplaypresentchange', function( e ){
+        if( e.display.isPresenting ){
+          gui.setMouseEnabled( false );
+        }
+        else{
+          gui.setMouseEnabled( true );
+        }
+      }, false );
+
+
+
+      //  add an input object (any Object3D like ViveController or Camera)
+      //  you can add multiple objects
+      const guiInputRight = gui.addInputObject( controllers[ 0 ] );
+      scene.add( guiInputRight );
+
+      const guiInputLeft = gui.addInputObject( controllers[ 1 ] );
+      scene.add( guiInputLeft );
+
+      controllers[ 0 ].addEventListener( 'menudown', ()=>toggleVR() );
+
+
+
+      //  state that dat gui is changing
+      const state = {
+        radius: 10,
+        tube: 3,
+        tubularSegments: 64,
+        radialSegments: 8,
+        p: 2,
+        q: 5,
+        spinning: true,
+        spinSpeed: 'fast',
+        wireframe: false,
+        shading: THREE.SmoothShading,
+
+        reset: function(){
+          state.radius = 10;
+          state.tube = 3;
+          state.tubularSegments = 64;
+          state.radialSegments = 8;
+          state.p = 2;
+          state.q = 3;
+          state.spinning = true;
+          state.spinSpeed = 'fast';
+          state.wireframe = false;
+          state.shading = THREE.SmoothShading;
+          updateMesh();
+          updateMaterial();
+        }
+      };
+
+
+
+      //  torus mesh
+      const textureCube = new THREE.CubeTextureLoader()
+        .setPath( 'textures/cube/pisa/' )
+        .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
+
+      let material = new THREE.MeshStandardMaterial({
+        shading: THREE.SmoothShading
+      });
+      material.roughness = 1.0;
+      material.metalness = 1;
+      material.envMap = textureCube;
+
+      const mesh = new THREE.Mesh( new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q ), material );
+      mesh.position.z = -4.5;
+      mesh.position.y = 4.5;
+      mesh.scale.multiplyScalar( 0.2 );
+      mesh.castShadow = true;
+      events.on( 'tick', (dt)=>{
+        if( state.spinning ){
+          if( state.spinSpeed === 'slow' ){
+            mesh.rotation.y += 0.05 * dt;
+          }
+          else{
+            mesh.rotation.y += 0.4 * dt;
+          }
+        }
+      });
+
+      scene.add( mesh );
+
+
+
+
+
+      //  create a GUI folder
+      const folder = gui.addFolder( 'Settings' );
+      folder.position.y = 1.5;
+      scene.add( folder );
+
+
+
+      //  add multiple sliders
+      //  updateMesh will be the callback when values are changed
+      folder.add(
+        gui.add( state, 'radius', 1, 20 ).step(0.01).onChange( updateMesh ),
+        gui.add( state, 'tube', 0.1, 10 ).step(0.01).onChange( updateMesh ),
+        gui.add( state, 'tubularSegments', 3, 300 ).step(1).onChange( updateMesh ),
+        gui.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh ),
+        gui.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh ),
+        gui.add( state, 'p', 1, 20 ).name('torus p value').onChange( updateMesh ).step( 1 ),
+        gui.add( state, 'q', 1, 20 ).name('torus q value').onChange( updateMesh ).step( 1 ),
+        gui.add( state, 'wireframe' ).onChange( updateMaterial ),
+        gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial ),
+        // gui.add( state, 'color' ),
+        gui.add( state, 'spinning' ),
+        gui.add( state, 'spinSpeed', ['slow','fast'] ),
+        gui.add( state, 'reset' )
+      );
+
+      function updateMesh(){
+        mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );
+      }
+
+      function updateMaterial(){
+        material = mesh.material = new THREE.MeshStandardMaterial({
+          shading: state.shading
+        });
+        material.roughness = 1.0;
+        material.metalness = 1;
+        material.envMap = textureCube;
+        material.wireframe = state.wireframe;
+      }
+
+
+
+    </script>
+
+  </body>
+</html>

@@ -81,7 +81,7 @@ export default function createSlider( {
   sliderBG.position.z = depth * 0.5;
   sliderBG.position.x = SLIDER_WIDTH + Layout.PANEL_MARGIN;
 
-  const material = new THREE.MeshPhongMaterial({ color: Colors.DEFAULT_COLOR, emissive: Colors.EMISSIVE_COLOR });
+  const material = new THREE.MeshBasicMaterial({ color: Colors.DEFAULT_COLOR });
   const filledVolume = new THREE.Mesh( rect.clone(), material );
   hitscanVolume.add( filledVolume );
 
@@ -128,11 +128,9 @@ export default function createSlider( {
     else
     if( interaction.hovering() ){
       material.color.setHex( Colors.HIGHLIGHT_COLOR );
-      material.emissive.setHex( Colors.HIGHLIGHT_EMISSIVE_COLOR );
     }
     else{
       material.color.setHex( Colors.DEFAULT_COLOR );
-      material.emissive.setHex( Colors.EMISSIVE_COLOR );
     }
   }
 

@@ -60,7 +60,7 @@ export default function createCheckbox( {
   hitscanVolume.position.z = BUTTON_DEPTH * 0.5;
   hitscanVolume.position.x = width * 0.5;
 
-  const material = new THREE.MeshPhongMaterial({ color: Colors.BUTTON_COLOR, emissive: Colors.EMISSIVE_COLOR });
+  const material = new THREE.MeshBasicMaterial({ color: Colors.BUTTON_COLOR });
   const filledVolume = new THREE.Mesh( rect.clone(), material );
   hitscanVolume.add( filledVolume );
 
@@ -108,11 +108,9 @@ export default function createCheckbox( {
 
     if( interaction.hovering() ){
       material.color.setHex( Colors.HIGHLIGHT_COLOR );
-      material.emissive.setHex( Colors.HIGHLIGHT_EMISSIVE_COLOR );
     }
     else{
       material.color.setHex( Colors.BUTTON_COLOR );
-      material.emissive.setHex( Colors.EMISSIVE_COLOR );
     }
 
   }
