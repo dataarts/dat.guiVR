@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - effects - cardboard</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<style>
+			body {
+				margin: 0px;
+			}
+			#example {
+				    padding: 30px;
+				    width: 800px;
+				    margin-left: auto;
+				    margin-right: auto;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<script src="../utils/loading.js"></script> 
+		<script>
+			//var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/r81/";
+			var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/dev/";
+			var threeJSExamplesPath = threeJSPath + 'examples/';
+
+			ready(function() {
+				loadThreeAndDependents(threeJSPath + 'build/three.js',
+					[
+						threeJSExamplesPath + 'js/vr/WebVR.js',
+						threeJSExamplesPath + 'js/effects/VREffect.js',
+						threeJSExamplesPath + 'js/controls/VRControls.js',
+
+						'../../build/datguivr.js'
+				]).then(function(){
+					createThreeExample();
+				})		
+			})
+
+			function createDatGUI(scene, camera, renderer, object) {
+				var gui = DATGUIVR();
+				
+      			gui.enableMouse(camera, renderer)
+
+      			const folder = gui.addFolder( 'Settings' );
+      			folder.position.z = 1.0;
+      			folder.position.y = 0.5;
+      			//folder.rotation.y = Math.PI;
+      			scene.add( folder );
+
+
+      			folder.add(
+      			  	gui.add( object.position, 'x', -1, 1 ).name('Position X').step(0.001).listen(),
+      			  	gui.add( object.position, 'y',  0, 2 ).name('Position Y').step(0.001).listen(),
+      			  	gui.add( object.position, 'z', -1, 1 ).name('Position Z').step(0.001).listen(),
+
+  					gui.add(object.rotation, 'x').min(0).max(Math.PI * 2).name('Rotation X').step(0.001).listen(),
+  					gui.add(object.rotation, 'y').min(0).max(Math.PI * 2).name('Rotation Y').step(0.001).listen(),
+  				   	gui.add(object.rotation, 'z').min(0).max(Math.PI * 2).name('Rotation Z').step(0.001).listen()
+      			 )
+
+      			// GAZE input
+
+     			var gazeInput = gui.addInputObject( camera );
+      			scene.add( gazeInput.cursor );
+
+
+      			//  bind any key or touch on the webpage to a press
+				['keydown','touchstart']
+				.forEach( function(e){
+				  window.addEventListener(e, function(){
+				    gazeInput.pressed( true );
+				  }, false );
+				});
+
+				['keyup','touchend']
+				.forEach( function(e){
+				  window.addEventListener(e, function(){
+				    gazeInput.pressed( false );
+				  }, false );
+				});
+			}
+
+		</script>
+
+
+		<script>
+		function createThreeExample() { // DAT MODIFIED
+
+			if ( WEBVR.isLatestAvailable() === false ) {
+
+				document.body.appendChild( WEBVR.getMessage() );
+
+			}
+
+			//
+
+			var camera, scene, renderer;
+			var effect, controls;
+
+			var canvas_w = 800;
+			var canvas_h = 300;
+
+			init();
+			animate();
+
+			function init() {
+
+				scene = new THREE.Scene();
+
+				var dummy = new THREE.Camera();
+				dummy.position.set( 2, 1, 2 );
+				dummy.lookAt( scene.position );
+				scene.add( dummy );
+
+				camera = new THREE.PerspectiveCamera( 50, canvas_w / canvas_h, 0.1, 10 );
+				dummy.add( camera );
+
+				var geometry = new THREE.TorusKnotGeometry( 0.4, 0.15, 150, 20 );;
+				var material = new THREE.MeshStandardMaterial( { roughness: 0.01, metalness: 0.2 } );
+				var mesh = new THREE.Mesh( geometry, material );
+				mesh.position.y = 0.75;
+				mesh.castShadow = true;
+				mesh.receiveShadow = true;
+				scene.add( mesh );
+				var torus = mesh; // DAT MODIFIED
+
+				var geometry = new THREE.BoxGeometry( 3, 0.1, 3 );
+				var material = new THREE.MeshStandardMaterial( { roughness: 1.0, metalness: 0.0 } );
+				var mesh = new THREE.Mesh( geometry, material );
+				mesh.position.y = - 0.1;
+				mesh.castShadow = true;
+				mesh.receiveShadow = true;
+				scene.add( mesh );
+
+				var light = new THREE.DirectionalLight( 0x8800ff );
+				light.position.set( - 1, 1.5, 0.5 );
+				light.castShadow = true;
+				light.shadow.camera.zoom = 4;
+				scene.add( light );
+
+				var light = new THREE.DirectionalLight( 0xff0000 );
+				light.position.set( 1, 1.5, - 0.5 );
+				light.castShadow = true;
+				light.shadow.camera.zoom = 4;
+				scene.add( light );
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setClearColor( 0x101010 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( canvas_w, canvas_h );
+				renderer.shadowMap.enabled = true;
+
+				var parentEl = document.querySelectorAll('#example_canvas')[0];
+				parentEl.appendChild( renderer.domElement );
+
+				//
+
+				controls = new THREE.VRControls( camera );
+				effect = new THREE.VREffect( renderer );
+
+				if ( WEBVR.isAvailable() === true ) {
+
+					document.body.appendChild( WEBVR.getButton( effect ) );
+
+				}
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+				createDatGUI(scene, camera, renderer, torus); // DAT MODIFIED
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = canvas_w / canvas_h;
+				camera.updateProjectionMatrix();
+
+				effect.setSize( canvas_w, canvas_h );
+
+			}
+
+			function animate() {
+
+				effect.requestAnimationFrame( animate );
+				render();
+
+			}
+
+			function render() {
+
+				var mesh = scene.children[ 1 ];
+				mesh.rotation.x +=  0.005;
+				mesh.rotation.x = mesh.rotation.x % (Math.PI * 2)
+
+				mesh.rotation.y +=  0.01;
+				mesh.rotation.y = mesh.rotation.y % (Math.PI * 2)
+
+				controls.update();
+
+				effect.render( scene, camera );
+
+			}
+
+		};// DAT MODIFIED
+		</script>
+
+		<div id="example">
+		<div id="example_canvas"></div>
+		<div id="example_body">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vestibulum cursus nunc ac auctor. Aenean hendrerit auctor commodo. Vestibulum ut vestibulum tortor. Vestibulum elementum feugiat consectetur. Vivamus id arcu vehicula, tristique ex eget, suscipit nunc. Donec varius ex sed volutpat ullamcorper. Ut eget vulputate lectus, ultrices placerat velit. Duis non dignissim sem.
+			</p><p>
+			Sed facilisis dolor sapien, sit amet congue nunc rhoncus non. In aliquam fringilla mi, et sodales odio. Suspendisse sollicitudin luctus mollis. Proin luctus leo metus, ullamcorper scelerisque lectus molestie a. Sed imperdiet, quam ac pharetra convallis, leo quam iaculis lacus, a pellentesque eros enim id enim. In commodo elit pharetra libero dapibus interdum. Morbi turpis nibh, lobortis at risus feugiat, blandit molestie lacus.</p>
+		</div>
+		</div>
+	</body>
+</html>
