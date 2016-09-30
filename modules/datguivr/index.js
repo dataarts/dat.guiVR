@@ -45,9 +45,21 @@ export default function DATGUIVR(){
   const hitscanObjects = [];
 
   let mouseEnabled = false;
+  let mouseCamera = null;
+  let mouseRenderer = null;
 
-  function setMouseEnabled( flag ){
-    mouseEnabled = flag;
+  function enableMouse(camera = null, renderer = null){
+    mouseEnabled = true;
+
+    if (camera !== undefined) {
+      mouseCamera = camera;
+    }
+    if (renderer !== undefined) {
+      mouseRenderer = renderer;
+    }
+  }
+  function disableMouse(){
+    mouseEnabled = false;
   }
 
 
@@ -118,8 +130,15 @@ export default function DATGUIVR(){
     const mouse = new THREE.Vector2(-1,-1);
 
     window.addEventListener( 'mousemove', function( event ){
-      mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-      mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      if (mouseRenderer) { // if a specific renderer has been defined
+        var clientRect = mouseRenderer.domElement.getBoundingClientRect();
+        mouse.x = ( (event.clientX - clientRect.left) / clientRect.width) * 2 - 1;
+        mouse.y = - ( (event.clientY - clientRect.top) / clientRect.height) * 2 + 1;
+      } else {
+        // default to fullscreen
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      }
     }, false );
 
     window.addEventListener( 'mousedown', function( event ){
@@ -374,9 +393,13 @@ export default function DATGUIVR(){
   }
 
   function performMouseInput( hitscanObjects, {box,object,raycast,laser,cursor,mouse} = {} ){
-    raycast.setFromCamera( mouse, camera );
-    const intersections = raycast.intersectObjects( hitscanObjects, false );
-    parseIntersections( intersections, laser, cursor );
+    let intersections = [];
+
+    if (mouseCamera) {    
+      raycast.setFromCamera( mouse, mouseCamera );
+      intersections = raycast.intersectObjects( hitscanObjects, false );
+      parseIntersections( intersections, laser, cursor );
+    }
     return intersections;
   }
 
@@ -394,7 +417,8 @@ export default function DATGUIVR(){
     addInputObject,
     add,
     addFolder,
-    setMouseEnabled
+    enableMouse,
+    disableMouse
   };
 
 }

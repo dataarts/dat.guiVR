@@ -43,8 +43,7 @@
 			function createDatGUI(scene, camera, object, controller1, controller2) {
 				var gui = DATGUIVR();
 
-				window.camera = camera; // TODO: get rid of this requirement
-      			gui.setMouseEnabled( true );
+      			gui.enableMouse( camera );
 
       			const folder = gui.addFolder( 'Flamboyant Gun' );
       			folder.position.y = 1.5;

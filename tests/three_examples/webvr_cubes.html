@@ -44,8 +44,7 @@
 			function createDatGUI(scene, camera, object) {
 				var gui = DATGUIVR();
 
-				window.camera = camera; // TODO: get rid of this requirement
-      			gui.setMouseEnabled( true );
+      			gui.enableMouse( camera );
 
       			const folder = gui.addFolder( 'Cube #1' );
       			folder.position.z = 0.5;

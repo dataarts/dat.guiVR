@@ -39,8 +39,8 @@
 			function createDatGUI(scene, camera, object) {
 				var gui = DATGUIVR();
 
-				window.camera = camera; // TODO: get rid of this requirement
-      			gui.setMouseEnabled( true );
+			//	window.camera = camera; // TODO: get rid of this requirement
+      			gui.enableMouse( camera );
 
       			const folder = gui.addFolder( 'Torus Knot' );
       			folder.position.z = 1.0;

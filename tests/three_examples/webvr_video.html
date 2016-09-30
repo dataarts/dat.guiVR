@@ -56,8 +56,7 @@
 			function createDatGUI(scene, camera, object) {
 				var gui = DATGUIVR();
 
-				window.camera = camera; // TODO: get rid of this requirement
-      			gui.setMouseEnabled( true );
+      			gui.enableMouse( camera );
 
       			const folder = gui.addFolder( '360 Video Settings' );
       			folder.position.x = -0.0;
