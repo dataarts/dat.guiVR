@@ -70,15 +70,13 @@
       }, 6000);
 
       //  create a GUI folder
-      const folder = DATGUIVR.addFolder( 'folder settings' );
+      const folder = DATGUIVR.create( 'folder settings' );
       folder.position.y = 1.5;
       scene.add( folder );
 
-      folder.add(
-        DATGUIVR.add( mesh.position, 'y', 2, 6 ).listen(),
-        DATGUIVR.add( material, 'wireframe' ).listen(),
-        DATGUIVR.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen()
-      );
+      folder.add( mesh.position, 'y', 2, 6 ).listen();
+      folder.add( material, 'wireframe' ).listen();
+      folder.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen();
 
 
 

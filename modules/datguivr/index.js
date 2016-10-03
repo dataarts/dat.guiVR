@@ -267,15 +267,20 @@ const GUIVR = (function DATGUIVR(){
 
     Button:
       add( object, propertyOfFunctionType )
+
+    Not used directly. Used by folders.
   */
 
   function add( object, propertyName, arg3, arg4 ){
 
     if( object === undefined ){
-      console.warn( 'object is undefined' );
-      return new THREE.Group();
+      return undefined;
     }
     else
+    if( object instanceof THREE.Object3D ){
+      return undefined;
+    }
+
     if( object[ propertyName ] === undefined ){
       console.warn( 'no property named', propertyName, 'on object', object );
       return new THREE.Group();
@@ -297,8 +302,8 @@ const GUIVR = (function DATGUIVR(){
       return addButton( object, propertyName );
     }
 
-    //  add couldn't figure it out, so at least add something THREE understands
-    return new THREE.Group();
+    //  add couldn't figure it out, pass it back to folder
+    return undefined
   }
 
 
@@ -309,12 +314,16 @@ const GUIVR = (function DATGUIVR(){
 
     Folders are THREE.Group type objects and can do group.add() for siblings.
     Folders will automatically attempt to lay its children out in sequence.
+
+    Folders are given the add() functionality so that they can do
+    folder.add( ... ) to create controllers.
   */
 
-  function addFolder( name ){
+  function create( name ){
     const folder = createFolder({
       textCreator,
-      name
+      name,
+      guiAdd: add
     });
 
     controllers.push( folder );
@@ -395,7 +404,7 @@ const GUIVR = (function DATGUIVR(){
   function performMouseInput( hitscanObjects, {box,object,raycast,laser,cursor,mouse} = {} ){
     let intersections = [];
 
-    if (mouseCamera) {    
+    if (mouseCamera) {
       raycast.setFromCamera( mouse, mouseCamera );
       intersections = raycast.intersectObjects( hitscanObjects, false );
       parseIntersections( intersections, laser, cursor );
@@ -414,9 +423,8 @@ const GUIVR = (function DATGUIVR(){
   */
 
   return {
+    create,
     addInputObject,
-    add,
-    addFolder,
     enableMouse,
     disableMouse
   };

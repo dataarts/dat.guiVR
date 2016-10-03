@@ -28,7 +28,8 @@ import * as Palette from './palette';
 
 export default function createFolder({
   textCreator,
-  name
+  name,
+  guiAdd
 } = {} ){
 
   const width = Layout.FOLDER_WIDTH;
@@ -78,6 +79,18 @@ export default function createFolder({
   grabber.add( grabBar );
 
   group.add = function( ...args ){
+    const newController = guiAdd( ...args );
+
+    if( newController ){
+      group.addController( newController );
+      return newController;
+    }
+    else{
+      return new THREE.Group();
+    }
+  };
+
+  group.addController = function( ...args ){
     args.forEach( function( obj ){
       const container = new THREE.Group();
       container.add( obj );
