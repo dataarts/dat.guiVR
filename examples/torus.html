@@ -30,7 +30,7 @@
       scene.add( createFloorAndLights() );
 
       //  you can use the mouse to interact with the GUI on-screen!
-      DATGUIVR.enableMouse( camera, renderer );
+      dat.GUIVR.enableMouse( camera, renderer );
 
       //  or turn it off when going into VR
       window.addEventListener( 'vrdisplaypresentchange', function( e ){
@@ -46,10 +46,10 @@
 
       //  add an input object (any Object3D like ViveController or Camera)
       //  you can add multiple objects
-      const guiInputRight = DATGUIVR.addInputObject( controllers[ 0 ] );
+      const guiInputRight = dat.GUIVR.addInputObject( controllers[ 0 ] );
       scene.add( guiInputRight );
 
-      const guiInputLeft = DATGUIVR.addInputObject( controllers[ 1 ] );
+      const guiInputLeft = dat.GUIVR.addInputObject( controllers[ 1 ] );
       scene.add( guiInputLeft );
 
       controllers[ 0 ].addEventListener( 'menudown', ()=>toggleVR() );
@@ -122,7 +122,7 @@
 
 
       //  create a GUI folder
-      const folder = DATGUIVR.create( 'Settings' );
+      const folder = dat.GUIVR.create( 'Settings' );
       folder.position.y = 1.5;
       scene.add( folder );
 

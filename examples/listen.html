@@ -30,7 +30,7 @@
       scene.add( createFloorAndLights() );
 
 
-      const guiInput = DATGUIVR.addInputObject( controllers[ 0 ] );
+      const guiInput = dat.GUIVR.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
 
 
@@ -70,7 +70,7 @@
       }, 6000);
 
       //  create a GUI folder
-      const folder = DATGUIVR.create( 'folder settings' );
+      const folder = dat.GUIVR.create( 'folder settings' );
       folder.position.y = 1.5;
       scene.add( folder );
 

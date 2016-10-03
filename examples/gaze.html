@@ -34,7 +34,7 @@
 
 
       //  simply add the camera as an input object
-      const gazeInput = DATGUIVR.addInputObject( camera );
+      const gazeInput = dat.GUIVR.addInputObject( camera );
 
       //  only add the cursor, not the laser
       scene.add( gazeInput.cursor );
@@ -110,7 +110,7 @@
 
       scene.add( mesh );
 
-      const folder = DATGUIVR.create( 'folder settings' );
+      const folder = dat.GUIVR.create( 'folder settings' );
       folder.position.y = 1.5;
       scene.add( folder );
 
@@ -123,7 +123,6 @@
       folder.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 );
       folder.add( state, 'wireframe' ).onChange( updateMaterial );
       folder.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial );
-      // DATGUIVR.add( state, 'color' ),
       folder.add( state, 'spinning' );
       folder.add( state, 'reset' );
 

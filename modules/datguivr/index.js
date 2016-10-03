@@ -432,7 +432,15 @@ const GUIVR = (function DATGUIVR(){
 }());
 
 if( window ){
-  window.DATGUIVR = GUIVR;
+  window.dat = {
+    GUIVR
+  };
+}
+
+if( module ){
+  module.exports = {
+    dat: GUIVR
+  };
 }
 
 /*
