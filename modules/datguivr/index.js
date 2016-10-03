@@ -26,7 +26,7 @@ import createDropdown from './dropdown';
 import * as SDFText from './sdftext';
 import * as Font from './font';
 
-export default function DATGUIVR(){
+const GUIVR = (function DATGUIVR(){
 
   /*
     SDF font
@@ -397,20 +397,11 @@ export default function DATGUIVR(){
     setMouseEnabled
   };
 
-}
-
-
-
-/*
-  Set to global scope if exporting as a standalone.
-*/
+}());
 
 if( window ){
-  window.DATGUIVR = DATGUIVR;
+  window.DATGUIVR = GUIVR;
 }
-
-
-
 
 /*
   Bunch of state-less utility functions.

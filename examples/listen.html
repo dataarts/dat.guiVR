@@ -30,8 +30,7 @@
       scene.add( createFloorAndLights() );
 
 
-      const gui = DATGUIVR();
-      const guiInput = gui.addInputObject( controllers[ 0 ] );
+      const guiInput = DATGUIVR.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
 
 
@@ -71,14 +70,14 @@
       }, 6000);
 
       //  create a GUI folder
-      const folder = gui.addFolder( 'folder settings' );
+      const folder = DATGUIVR.addFolder( 'folder settings' );
       folder.position.y = 1.5;
       scene.add( folder );
 
       folder.add(
-        gui.add( mesh.position, 'y', 2, 6 ).listen(),
-        gui.add( material, 'wireframe' ).listen(),
-        gui.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen()
+        DATGUIVR.add( mesh.position, 'y', 2, 6 ).listen(),
+        DATGUIVR.add( material, 'wireframe' ).listen(),
+        DATGUIVR.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen()
       );
 
 

@@ -33,11 +33,8 @@
 
 
 
-
-      const gui = DATGUIVR();
-
       //  simply add the camera as an input object
-      const gazeInput = gui.addInputObject( camera );
+      const gazeInput = DATGUIVR.addInputObject( camera );
 
       //  only add the cursor, not the laser
       scene.add( gazeInput.cursor );
@@ -113,23 +110,23 @@
 
       scene.add( mesh );
 
-      const folder = gui.addFolder( 'folder settings' );
+      const folder = DATGUIVR.addFolder( 'folder settings' );
       folder.position.y = 1.5;
       scene.add( folder );
 
       folder.add(
-        gui.add( state, 'radius', 1, 20 ).step(0.01).onChange( updateMesh ),
-        gui.add( state, 'tube', 0.1, 10 ).step(0.01).onChange( updateMesh ),
-        gui.add( state, 'tubularSegments', 3, 300 ).step(1).onChange( updateMesh ),
-        gui.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh ),
-        gui.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh ),
-        gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
-        gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 ),
-        gui.add( state, 'wireframe' ).onChange( updateMaterial ),
-        gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial ),
-        // gui.add( state, 'color' ),
-        gui.add( state, 'spinning' ),
-        gui.add( state, 'reset' )
+        DATGUIVR.add( state, 'radius', 1, 20 ).step(0.01).onChange( updateMesh ),
+        DATGUIVR.add( state, 'tube', 0.1, 10 ).step(0.01).onChange( updateMesh ),
+        DATGUIVR.add( state, 'tubularSegments', 3, 300 ).step(1).onChange( updateMesh ),
+        DATGUIVR.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh ),
+        DATGUIVR.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh ),
+        DATGUIVR.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 ),
+        DATGUIVR.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 ),
+        DATGUIVR.add( state, 'wireframe' ).onChange( updateMaterial ),
+        DATGUIVR.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial ),
+        // DATGUIVR.add( state, 'color' ),
+        DATGUIVR.add( state, 'spinning' ),
+        DATGUIVR.add( state, 'reset' )
       );
 
       function updateMesh(){
