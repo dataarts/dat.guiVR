@@ -19,7 +19,7 @@
 			var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/dev/";
 			var threeJSExamplesPath = threeJSPath + 'examples/';
 
-			var webVRPolyfillPath = "https://cdn.rawgit.com/borismus/webvr-polyfill/v1.0.0/build/";
+			var datGUIPath = 'https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.0/';
 
 			ready(function() {
 				loadThreeAndDependents(threeJSPath + 'build/three.js',
@@ -28,7 +28,7 @@
 						threeJSExamplesPath + 'js/effects/VREffect.js',
 						threeJSExamplesPath + 'js/controls/VRControls.js',
 
-						webVRPolyfillPath + 'webvr-polyfill.js',
+						datGUIPath + 'dat.gui.js',
 
 						'../../build/datguivr.js'
 				]).then(function(){
@@ -39,6 +39,7 @@
 			function createDatGUI(scene, camera, object) {
 				var gui = DATGUIVR();
 
+			//	window.camera = camera; // TODO: get rid of this requirement
       			gui.enableMouse( camera );
 
       			const folder = gui.addFolder( 'Torus Knot' );
@@ -49,17 +50,14 @@
 
 
       			folder.add(
-      			  gui.add( object.position, 'x', -1, 1 ).step(0.001).name('Position X').listen(),
-      			  gui.add( object.position, 'y',  0, 2 ).step(0.001).name('Position Y').listen(),
-      			  gui.add( object.position, 'z', -1, 1 ).step(0.001).name('Position Z').listen()
-      			 )
+      			  	gui.add( object.position, 'x', -1, 1 ).name('Position X').step(0.001).listen(),
+      			  	gui.add( object.position, 'y',  0, 2 ).name('Position Y').step(0.001).listen(),
+      			  	gui.add( object.position, 'z', -1, 1 ).name('Position Z').step(0.001).listen(),
 
-      			folder.traverse (function (child)
-			      {
-			          if (child.type == "Mesh") {
-			            child.castShadow = true;
-			          }
-			      });
+  					gui.add(object.rotation, 'x').min(0).max(Math.PI * 2).name('Rotation X').step(0.001).listen(),
+  					gui.add(object.rotation, 'y').min(0).max(Math.PI * 2).name('Rotation Y').step(0.001).listen(),
+  				   	gui.add(object.rotation, 'z').min(0).max(Math.PI * 2).name('Rotation Z').step(0.001).listen()
+      			 )
 
       			// GAZE input
 
@@ -82,6 +80,14 @@
 				  }, false );
 				});
 
+				// DOM dat.GUI
+				var domGUI = new dat.GUI();
+				domGUI.add( object.position, 'x', -1, 1 ).name('Position X').step(0.001).listen();
+      			domGUI.add( object.position, 'y',  0, 2 ).name('Position Y').step(0.001).listen();
+      			domGUI.add( object.position, 'z', -1, 1 ).name('Position Z').step(0.001).listen();
+  				domGUI.add(object.rotation, 'x').min(0).max(Math.PI * 2).name('Rotation X').step(0.001).listen();
+  				domGUI.add(object.rotation, 'y').min(0).max(Math.PI * 2).name('Rotation Y').step(0.001).listen();
+  				domGUI.add(object.rotation, 'z').min(0).max(Math.PI * 2).name('Rotation Z').step(0.001).listen();
 			}
 
 		</script>
@@ -190,10 +196,12 @@
 
 			function render() {
 
-				var time = performance.now() * 0.0002;
 				var mesh = scene.children[ 1 ];
-				mesh.rotation.x = time * 2;
-				mesh.rotation.y = time * 5;
+				mesh.rotation.x +=  0.005;
+				mesh.rotation.x = mesh.rotation.x % (Math.PI * 2)
+
+				mesh.rotation.y +=  0.01;
+				mesh.rotation.y = mesh.rotation.y % (Math.PI * 2)
 
 				controls.update();
 

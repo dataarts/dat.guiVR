@@ -32,7 +32,7 @@
 						threeJSExamplesPath + 'js/vr/WebVR.js',
 						threeJSExamplesPath + 'js/effects/VREffect.js',
 						threeJSExamplesPath + 'js/controls/VRControls.js',
-						
+
 						webVRPolyfillPath + 'webvr-polyfill.js',
 
 						'../../build/datguivr.js'
@@ -44,19 +44,18 @@
 			function createDatGUI(scene, camera, object) {
 				var gui = DATGUIVR();
 
-				window.camera = camera; // TODO: get rid of this requirement
-      			gui.setMouseEnabled( true );
+      			gui.enableMouse( camera );
 
-      			const folder = gui.addFolder( 'Settings' );
+      			const folder = gui.addFolder( 'Cube #1' );
       			folder.position.z = 0.5;
       			folder.rotation.y = Math.PI;
       			scene.add( folder );
 
 
       			folder.add(
-      			  gui.add( object.position, 'x', -2, 2 ).step(0.001).listen(),
-      			  gui.add( object.position, 'y', -2, 2 ).step(0.001).listen(),
-      			  gui.add( object.position, 'z', -2, 2 ).step(0.001).listen()
+      			  gui.add( object.position, 'x', -2, 2 ).name('Position X').step(0.001).listen(),
+      			  gui.add( object.position, 'y', -2, 2 ).name('Position Y').step(0.001).listen(),
+      			  gui.add( object.position, 'z', -2, 2 ).name('Position Z').step(0.001).listen()
       			 )
 
       			// GAZE input

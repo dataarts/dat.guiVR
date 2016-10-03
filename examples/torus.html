@@ -30,15 +30,15 @@
       scene.add( createFloorAndLights() );
 
       //  you can use the mouse to interact with the GUI on-screen!
-      DATGUIVR.setMouseEnabled( true );
+      DATGUIVR.enableMouse( camera, renderer );
 
       //  or turn it off when going into VR
       window.addEventListener( 'vrdisplaypresentchange', function( e ){
         if( e.display.isPresenting ){
-          gui.setMouseEnabled( false );
+          gui.disableMouse();
         }
         else{
-          gui.setMouseEnabled( true );
+          gui.enableMouse();
         }
       }, false );
 
