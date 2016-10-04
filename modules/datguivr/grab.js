@@ -113,21 +113,21 @@ export function create( { group, panel } = {} ){
 
     let { inputObject, input } = p;
 
+    const folder = group.folder;
+    if( folder === undefined ){
+      return;
+    }
+
+    if( folder.beingMoved === false ){
+      return;
+    }
+
     if( input.mouse ){
       input.selected = undefined;
     }
     else{
 
-      const folder = group.folder;
-      if( folder === undefined ){
-        return;
-      }
-
       if( oldParent === undefined ){
-        return;
-      }
-
-      if( folder.beingMoved === false ){
         return;
       }
 
