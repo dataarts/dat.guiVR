@@ -462,9 +462,11 @@ const GUIVR = (function DATGUIVR(){
 }());
 
 if( window ){
-  window.dat = {
-    GUIVR
-  };
+  if( window.dat === undefined ){
+    window.dat = {};
+  }
+
+  window.dat.GUIVR = GUIVR;
 }
 
 if( module ){
