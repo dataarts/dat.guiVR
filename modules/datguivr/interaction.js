@@ -68,6 +68,12 @@ export default function createInteraction( hitVolume ){
         upName: 'onReleaseGrip'
       });
 
+      events.emit( 'tick', {
+        input,
+        hitObject,
+        inputObject: input.object
+      } );
+
     });
 
   }

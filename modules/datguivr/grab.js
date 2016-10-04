@@ -24,15 +24,44 @@ export function create( { group, panel } = {} ){
   const interaction = createInteraction( panel );
 
   interaction.events.on( 'onPressed', handleOnPress );
+  interaction.events.on( 'tick', handleTick );
   interaction.events.on( 'onReleased', handleOnRelease );
 
   const tempMatrix = new THREE.Matrix4();
+  const tPosition = new THREE.Vector3();
 
   let oldParent;
 
+  function handleTick( { input } = {} ){
+    const folder = group.folder;
+    if( folder === undefined ){
+      return;
+    }
+
+    if( input.mouse ){
+      if( input.pressed && input.selected && input.raycast.ray.intersectPlane( input.mousePlane, input.mouseIntersection ) ){
+        folder.position.copy( input.mouseIntersection.sub( input.mouseOffset ) );
+        return;
+      }
+      else if( input.intersections.length > 0 ){
+        const hitObject = input.intersections[ 0 ].object;
+        if( hitObject === panel ){
+          hitObject.updateMatrixWorld();
+          tPosition.setFromMatrixPosition( hitObject.matrixWorld );
+
+          input.mousePlane.setFromNormalAndCoplanarPoint( input.mouseCamera.getWorldDirection( input.mousePlane.normal ), tPosition );
+          // console.log( input.mousePlane );
+        }
+      }
+    }
+
+
+
+  }
+
   function handleOnPress( p ){
 
-    const { inputObject, input } = p;
+    let { inputObject, input } = p;
 
     const folder = group.folder;
     if( folder === undefined ){
@@ -43,13 +72,35 @@ export function create( { group, panel } = {} ){
       return;
     }
 
-    tempMatrix.getInverse( inputObject.matrixWorld );
+    if( input.mouse ){
+      if( input.intersections.length > 0 ){
+        if( input.raycast.ray.intersectPlane( input.mousePlane, input.mouseIntersection ) ){
+          const hitObject = input.intersections[ 0 ].object;
+          if( hitObject !== panel ){
+            return;
+          }
 
-    folder.matrix.premultiply( tempMatrix );
-    folder.matrix.decompose( folder.position, folder.quaternion, folder.scale );
+          input.selected = folder;
 
-    oldParent = folder.parent;
-    inputObject.add( folder );
+          input.selected.updateMatrixWorld();
+          tPosition.setFromMatrixPosition( input.selected.matrixWorld );
+
+          input.mouseOffset.copy( input.mouseIntersection ).sub( tPosition );
+          // console.log( input.mouseOffset );
+
+        }
+      }
+    }
+
+    else{
+      tempMatrix.getInverse( inputObject.matrixWorld );
+
+      folder.matrix.premultiply( tempMatrix );
+      folder.matrix.decompose( folder.position, folder.quaternion, folder.scale );
+
+      oldParent = folder.parent;
+      inputObject.add( folder );
+    }
 
     p.locked = true;
 
@@ -58,24 +109,33 @@ export function create( { group, panel } = {} ){
     input.events.emit( 'grabbed', input );
   }
 
-  function handleOnRelease( { inputObject, input }={} ){
-    const folder = group.folder;
-    if( folder === undefined ){
-      return;
-    }
+  function handleOnRelease( p ){
 
-    if( oldParent === undefined ){
-      return;
-    }
+    let { inputObject, input } = p;
 
-    if( folder.beingMoved === false ){
-      return;
+    if( input.mouse ){
+      input.selected = undefined;
     }
+    else{
 
-    folder.matrix.premultiply( inputObject.matrixWorld );
-    folder.matrix.decompose( folder.position, folder.quaternion, folder.scale );
-    oldParent.add( folder );
-    oldParent = undefined;
+      const folder = group.folder;
+      if( folder === undefined ){
+        return;
+      }
+
+      if( oldParent === undefined ){
+        return;
+      }
+
+      if( folder.beingMoved === false ){
+        return;
+      }
+
+      folder.matrix.premultiply( inputObject.matrixWorld );
+      folder.matrix.decompose( folder.position, folder.quaternion, folder.scale );
+      oldParent.add( folder );
+      oldParent = undefined;
+    }
 
     folder.beingMoved = false;
 

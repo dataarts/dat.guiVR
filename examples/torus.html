@@ -35,10 +35,10 @@
       //  or turn it off when going into VR
       window.addEventListener( 'vrdisplaypresentchange', function( e ){
         if( e.display.isPresenting ){
-          gui.disableMouse();
+          dat.GUIVR.disableMouse();
         }
         else{
-          gui.enableMouse();
+          dat.GUIVR.enableMouse( camera, renderer );
         }
       }, false );
 

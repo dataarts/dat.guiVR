@@ -45,19 +45,15 @@ const GUIVR = (function DATGUIVR(){
   const hitscanObjects = [];
 
   let mouseEnabled = false;
-  let mouseCamera = null;
-  let mouseRenderer = null;
+  let mouseRenderer = undefined;
 
-  function enableMouse(camera = null, renderer = null){
+  function enableMouse( camera, renderer ){
     mouseEnabled = true;
-
-    if (camera !== undefined) {
-      mouseCamera = camera;
-    }
-    if (renderer !== undefined) {
-      mouseRenderer = renderer;
-    }
+    mouseRenderer = renderer;
+    mouseInput.mouseCamera = camera;
+    return mouseInput.laser;
   }
+
   function disableMouse(){
     mouseEnabled = false;
   }
@@ -100,7 +96,7 @@ const GUIVR = (function DATGUIVR(){
     Contains state about which Interaction is currently being used or hover.
   */
   function createInput( inputObject = new THREE.Group() ){
-    return {
+    const input = {
       raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
       laser: createLaser(),
       cursor: createCursor(),
@@ -114,6 +110,10 @@ const GUIVR = (function DATGUIVR(){
         hover: undefined
       }
     };
+
+    input.laser.add( input.cursor );
+
+    return input;
   }
 
 
@@ -121,7 +121,7 @@ const GUIVR = (function DATGUIVR(){
 
 
   /*
-    MouseInput is a special input type that is on by default.
+    MouseInput.
     Allows you to click on the screen when not in VR for debugging.
   */
   const mouseInput = createMouseInput();
@@ -129,16 +129,28 @@ const GUIVR = (function DATGUIVR(){
   function createMouseInput(){
     const mouse = new THREE.Vector2(-1,-1);
 
+    const input = createInput();
+    input.mouse = mouse;
+    input.mouseIntersection = new THREE.Vector3();
+    input.mouseOffset = new THREE.Vector3();
+    input.mousePlane = new THREE.Plane();
+
+    //  set my enableMouse
+    input.mouseCamera = undefined;
+
     window.addEventListener( 'mousemove', function( event ){
-      if (mouseRenderer) { // if a specific renderer has been defined
-        var clientRect = mouseRenderer.domElement.getBoundingClientRect();
+      // if a specific renderer has been defined
+      if (mouseRenderer) {
+        const clientRect = mouseRenderer.domElement.getBoundingClientRect();
         mouse.x = ( (event.clientX - clientRect.left) / clientRect.width) * 2 - 1;
         mouse.y = - ( (event.clientY - clientRect.top) / clientRect.height) * 2 + 1;
-      } else {
-        // default to fullscreen
+      }
+      // default to fullscreen
+      else {
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
       }
+
     }, false );
 
     window.addEventListener( 'mousedown', function( event ){
@@ -149,8 +161,7 @@ const GUIVR = (function DATGUIVR(){
       input.pressed = false;
     }, false );
 
-    const input = createInput();
-    input.mouse = mouse;
+
     return input;
   }
 
@@ -175,8 +186,6 @@ const GUIVR = (function DATGUIVR(){
   */
   function addInputObject( object ){
     const input = createInput( object );
-
-    input.laser.add( input.cursor );
 
     input.laser.pressed = function( flag ){
       input.pressed = flag;
@@ -384,16 +393,21 @@ const GUIVR = (function DATGUIVR(){
     });
   }
 
+  function updateLaser( laser, point ){
+    laser.geometry.vertices[ 1 ].copy( point );
+    laser.visible = true;
+    laser.geometry.computeBoundingSphere();
+    laser.geometry.computeBoundingBox();
+    laser.geometry.verticesNeedUpdate = true;
+  }
+
   function parseIntersections( intersections, laser, cursor ){
     if( intersections.length > 0 ){
       const firstHit = intersections[ 0 ];
-      laser.geometry.vertices[ 1 ].copy( firstHit.point );
-      laser.visible = true;
-      laser.geometry.computeBoundingSphere();
-      laser.geometry.computeBoundingBox();
-      laser.geometry.verticesNeedUpdate = true;
+      updateLaser( laser, firstHit.point );
       cursor.position.copy( firstHit.point );
       cursor.visible = true;
+      cursor.updateMatrixWorld();
     }
     else{
       laser.visible = false;
@@ -401,14 +415,30 @@ const GUIVR = (function DATGUIVR(){
     }
   }
 
-  function performMouseInput( hitscanObjects, {box,object,raycast,laser,cursor,mouse} = {} ){
+  function parseMouseIntersection( intersection, laser, cursor ){
+    cursor.position.copy( intersection );
+    updateLaser( laser, cursor.position );
+  }
+
+  function performMouseIntersection( raycast, mouse, camera ){
+    raycast.setFromCamera( mouse, camera );
+    return raycast.intersectObjects( hitscanObjects, false );
+  }
+
+  function mouseIntersectsPlane( raycast, v, plane ){
+    return raycast.ray.intersectPlane( plane, v );
+  }
+
+  function performMouseInput( hitscanObjects, {box,object,raycast,laser,cursor,mouse,mouseCamera} = {} ){
     let intersections = [];
 
     if (mouseCamera) {
-      raycast.setFromCamera( mouse, mouseCamera );
-      intersections = raycast.intersectObjects( hitscanObjects, false );
+      intersections = performMouseIntersection( raycast, mouse, mouseCamera );
       parseIntersections( intersections, laser, cursor );
+      cursor.visible = true;
+      laser.visible = true;
     }
+
     return intersections;
   }
 
