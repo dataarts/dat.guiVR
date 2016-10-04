@@ -42,25 +42,20 @@
 			})
 
 			function createDatGUI(scene, camera, object) {
-				var gui = DATGUIVR();
+      			dat.GUIVR.enableMouse( camera );
 
-      			gui.enableMouse( camera );
+      			const gui = dat.GUIVR.create( 'Cube #1' );
+      			gui.position.z = 0.5;
+      			gui.rotation.y = Math.PI;
+      			scene.add( gui );
 
-      			const folder = gui.addFolder( 'Cube #1' );
-      			folder.position.z = 0.5;
-      			folder.rotation.y = Math.PI;
-      			scene.add( folder );
-
-
-      			folder.add(
-      			  gui.add( object.position, 'x', -2, 2 ).name('Position X').step(0.001).listen(),
-      			  gui.add( object.position, 'y', -2, 2 ).name('Position Y').step(0.001).listen(),
-      			  gui.add( object.position, 'z', -2, 2 ).name('Position Z').step(0.001).listen()
-      			 )
+				gui.add( object.position, 'x', -2, 2 ).name('Position X').step(0.001).listen();
+				gui.add( object.position, 'y', -2, 2 ).name('Position Y').step(0.001).listen();
+				gui.add( object.position, 'z', -2, 2 ).name('Position Z').step(0.001).listen();
 
       			// GAZE input
 
-     			var gazeInput = gui.addInputObject( camera );
+     			var gazeInput = dat.GUIVR.addInputObject( camera );
       			scene.add( gazeInput.cursor );
 
 

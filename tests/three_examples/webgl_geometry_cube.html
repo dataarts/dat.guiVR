@@ -31,26 +31,21 @@
 			})
 
 			function createDatGUI(scene, camera, object) {
-				var gui = DATGUIVR();
-
-      			gui.enableMouse( camera );
+     			dat.GUIVR.enableMouse( camera );
 
       			var scale = 150;
 
-      			const folder = gui.addFolder( 'Space Crate' );
-      			folder.position.x = 10;
-      			folder.position.y = -50;
-      			folder.position.z = 200;
+      			const gui = dat.GUIVR.create( 'Space Crate' );
+      			gui.position.x = 10;
+      			gui.position.y = -50;
+      			gui.position.z = 200;
       			//folder.rotation.y = - Math.PI / 16;
-      			folder.scale.set(scale,scale,scale);
-      			scene.add( folder );
+      			gui.scale.set(scale,scale,scale);
+      			scene.add( gui );
 
-
-      			folder.add(
-      			  gui.add( object.rotation, 'x', -Math.PI, Math.PI).step(0.01).name('Rotation X').listen(),
-      			  gui.add( object.rotation, 'y', -Math.PI, Math.PI).step(0.01).name('Rotation Y').listen(),
-      			  gui.add( object.rotation, 'z', -Math.PI, Math.PI).step(0.01).name('Rotation Z').listen()
-      			 )
+				gui.add( object.rotation, 'x', -Math.PI, Math.PI).step(0.01).name('Rotation X').listen();
+				gui.add( object.rotation, 'y', -Math.PI, Math.PI).step(0.01).name('Rotation Y').listen();
+				gui.add( object.rotation, 'z', -Math.PI, Math.PI).step(0.01).name('Rotation Z').listen();
 			}
 
 		</script>

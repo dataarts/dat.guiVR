@@ -54,24 +54,20 @@
 			})
 
 			function createDatGUI(scene, camera, object) {
-				var gui = DATGUIVR();
+      			dat.GUIVR.enableMouse( camera );
 
-      			gui.enableMouse( camera );
+      			const gui = dat.GUIVR.create( '360 Video Settings' );
+      			gui.position.x = -0.0;
+      			gui.position.y = 0.0;
+      			gui.position.z = -1.80;
+      			gui.rotation.y = -Math.PI/4;
+      			scene.add( gui );
 
-      			const folder = gui.addFolder( '360 Video Settings' );
-      			folder.position.x = -0.0;
-      			folder.position.y = 0.0;
-      			folder.position.z = -1.80;
-      			folder.rotation.y = -Math.PI/4;
-      			scene.add( folder );
-
-      			folder.add(
-      			  gui.add( object, 'playbackRate').min(0).max(10).step(1).name("Playback Rate"),
-      			  gui.add( object, 'pause').name('Hold to pause')
-      			 )
+      			gui.add( object, 'playbackRate').min(0).max(10).step(1).name("Playback Rate");
+      			gui.add( object, 'pause').name('Hold to pause');
 
       			// GAZE input
-     			var gazeInput = gui.addInputObject( camera );
+     			var gazeInput = dat.GUIVR.addInputObject( camera );
       			scene.add( gazeInput.cursor );
 
 
