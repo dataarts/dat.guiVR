@@ -96,29 +96,25 @@ WebVRConfig = {
 <script src="../../build/datguivr.js"></script>
 <script>
       function createDatGUI(scene, camera, object) {
-        var gui = DATGUIVR();
+        dat.GUIVR.enableMouse( camera );
 
-        gui.enableMouse( camera );
-
-        const folder = gui.addFolder( 'Hypnotic Cube' );
-        folder.position.copy(object.position)
-        folder.position.x -= 0.5;
-        folder.position.y -= 0.40;
-      //  folder.position.z = -0.50;
-        //folder.rotation.y = Math.PI;
-        scene.add( folder );
+        const gui = dat.GUIVR.create( 'Hypnotic Cube' );
+        gui.position.copy(object.position)
+        gui.position.x -= 0.5;
+        gui.position.y -= 0.40;
+      //  gui.position.z = -0.50;
+        //gui.rotation.y = Math.PI;
+        scene.add( gui );
 
         // force the camera to be added to the scene
         scene.add(camera);
 
-        folder.add(
-          gui.add( object.rotation, 'x', -Math.PI, Math.PI ).name('Rotation x').step(0.001).listen(),
-          gui.add( object.rotation, 'y', -Math.PI, Math.PI ).name('Rotation y').step(0.001).listen(),
-          gui.add( object.rotation, 'z', -Math.PI, Math.PI ).name('Rotation z').step(0.001).listen()
-         )
+        gui.add( object.rotation, 'x', -Math.PI, Math.PI ).name('Rotation x').step(0.001).listen();
+        gui.add( object.rotation, 'y', -Math.PI, Math.PI ).name('Rotation y').step(0.001).listen();
+        gui.add( object.rotation, 'z', -Math.PI, Math.PI ).name('Rotation z').step(0.001).listen();
 
         // GAZE input
-        var gazeInput = gui.addInputObject( camera );
+        var gazeInput = dat.GUIVR.addInputObject( camera );
         scene.add( gazeInput.cursor );
 
 

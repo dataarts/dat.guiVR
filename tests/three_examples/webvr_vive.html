@@ -41,25 +41,20 @@
 			})
 
 			function createDatGUI(scene, camera, object, controller1, controller2) {
-				var gui = DATGUIVR();
+      			dat.GUIVR.enableMouse( camera );
 
-      			gui.enableMouse( camera );
+      			const gui = dat.GUIVR.create( 'Flamboyant Gun' );
+      			gui.position.y = 1.5;
+      			scene.add( gui );
 
-      			const folder = gui.addFolder( 'Flamboyant Gun' );
-      			folder.position.y = 1.5;
-      			scene.add( folder );
+				gui.add( object.position, 'x', -1, 1 ).step(0.001).name('Position X');
+				gui.add( object.position, 'z', -1, 1 ).step(0.001).name('Position Z');
+				gui.add( object.rotation, 'y', -Math.PI, Math.PI).step(0.001).name('Rotation');
 
-
-      			folder.add(
-      			  gui.add( object.position, 'x', -1, 1 ).step(0.001).name('Position X'),
-      			  gui.add( object.position, 'z', -1, 1 ).step(0.001).name('Position Z'),
-      			  gui.add( object.rotation, 'y', -Math.PI, Math.PI).step(0.001).name('Rotation')
-      			 )
-
-      			const guiInputController1 = gui.addInputObject( controller1 );
+      			const guiInputController1 = dat.GUIVR.addInputObject( controller1 );
 			    scene.add( guiInputController1 );
 
-			    const guiInputController2 = gui.addInputObject( controller2 );
+			    const guiInputController2 = dat.GUIVR.addInputObject( controller2 );
 			    scene.add( guiInputController2 );
 			}
 

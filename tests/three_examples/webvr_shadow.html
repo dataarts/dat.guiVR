@@ -37,33 +37,28 @@
 			})
 
 			function createDatGUI(scene, camera, object) {
-				var gui = DATGUIVR();
+      			dat.GUIVR.enableMouse( camera );
 
-      			gui.enableMouse( camera );
+      			const gui = dat.GUIVR.create( 'Torus Knot' );
+      			gui.position.z = 1.0;
+      			gui.position.y = 0.5;
+      			scene.add( gui );
 
-      			const folder = gui.addFolder( 'Torus Knot' );
-      			folder.position.z = 1.0;
-      			folder.position.y = 0.5;
-      			//folder.rotation.y = Math.PI;
-      			scene.add( folder );
+      			gui.add( object.position, 'x', -1, 1 ).step(0.001).name('Position X').listen();
+      			gui.add( object.position, 'y',  0, 2 ).step(0.001).name('Position Y').listen();
+      			gui.add( object.position, 'z', -1, 1 ).step(0.001).name('Position Z').listen();
 
-
-      			folder.add(
-      			  gui.add( object.position, 'x', -1, 1 ).step(0.001).name('Position X').listen(),
-      			  gui.add( object.position, 'y',  0, 2 ).step(0.001).name('Position Y').listen(),
-      			  gui.add( object.position, 'z', -1, 1 ).step(0.001).name('Position Z').listen()
-      			 )
-
-      			folder.traverse (function (child)
-			      {
-			          if (child.type == "Mesh") {
-			            child.castShadow = true;
-			          }
-			      });
+      			// cast shadows
+      			gui.traverse (function (child)
+			    {
+			    	if (child.type == "Mesh") {
+			        	child.castShadow = true;
+			        }
+			    });
 
       			// GAZE input
 
-     			var gazeInput = gui.addInputObject( camera );
+     			var gazeInput = dat.GUIVR.addInputObject( camera );
       			scene.add( gazeInput.cursor );
 
 

@@ -37,31 +37,26 @@
 			})
 
 			function createDatGUI(scene, camera, object) {
-				var gui = DATGUIVR();
+     			dat.GUIVR.enableMouse( camera );
 
-			//	window.camera = camera; // TODO: get rid of this requirement
-      			gui.enableMouse( camera );
-
-      			const folder = gui.addFolder( 'Torus Knot' );
-      			folder.position.z = 1.0;
-      			folder.position.y = 0.5;
+      			const gui = dat.GUIVR.create( 'Torus Knot' );
+      			gui.position.z = 1.0;
+      			gui.position.y = 0.5;
       			//folder.rotation.y = Math.PI;
-      			scene.add( folder );
+      			scene.add( gui );
 
 
-      			folder.add(
-      			  	gui.add( object.position, 'x', -1, 1 ).name('Position X').step(0.001).listen(),
-      			  	gui.add( object.position, 'y',  0, 2 ).name('Position Y').step(0.001).listen(),
-      			  	gui.add( object.position, 'z', -1, 1 ).name('Position Z').step(0.001).listen(),
+  			  	gui.add( object.position, 'x', -1, 1 ).name('Position X').step(0.001).listen();
+  			  	gui.add( object.position, 'y',  0, 2 ).name('Position Y').step(0.001).listen();
+  			  	gui.add( object.position, 'z', -1, 1 ).name('Position Z').step(0.001).listen();
 
-  					gui.add(object.rotation, 'x').min(0).max(Math.PI * 2).name('Rotation X').step(0.001).listen(),
-  					gui.add(object.rotation, 'y').min(0).max(Math.PI * 2).name('Rotation Y').step(0.001).listen(),
-  				   	gui.add(object.rotation, 'z').min(0).max(Math.PI * 2).name('Rotation Z').step(0.001).listen()
-      			 )
+				gui.add(object.rotation, 'x').min(0).max(Math.PI * 2).name('Rotation X').step(0.001).listen();
+				gui.add(object.rotation, 'y').min(0).max(Math.PI * 2).name('Rotation Y').step(0.001).listen();
+			   	gui.add(object.rotation, 'z').min(0).max(Math.PI * 2).name('Rotation Z').step(0.001).listen();
 
       			// GAZE input
 
-     			var gazeInput = gui.addInputObject( camera );
+     			var gazeInput = dat.GUIVR.addInputObject( camera );
       			scene.add( gazeInput.cursor );
 
 
