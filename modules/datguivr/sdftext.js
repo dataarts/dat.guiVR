@@ -41,7 +41,7 @@ export function createMaterial( color ){
   }));
 }
 
-const textScale = 0.0012;
+const textScale = 0.00015;
 
 export function creator(){
 
@@ -54,7 +54,7 @@ export function creator(){
     const geometry = createGeometry({
       text: str,
       align: 'left',
-      width: 1000,
+      width: 10000,
       flipY: true,
       font
     });

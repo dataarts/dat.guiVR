@@ -1,0 +1,3 @@
+https://www.npmjs.com/package/image-sdf
+
+image-sdf roboto_0.png --spread 128 --downscale 4 > roboto.png
