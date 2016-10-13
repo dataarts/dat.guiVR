@@ -475,6 +475,10 @@ if( module ){
   };
 }
 
+if(typeof define === 'function' && define.amd) {
+  define([], GUIVR);
+}
+
 /*
   Bunch of state-less utility functions.
 */
