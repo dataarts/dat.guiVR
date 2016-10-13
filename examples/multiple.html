@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VR Dat GUI Listen Example</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui" name="viewport" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/master/three-vr-viewer.js"></script>
+
+    <script type="text/javascript" src="../build/datguivr.js"></script>
+
+    <script type="text/javascript" src="js/floorandlights.js"></script>
+
+    <script type="text/javascript">
+
+      const { scene, camera, events, toggleVR, controllers, renderer } = VRViewer({
+        autoEnter: true,
+        emptyRoom: false,
+        THREE
+      });
+
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      const floorAndLights =  createFloorAndLights();
+      scene.add( floorAndLights);
+
+      let sphereMaterial = new THREE.MeshStandardMaterial({color:0xff6699});
+      sphereMaterial.roughness = 1.0;
+      sphereMaterial.metalness = 1;
+
+      const sphere = new THREE.Mesh( new THREE.SphereGeometry( 1,24,32 ), sphereMaterial );
+      sphere.position.z = -2.0;
+      sphere.position.y = 2;
+      sphere.position.x = -1;
+      sphere.castShadow = true;
+      scene.add( sphere );
+
+
+      let cubeMaterial = new THREE.MeshStandardMaterial({color:0x6666ff});
+      cubeMaterial.roughness = 1.0;
+      cubeMaterial.metalness = 1;
+
+      const cube = new THREE.Mesh( new THREE.BoxGeometry( 1,1,1 ), cubeMaterial );
+      cube.position.z = -2.0;
+      cube.position.y = 1;
+      cube.position.x = 1;
+      cube.castShadow = true;
+      scene.add( cube );
+
+
+      // DAT GUI VR
+      const guiInput = dat.GUIVR.addInputObject( controllers[ 0 ] );
+      scene.add( guiInput );
+
+      dat.GUIVR.enableMouse(camera);
+
+      //  create a GUI for the sphere
+      const gui = dat.GUIVR.create( 'Sphere' );
+      gui.position.x = -1.20;
+      gui.position.y = 1.5;
+      scene.add( gui );
+
+      gui.add( sphere.position, 'y', 0, 4 );
+      gui.add( sphereMaterial, 'wireframe' );
+
+
+      const gui2 = dat.GUIVR.create( 'Cube' );
+      gui2.position.x = 0.0;
+      gui2.position.y = 1.5;
+      scene.add( gui2 );
+
+      gui2.add( cube.position, 'x', 0, 2.0 ).name('position x').step(0.01);
+      gui2.add( cube.position, 'y', 0, 2.0 ).name('position y').step(0.01);
+      gui2.add( cube.rotation, 'y', 0, 3.2 ).name('rotation y').step(0.01);
+
+
+      const gui3 = dat.GUIVR.create( 'Floor & Lights' );
+      gui3.position.x = 0.0;
+      gui3.position.y = 0.5;
+      scene.add( gui3 );
+
+      gui3.add( floorAndLights.rotation, 'y', 0, 3.2 ).name('rotation x').step(0.01);
+
+
+    </script>
+
+  </body>
+</html>
