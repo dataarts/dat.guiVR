@@ -157,8 +157,8 @@ const GUIVR = (function DATGUIVR(){
       if (input.intersections.length > 0) {
         // prevent mouse down from triggering other listeners (polyfill, etc)
         event.stopImmediatePropagation();
+        input.pressed = true;
       }
-      input.pressed = true;
     }, false );
 
     window.addEventListener( 'mouseup', function( event ){
@@ -192,7 +192,12 @@ const GUIVR = (function DATGUIVR(){
     const input = createInput( object );
 
     input.laser.pressed = function( flag ){
-      input.pressed = flag;
+      // only pay attention to presses over the GUI
+      if (flag && (input.intersections.length > 0)) {
+        input.pressed = true;
+      } else {
+        input.pressed = false;
+      }
     };
 
     input.laser.gripped = function( flag ){
