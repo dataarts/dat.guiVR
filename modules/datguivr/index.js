@@ -154,6 +154,10 @@ const GUIVR = (function DATGUIVR(){
     }, false );
 
     window.addEventListener( 'mousedown', function( event ){
+      if (input.intersections.length > 0) {
+        // prevent mouse down from triggering other listeners (polyfill, etc)
+        event.stopImmediatePropagation();
+      }
       input.pressed = true;
     }, false );
 
