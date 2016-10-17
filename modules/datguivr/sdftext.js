@@ -41,7 +41,7 @@ export function createMaterial( color ){
   }));
 }
 
-const textScale = 0.00015;
+const textScale = 0.00024;
 
 export function creator(){
 

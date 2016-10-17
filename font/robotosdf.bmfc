@@ -5,7 +5,7 @@ fileVersion=1
 fontName=Roboto
 fontFile=
 charSet=0
-fontSize=256
+fontSize=192
 aa=1
 scaleH=100
 useSmoothing=1
@@ -20,18 +20,18 @@ renderFromOutline=0
 useClearType=1
 
 # character alignment
-paddingDown=64
-paddingUp=64
-paddingRight=64
-paddingLeft=64
-spacingHoriz=8
-spacingVert=8
+paddingDown=24
+paddingUp=24
+paddingRight=24
+paddingLeft=24
+spacingHoriz=12
+spacingVert=12
 useFixedHeight=0
 forceZero=0
 
 # output file
-outWidth=8192
-outHeight=4096
+outWidth=3072
+outHeight=1536
 outBitDepth=8
 fontDescFormat=0
 fourChnlPacked=0
