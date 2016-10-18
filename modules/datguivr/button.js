@@ -66,7 +66,10 @@ export default function createCheckbox( {
 
 
   const buttonLabel = textCreator.create( propertyName, { scale: 0.866 } );
-  buttonLabel.position.x = BUTTON_WIDTH * 0.5 - buttonLabel.layout.width * 0.00011 * 0.5;
+
+  //  This is a real hack since we need to fit the text position to the font scaling
+  //  Please fix me.
+  buttonLabel.position.x = BUTTON_WIDTH * 0.5 - buttonLabel.layout.width * 0.000011 * 0.5;
   buttonLabel.position.z = BUTTON_DEPTH * 1.2;
   buttonLabel.position.y = -0.025;
   filledVolume.add( buttonLabel );

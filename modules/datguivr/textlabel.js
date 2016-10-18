@@ -38,7 +38,7 @@ export default function createTextLabel( textCreator, str, width = 0.4, depth = 
     text.update( str.toFixed(2) );
   };
 
-  text.position.z = 0.015
+  text.position.z = depth;
 
   const backBounds = 0.01;
   const margin = 0.01;

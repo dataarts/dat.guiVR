@@ -82,6 +82,7 @@ export default function createCheckbox( {
       Colors.DROPDOWN_FG_COLOR, Colors.DROPDOWN_BG_COLOR,
       0.866
     );
+
     group.hitscan.push( label.back );
     const labelInteraction = createInteraction( label.back );
     labelInteractions.push( labelInteraction );
