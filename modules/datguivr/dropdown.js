@@ -169,7 +169,7 @@ export default function createCheckbox( {
 
   function configureLabelPosition( label, index ){
     label.position.y = -DROPDOWN_MARGIN - (index+1) * ( DROPDOWN_OPTION_HEIGHT );
-    label.position.z = depth * 24;
+    label.position.z = depth;
   }
 
   function optionToLabel( optionName, index ){
