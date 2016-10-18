@@ -78,6 +78,7 @@
       gui2.add( cube.position, 'x', 0, 2.0 ).name('position x').step(0.01);
       gui2.add( cube.position, 'y', 0, 2.0 ).name('position y').step(0.01);
       gui2.add( cube.rotation, 'y', 0, 3.2 ).name('rotation y').step(0.01);
+      gui2.add( cube.scale, 'y', {short: 0.2, normal: 1.0, tall: 2.0 }).name('height'); // Choose from named values
 
 
       const gui3 = dat.GUIVR.create( 'Floor & Lights' );
