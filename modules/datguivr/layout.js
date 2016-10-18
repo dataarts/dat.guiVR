@@ -74,8 +74,8 @@ export function createDownArrow(){
 
 export const PANEL_WIDTH = 1.0;
 export const PANEL_HEIGHT = 0.08;
-export const PANEL_DEPTH = 0.001;
-export const PANEL_SPACING = 0.002;
+export const PANEL_DEPTH = 0.01;
+export const PANEL_SPACING = 0.001;
 export const PANEL_MARGIN = 0.015;
 export const PANEL_LABEL_TEXT_MARGIN = 0.06;
 export const PANEL_VALUE_TEXT_MARGIN = 0.02;
