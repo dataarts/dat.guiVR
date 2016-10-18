@@ -46,7 +46,7 @@ export default function createSlider( {
     alpha: 1.0,
     value: initialValue,
     step: step,
-    useStep: false,
+    useStep: true,
     precision: 1,
     listen: false,
     min: min,
