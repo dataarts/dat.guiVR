@@ -40,8 +40,10 @@ export function create( { group, panel } = {} ){
 
     if( input.mouse ){
       if( input.pressed && input.selected && input.raycast.ray.intersectPlane( input.mousePlane, input.mouseIntersection ) ){
-        folder.position.copy( input.mouseIntersection.sub( input.mouseOffset ) );
-        return;
+        if( input.interaction.press === interaction ){
+          folder.position.copy( input.mouseIntersection.sub( input.mouseOffset ) );
+          return;
+        }
       }
       else if( input.intersections.length > 0 ){
         const hitObject = input.intersections[ 0 ].object;

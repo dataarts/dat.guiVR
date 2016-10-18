@@ -24,7 +24,6 @@ import createButton from './button';
 import createFolder from './folder';
 import createDropdown from './dropdown';
 import * as SDFText from './sdftext';
-import * as Font from './font';
 
 const GUIVR = (function DATGUIVR(){
 
