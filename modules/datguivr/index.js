@@ -294,9 +294,6 @@ const GUIVR = (function DATGUIVR(){
       return undefined;
     }
     else
-    if( object instanceof THREE.Object3D ){
-      return undefined;
-    }
 
     if( object[ propertyName ] === undefined ){
       console.warn( 'no property named', propertyName, 'on object', object );
