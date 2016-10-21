@@ -83,6 +83,7 @@ export default function createSlider( {
 
   const material = new THREE.MeshBasicMaterial({ color: Colors.DEFAULT_COLOR });
   const filledVolume = new THREE.Mesh( rect.clone(), material );
+  filledVolume.position.z = depth * 0.5;
   hitscanVolume.add( filledVolume );
 
   const endLocator = new THREE.Mesh( new THREE.BoxGeometry( 0.05, 0.05, 0.05, 1, 1, 1 ), SharedMaterials.LOCATOR );
@@ -92,8 +93,8 @@ export default function createSlider( {
 
   const valueLabel = textCreator.create( state.value.toString() );
   valueLabel.position.x = Layout.PANEL_VALUE_TEXT_MARGIN + width * 0.5;
-  valueLabel.position.z = depth*2;
-  valueLabel.position.y = -0.03;
+  valueLabel.position.z = depth*2.5;
+  valueLabel.position.y = -0.0325;
 
   const descriptorLabel = textCreator.create( propertyName );
   descriptorLabel.position.x = Layout.PANEL_LABEL_TEXT_MARGIN;

@@ -21,6 +21,7 @@ import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';
 import * as Layout from './layout';
+import * as Graphic from './graphic';
 import * as SharedMaterials from './sharedmaterials';
 import * as Grab from './grab';
 
@@ -161,8 +162,8 @@ export default function createCheckbox( {
   selectedLabel.position.x = Layout.PANEL_MARGIN * 0.5 + width * 0.5;
   selectedLabel.position.z = depth;
 
-  const downArrow = Layout.createDownArrow();
-  Colors.colorizeGeometry( downArrow.geometry, Colors.DROPDOWN_FG_COLOR );
+  const downArrow = Graphic.downArrow();
+  // Colors.colorizeGeometry( downArrow.geometry, Colors.DROPDOWN_FG_COLOR );
   downArrow.position.set( DROPDOWN_WIDTH - 0.04, 0, depth * 1.01 );
   selectedLabel.add( downArrow );
 

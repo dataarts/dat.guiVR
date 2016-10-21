@@ -18,7 +18,7 @@
 */
 
 export const DEFAULT_COLOR = 0x2FA1D6;
-export const HIGHLIGHT_COLOR = 0x0FC3FF;
+export const HIGHLIGHT_COLOR = 0x43b5ea;
 export const INTERACTION_COLOR = 0x07ABF7;
 export const EMISSIVE_COLOR = 0x222222;
 export const HIGHLIGHT_EMISSIVE_COLOR = 0x999999;
@@ -33,7 +33,9 @@ export const CONTROLLER_ID_TEXT = 0x1ed36f;
 export const CONTROLLER_ID_DROPDOWN = 0xfff000;
 export const DROPDOWN_BG_COLOR = 0xffffff;
 export const DROPDOWN_FG_COLOR = 0x000000;
+export const CHECKBOX_BG_COLOR = 0xffffff;
 export const BUTTON_COLOR = 0xe61d5f;
+export const BUTTON_HIGHLIGHT_COLOR = 0xfa3173;
 export const SLIDER_BG = 0x444444;
 
 export function colorizeGeometry( geometry, color ){

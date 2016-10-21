@@ -110,7 +110,7 @@ export default function createCheckbox( {
   function updateView(){
 
     if( interaction.hovering() ){
-      material.color.setHex( Colors.HIGHLIGHT_COLOR );
+      material.color.setHex( Colors.BUTTON_HIGHLIGHT_COLOR );
     }
     else{
       material.color.setHex( Colors.BUTTON_COLOR );
