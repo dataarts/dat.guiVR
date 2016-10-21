@@ -8,26 +8,26 @@ Built on top of [THREE.js](http://threejs.org/)
 
 # Examples
 
-## Creating a folder ##    
+## Creating a gui ##    
 
-     const folder = dat.GUIVR.create( 'settings' );
-     scene.add( folder );
+     const gui = dat.GUIVR.create( 'settings' );
+     scene.add( gui );
 
 ## Creating a slider ##    
 
-      folder.add( state, 'radius', 1, 20 );
+      gui.add( state, 'radius', 1, 20 );
 
 ## Creating a dropdown ##    
 
-      folder.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } );
+      gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } );
 
 ## Reacting to Changes ##    
 
-      folder.add( state, 'radius', 1, 20 ).onChange( updateMesh );
+      gui.add( state, 'radius', 1, 20 ).onChange( updateMesh );
 
 ## Listen for Changes ##    
 
-      folder.add( state, 'radius', 1, 20 ).listen();
+      gui.add( state, 'radius', 1, 20 ).listen();
 
 The slider will now update itself if the property itself changes.   
 
