@@ -6,6 +6,8 @@ A [dat-gui](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage)
 
 Built on top of [THREE.js](http://threejs.org/)
 
+[Check out the Wiki for more information.](https://github.com/dataarts/dat.guiVR/wiki)
+
 # Examples
 
 ## Creating a gui    
