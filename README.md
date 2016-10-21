@@ -8,30 +8,30 @@ Built on top of [THREE.js](http://threejs.org/)
 
 # Examples
 
-## Creating a gui ##    
+## Creating a gui    
 
      const gui = dat.GUIVR.create( 'settings' );
      scene.add( gui );
 
-## Creating a slider ##    
+## Creating a slider     
 
       gui.add( state, 'radius', 1, 20 );
 
-## Creating a dropdown ##    
+## Creating a dropdown     
 
       gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } );
 
-## Reacting to Changes ##    
+## Reacting to Changes     
 
       gui.add( state, 'radius', 1, 20 ).onChange( updateMesh );
 
-## Listen for Changes ##    
+## Listen for Changes     
 
       gui.add( state, 'radius', 1, 20 ).listen();
 
 The slider will now update itself if the property itself changes.   
 
-## Adding Inputs (Vive controllers, cardboard, etc) ##
+## Adding Inputs (Vive controllers, cardboard, etc) 
 
       const guiInput = dat.GUIVR.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
@@ -48,12 +48,12 @@ If you are using npm modules and want to use this library, contribute, or test:
 
 Wait for the build to complete and a test server will start.
 
-## Examples ##
+## Examples
 Then navigate to **localhost:8000** on VR enabled Chromium build.
 
 
 
-## Notes ##
+## Notes 
 * This module assumes the existence of THREE.js in global scope somewhere.
 * Can be used as a drop in script include (like the examples) or as an  ES6 module / node build.
 
