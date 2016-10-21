@@ -1,6 +1,6 @@
 # DAT.GUI for WebVR
 
-![Preview Image](http://i.imgur.com/m11uGmN.png)
+![Preview Image](http://i.imgur.com/TgfSD8E.gif)
 
 A [dat-gui](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage) implementation built in 3D for use in WebVR.
 
