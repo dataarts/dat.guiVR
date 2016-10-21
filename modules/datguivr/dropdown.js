@@ -196,7 +196,13 @@ export default function createCheckbox( {
   const controllerID = Layout.createControllerIDBox( height, Colors.CONTROLLER_ID_DROPDOWN );
   controllerID.position.z = depth;
 
-  panel.add( descriptorLabel, controllerID, selectedLabel );
+
+  const borderBox = Layout.createPanel( DROPDOWN_WIDTH + Layout.BORDER_THICKNESS, DROPDOWN_HEIGHT + Layout.BORDER_THICKNESS * 0.5, DROPDOWN_DEPTH, true );
+  borderBox.material.color.setHex( 0x1f7ae7 );
+  borderBox.position.x = -Layout.BORDER_THICKNESS * 0.5 + width * 0.5;
+  borderBox.position.z = depth * 0.5;
+
+  panel.add( descriptorLabel, controllerID, selectedLabel, borderBox );
 
 
   updateView();
@@ -214,6 +220,13 @@ export default function createCheckbox( {
         }
       }
     });
+
+    if( labelInteractions[0].hovering() || state.open ){
+      borderBox.visible = true;
+    }
+    else{
+      borderBox.visible = false;
+    }
   }
 
   let onChangedCB;
