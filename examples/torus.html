@@ -22,6 +22,7 @@
 
       const { scene, camera, events, toggleVR, controllers, renderer } = VRViewer({
         emptyRoom: false,
+        clearColor: 0x161616,
         THREE
       });
 
@@ -62,6 +63,7 @@
         tube: 3,
         tubularSegments: 64,
         radialSegments: 8,
+        roughness: 1.0,
         p: 2,
         q: 5,
         spinning: true,
@@ -74,6 +76,7 @@
           state.tube = 3;
           state.tubularSegments = 64;
           state.radialSegments = 8;
+          roughness = 1;
           state.p = 2;
           state.q = 3;
           state.spinning = true;
@@ -137,6 +140,9 @@
       folder.add( state, 'q', 1, 20 ).name('torus q value').onChange( updateMesh ).step( 1 );
       folder.add( state, 'wireframe' ).onChange( updateMaterial );
       folder.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial );
+      folder.add( state, 'roughness', 0, 1 ).step( 0.01 ).onChange( function(v){
+        material.roughness = v;
+      } );
       // gui.add( state, 'color' ),
       folder.add( state, 'spinning' );
       folder.add( state, 'spinSpeed', ['slow','fast'] );
