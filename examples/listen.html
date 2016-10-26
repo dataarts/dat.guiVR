@@ -70,14 +70,14 @@
         }
       }, 6000);
 
-      //  create a GUI folder
-      const folder = dat.GUIVR.create( 'folder settings' );
-      folder.position.y = 1.5;
-      scene.add( folder );
+      //  create a GUI 
+      const gui = dat.GUIVR.create( 'Ball Settings' );
+      gui.position.y = 1.5;
+      scene.add( gui );
 
-      folder.add( mesh.position, 'y', 2, 6 ).listen();
-      folder.add( material, 'wireframe' ).listen();
-      folder.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen();
+      gui.add( mesh.position, 'y', 2, 6 ).listen();
+      gui.add( material, 'wireframe' ).listen();
+      gui.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen();
 
 
 
