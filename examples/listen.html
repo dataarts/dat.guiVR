@@ -10,7 +10,7 @@
   </head>
   <body>
 
-    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/r82/build/three.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/master/three-vr-viewer.js"></script>
 
     <script type="text/javascript" src="../build/datguivr.js"></script>
@@ -29,6 +29,7 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       scene.add( createFloorAndLights() );
 
+      dat.GUIVR.enableMouse(camera);
 
       const guiInput = dat.GUIVR.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );

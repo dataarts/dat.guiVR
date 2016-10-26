@@ -15,8 +15,7 @@
 
 		<script src="../utils/loading.js"></script> 
 		<script>
-			//var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/r81/";
-			var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/dev/";
+			var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/r82/";
 			var threeJSExamplesPath = threeJSPath + 'examples/';
 
 			var webVRPolyfillPath = "https://cdn.rawgit.com/borismus/webvr-polyfill/v1.0.0/build/";
@@ -40,8 +39,10 @@
       			dat.GUIVR.enableMouse( camera );
 
       			const gui = dat.GUIVR.create( 'Torus Knot' );
+      			gui.position.x = 0.5;
+      			gui.position.y = 0.28;
       			gui.position.z = 1.0;
-      			gui.position.y = 0.5;
+      			gui.rotation.y = Math.PI/4;
       			scene.add( gui );
 
       			gui.add( object.position, 'x', -1, 1 ).step(0.001).name('Position X').listen();

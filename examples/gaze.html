@@ -10,7 +10,7 @@
   </head>
   <body>
 
-    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/r82/build/three.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/master/three-vr-viewer.js"></script>
 
     <script type="text/javascript" src="../build/datguivr.js"></script>
@@ -40,14 +40,14 @@
       scene.add( gazeInput.cursor );
 
       //  bind any click or touch on the webpage to a press
-      ['mousedown','touchstart']
+      ['mousedown','touchstart','keydown']
       .forEach( function(e){
           window.addEventListener(e, function(){
             gazeInput.pressed( true );
           }, false );
       });
 
-      ['mouseup','touchend']
+      ['mouseup','touchend', 'keyup']
       .forEach( function(e){
           window.addEventListener(e, function(){
             gazeInput.pressed( false );
