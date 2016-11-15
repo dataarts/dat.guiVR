@@ -29,7 +29,11 @@ import * as Palette from './palette';
 export default function createFolder({
   textCreator,
   name,
-  guiAdd
+  guiAdd,
+  addSlider,
+  addDropdown,
+  addCheckbox,
+  addButton
 } = {} ){
 
   const width = Layout.FOLDER_WIDTH;
@@ -165,6 +169,47 @@ export default function createFolder({
   group.hitscan = [ panel, grabber ];
 
   group.beingMoved = false;
+
+  group.addSlider = (...args)=>{
+    const controller = addSlider(...args);
+    if( controller ){
+      group.addController( controller );
+      return controller;
+    }
+    else{
+      return new THREE.Group();
+    }
+  };
+  group.addDropdown = (...args)=>{
+    const controller = addDropdown(...args);
+    if( controller ){
+      group.addController( controller );
+      return controller;
+    }
+    else{
+      return new THREE.Group();
+    }
+  };
+  group.addCheckbox = (...args)=>{
+    const controller = addCheckbox(...args);
+    if( controller ){
+      group.addController( controller );
+      return controller;
+    }
+    else{
+      return new THREE.Group();
+    }
+  };
+  group.addButton = (...args)=>{
+    const controller = addButton(...args);
+    if( controller ){
+      group.addController( controller );
+      return controller;
+    }
+    else{
+      return new THREE.Group();
+    }
+  };
 
   return group;
 }

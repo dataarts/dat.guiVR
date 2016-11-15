@@ -321,6 +321,41 @@ const GUIVR = (function DATGUIVR(){
   }
 
 
+  function addSimpleSlider( min = 0, max = 1 ){
+    const proxy = {
+      number: min
+    };
+
+    return addSlider( proxy, 'number', min, max );
+  }
+
+  function addSimpleDropdown( options = [] ){
+    const proxy = {
+      option: ''
+    };
+
+    if( options !== undefined ){
+      proxy.option = isArray( options ) ? options[ 0 ] : options[ Object.keys(options)[0] ];
+    }
+
+    return addDropdown( proxy, 'option', options );
+  }
+
+  function addSimpleCheckbox( defaultOption = false ){
+    const proxy = {
+      checked: defaultOption
+    };
+
+    return addCheckbox( proxy, 'checked' );
+  }
+
+  function addSimpleButton( fn ){
+    const proxy = {
+      button: (fn!==undefined) ? fn : function(){}
+    };
+
+    return addButton( proxy, 'button' );
+  }
 
 
   /*
@@ -337,7 +372,11 @@ const GUIVR = (function DATGUIVR(){
     const folder = createFolder({
       textCreator,
       name,
-      guiAdd: add
+      guiAdd: add,
+      addSlider: addSimpleSlider,
+      addDropdown: addSimpleDropdown,
+      addCheckbox: addSimpleCheckbox,
+      addButton: addSimpleButton
     });
 
     controllers.push( folder );
