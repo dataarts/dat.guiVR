@@ -10,7 +10,7 @@
   </head>
   <body>
 
-    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/r82/build/three.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/master/three-vr-viewer.js"></script>
 
     <script type="text/javascript" src="../build/datguivr.js"></script>
@@ -29,6 +29,7 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       scene.add( createFloorAndLights() );
 
+      dat.GUIVR.enableMouse(camera);
 
       const guiInput = dat.GUIVR.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
@@ -69,14 +70,14 @@
         }
       }, 6000);
 
-      //  create a GUI folder
-      const folder = dat.GUIVR.create( 'folder settings' );
-      folder.position.y = 1.5;
-      scene.add( folder );
+      //  create a GUI 
+      const gui = dat.GUIVR.create( 'Ball Settings' );
+      gui.position.y = 1.5;
+      scene.add( gui );
 
-      folder.add( mesh.position, 'y', 2, 6 ).listen();
-      folder.add( material, 'wireframe' ).listen();
-      folder.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen();
+      gui.add( mesh.position, 'y', 2, 6 ).listen();
+      gui.add( material, 'wireframe' ).listen();
+      gui.add( animation, 'speed', {fast: 1, slow: 0.1 } ).listen();
 
 
 

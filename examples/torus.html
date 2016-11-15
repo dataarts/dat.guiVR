@@ -10,7 +10,7 @@
   </head>
   <body>
 
-    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/r82/build/three.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/mflux/three-vr-viewer/415461c0252e865c5c008c074c3255b33c772730/three-vr-viewer.js"></script>
 
     <script type="text/javascript" src="../build/datguivr.js"></script>
@@ -124,29 +124,28 @@
 
 
 
-      //  create a GUI folder
-      const folder = dat.GUIVR.create( 'Settings' );
-      folder.position.y = 1.5;
-      scene.add( folder );
+      //  create a GUI
+      const gui = dat.GUIVR.create( 'Settings' );
+      gui.position.y = 1.5;
+      scene.add( gui );
 
       //  add multiple sliders
       //  updateMesh will be the callback when values are changed
-      folder.add( state, 'radius', 1, 20 ).step(0.01).onChange( updateMesh );
-      folder.add( state, 'tube', 0.1, 10 ).step(0.01).onChange( updateMesh );
-      folder.add( state, 'tubularSegments', 3, 300 ).step(1).onChange( updateMesh );
-      folder.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh );
-      folder.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh );
-      folder.add( state, 'p', 1, 20 ).name('torus p value').onChange( updateMesh ).step( 1 );
-      folder.add( state, 'q', 1, 20 ).name('torus q value').onChange( updateMesh ).step( 1 );
-      folder.add( state, 'wireframe' ).onChange( updateMaterial );
-      folder.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial );
-      folder.add( state, 'roughness', 0, 1 ).step( 0.01 ).onChange( function(v){
+      gui.add( state, 'radius', 1, 20 ).step(0.01).listen().onChange( updateMesh );
+      gui.add( state, 'tube', 0.1, 10 ).step(0.01).listen().onChange( updateMesh );
+      gui.add( state, 'tubularSegments', 3, 300 ).step(1).listen().onChange( updateMesh );
+      gui.add( state, 'radialSegments', 3, 20 ).step(1).listen().onChange( updateMesh );
+      gui.add( state, 'p', 1, 20 ).name('torus p value').listen().onChange( updateMesh ).step( 1 );
+      gui.add( state, 'q', 1, 20 ).name('torus q value').listen().onChange( updateMesh ).step( 1 );
+      gui.add( state, 'wireframe' ).listen().onChange( updateMaterial );
+      gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).listen().onChange( updateMaterial );
+      gui.add( state, 'roughness', 0, 1 ).step( 0.01 ).listen().onChange( function(v){
         material.roughness = v;
       } );
       // gui.add( state, 'color' ),
-      folder.add( state, 'spinning' );
-      folder.add( state, 'spinSpeed', ['slow','fast'] );
-      folder.add( state, 'reset' );
+      gui.add( state, 'spinning' ).listen();
+      gui.add( state, 'spinSpeed', ['slow','fast'] ).listen();
+      gui.add( state, 'reset' );
 
       function updateMesh(){
         mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );

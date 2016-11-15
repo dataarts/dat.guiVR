@@ -32,8 +32,7 @@
 
 		<script src="../utils/loading.js"></script> 
 		<script>
-			//var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/r81/";
-			var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/dev/";
+			var threeJSPath = "https://cdn.rawgit.com/mrdoob/three.js/r82/";
 			var threeJSExamplesPath = threeJSPath + 'examples/';
 
 			var webVRPolyfillPath = "https://cdn.rawgit.com/borismus/webvr-polyfill/v1.0.0/build/";
@@ -57,14 +56,16 @@
       			dat.GUIVR.enableMouse( camera );
 
       			const gui = dat.GUIVR.create( '360 Video Settings' );
-      			gui.position.x = -0.0;
-      			gui.position.y = 0.0;
-      			gui.position.z = -1.80;
+      			gui.position.x = 1.5;
+      			gui.position.y = -0.1;
+      			gui.position.z = -2.70;
       			gui.rotation.y = -Math.PI/4;
       			scene.add( gui );
 
       			gui.add( object, 'playbackRate').min(0).max(10).step(1).name("Playback Rate");
       			gui.add( object, 'pause').name('Hold to pause');
+
+      			window.gui = gui;
 
       			// GAZE input
      			var gazeInput = dat.GUIVR.addInputObject( camera );
