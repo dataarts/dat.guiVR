@@ -133,6 +133,7 @@ const GUIVR = (function DATGUIVR(){
     input.mouseIntersection = new THREE.Vector3();
     input.mouseOffset = new THREE.Vector3();
     input.mousePlane = new THREE.Plane();
+    input.intersections = [];
 
     //  set my enableMouse
     input.mouseCamera = undefined;
