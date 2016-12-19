@@ -59,30 +59,30 @@
 
       //  state that dat gui is changing
       const state = {
-        radius: 10,
-        tube: 3,
-        tubularSegments: 64,
-        radialSegments: 8,
-        roughness: 1.0,
+        radius: 4,
+        tube: 0.8,
+        tubularSegments: 128,
+        radialSegments: 12,
+        roughness: 0.25,
         p: 2,
         q: 5,
         spinning: true,
         spinSpeed: 'fast',
         wireframe: false,
-        shading: THREE.SmoothShading,
+        shading: THREE.FlatShading,
 
         reset: function(){
-          state.radius = 10;
-          state.tube = 3;
-          state.tubularSegments = 64;
-          state.radialSegments = 8;
-          roughness = 1;
+          state.radius = 4;
+          state.tube = 0.8;
+          state.tubularSegments = 128;
+          state.radialSegments = 12;
+          roughness = 0.25;
           state.p = 2;
-          state.q = 3;
+          state.q = 5;
           state.spinning = true;
           state.spinSpeed = 'fast';
           state.wireframe = false;
-          state.shading = THREE.SmoothShading;
+          state.shading = THREE.FlatShading;
           updateMesh();
           updateMaterial();
         }
@@ -98,13 +98,13 @@
       let material = new THREE.MeshStandardMaterial({
         shading: THREE.SmoothShading
       });
-      material.roughness = 1.0;
+      material.roughness = state.roughness;
       material.metalness = 1;
       material.envMap = textureCube;
 
       const mesh = new THREE.Mesh( new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q ), material );
-      mesh.position.z = -4.5;
-      mesh.position.y = 4.5;
+      mesh.position.z = -2.0;
+      mesh.position.y = 1.5;
       mesh.scale.multiplyScalar( 0.2 );
       mesh.castShadow = true;
       events.on( 'tick', (dt)=>{
@@ -127,25 +127,26 @@
       //  create a GUI
       const gui = dat.GUIVR.create( 'Settings' );
       gui.position.y = 1.5;
+      gui.position.z = -0.5;
       scene.add( gui );
 
       //  add multiple sliders
       //  updateMesh will be the callback when values are changed
-      gui.add( state, 'radius', 1, 20 ).step(0.01).listen().onChange( updateMesh );
-      gui.add( state, 'tube', 0.1, 10 ).step(0.01).listen().onChange( updateMesh );
+      gui.add( state, 'radius', 0.1, 6 ).step(0.01).listen().onChange( updateMesh );
+      gui.add( state, 'tube', 0.1, 2 ).step(0.01).listen().onChange( updateMesh );
       gui.add( state, 'tubularSegments', 3, 300 ).step(1).listen().onChange( updateMesh );
       gui.add( state, 'radialSegments', 3, 20 ).step(1).listen().onChange( updateMesh );
       gui.add( state, 'p', 1, 20 ).name('torus p value').listen().onChange( updateMesh ).step( 1 );
       gui.add( state, 'q', 1, 20 ).name('torus q value').listen().onChange( updateMesh ).step( 1 );
       gui.add( state, 'wireframe' ).listen().onChange( updateMaterial );
       gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).listen().onChange( updateMaterial );
-      gui.add( state, 'roughness', 0, 1 ).step( 0.01 ).listen().onChange( function(v){
-        material.roughness = v;
-      } );
+      gui.add( state, 'roughness', 0, 1 ).step( 0.01 ).listen().onChange( updateMaterial );
       // gui.add( state, 'color' ),
       gui.add( state, 'spinning' ).listen();
       gui.add( state, 'spinSpeed', ['slow','fast'] ).listen();
       gui.add( state, 'reset' );
+
+      updateMaterial();
 
       function updateMesh(){
         mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );
@@ -153,9 +154,10 @@
 
       function updateMaterial(){
         material = mesh.material = new THREE.MeshStandardMaterial({
-          shading: state.shading
+          shading: state.shading,
+          color:0xeedd66
         });
-        material.roughness = 1.0;
+        material.roughness = state.roughness;
         material.metalness = 1;
         material.envMap = textureCube;
         material.wireframe = state.wireframe;

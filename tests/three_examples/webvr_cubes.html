@@ -44,8 +44,10 @@
       			dat.GUIVR.enableMouse( camera );
 
       			const gui = dat.GUIVR.create( 'Cube #1' );
-      			gui.position.z = 0.5;
-      			gui.rotation.y = Math.PI;
+      			gui.position.x = -0.50;
+      			gui.position.y = -0.10;
+      			gui.position.z = -1.0;
+      			//gui.rotation.y = Math.PI;
       			scene.add( gui );
 
 				gui.add( object.position, 'x', -2, 2 ).name('Position X').step(0.001).listen();

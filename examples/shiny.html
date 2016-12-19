@@ -455,6 +455,16 @@
         THREE
       });
 
+      // offset our viewing position because the particle simulation is centered around 0,0,0
+      // and can't be moved
+      var dummy = new THREE.Camera();
+      dummy.position.set( 0, -1, 2 );
+      scene.add( dummy );
+
+      dummy.add(camera);
+      dummy.add(controllers[ 0 ])
+      dummy.add(controllers[ 1 ])
+
       //  you can use the mouse to interact with the GUI on-screen!
       dat.GUIVR.enableMouse( camera, renderer );
 
@@ -475,6 +485,7 @@
       scene.add( guiInputLeft );
 
 
+
       const params = {
         type: 2,
         spread: 4,
@@ -491,8 +502,10 @@
 
 
 
-      const gui = dat.GUIVR.create( 'Settings' );
-      gui.position.y = 1.5;
+      const gui = dat.GUIVR.create( 'Polygon Shredder' );
+      gui.position.x = 0.5;
+      gui.position.y = 0.5;
+      gui.position.z = 0.5;
       scene.add( gui );
 
       gui.add( params, 'spread', 0, 10 ).step( 0.01 );
@@ -520,7 +533,7 @@
       const { shadowCamera, shadowBuffer } = createShadow( scene, renderer, shadowSize );
       const shadowMaterial = createShadowMaterial( sim.rtTexturePos, shadowSize );
 
-      const geo = createGeometry( simSize, 1024 );
+      const geo = createGeometry( simSize );
       const mat = createMaterial( simSize, shadowSize, sim.rtTexturePos, shadowBuffer );
       const mesh = new THREE.Mesh( geo, mat );
       mesh.scale.set( 0.2, 0.2, 0.2 );
