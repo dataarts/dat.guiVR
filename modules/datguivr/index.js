@@ -569,8 +569,8 @@ function bindViveController( input, controller, pressed, gripped ){
 
   const gamepad = controller.getGamepad();
   function vibrate( t, a ){
-    if( gamepad && gamepad.haptics.length > 0 ){
-      gamepad.haptics[ 0 ].pulse( t, a );
+    if( gamepad && gamepad.hapticActuators.length > 0 ){
+      gamepad.hapticActuators[ 0 ].pulse( t, a );
     }
   }
 
