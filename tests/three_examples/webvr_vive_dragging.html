@@ -41,13 +41,17 @@
 			function createDatGUI(scene, camera, object, controller1, controller2) {
       			dat.GUIVR.enableMouse( camera );
 
-      			const gui = dat.GUIVR.create( 'Object Group' );
+      			const gui = dat.GUIVR.create( 'Object #1' );
       			gui.position.y = 1.5;
+      			gui.position.z = -0.5;
       			scene.add( gui );
 
-				gui.add( object.position, 'x', -1, 1 ).step(0.001).name('Position X');
-				gui.add( object.position, 'z', -1, 1 ).step(0.001).name('Position Z');
-				gui.add( object.rotation, 'y', -Math.PI, Math.PI).step(0.001).name('Rotation');
+      			object.position.set(-0.3,1.0,-0.4);
+
+				gui.add( object.position, 'x', -1, 1 ).step(0.001).name('Position X').listen();
+				gui.add( object.position, 'y', 0, 2 ).step(0.001).name('Position Y').listen();
+				gui.add( object.position, 'z', -1, 1 ).step(0.001).name('Position Z').listen();
+				gui.add( object.rotation, 'y', -Math.PI, Math.PI).step(0.001).name('Rotation').listen();
 
       			const guiInputController1 = dat.GUIVR.addInputObject( controller1 );
 			    scene.add( guiInputController1 );
@@ -235,7 +239,7 @@
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
-				createDatGUI(scene, camera, group, controller1, controller2); // DAT MODIFIED
+				createDatGUI(scene, camera, group.children[0], controller1, controller2); // DAT MODIFIED
 			}
 
 			function onWindowResize() {

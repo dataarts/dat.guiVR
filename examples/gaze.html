@@ -30,9 +30,19 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       scene.add( createFloorAndLights() );
 
+      // A floating yellow cube
+      let cubeMaterial = new THREE.MeshStandardMaterial({color:0xffff33});
+      cubeMaterial.roughness = 0.30;
+      cubeMaterial.metalness = 0.1;
 
+      const cube = new THREE.Mesh( new THREE.BoxGeometry( 1,1,1,16,16,16 ), cubeMaterial );
+      cube.position.z = -2.0;
+      cube.position.y = 1.75;
+      cube.position.x = 0;
+      cube.castShadow = true;
+      scene.add( cube );
 
-
+      // DAT.GuiVR setup:
       //  simply add the camera as an input object
       const gazeInput = dat.GUIVR.addInputObject( camera );
 
@@ -56,87 +66,20 @@
 
 
 
-
-
-
-
-      const state = {
-        radius: 10,
-        tube: 3,
-        tubularSegments: 64,
-        radialSegments: 8,
-        p: 2,
-        q: 3,
-        spinning: true,
-        wireframe: false,
-        shading: THREE.SmoothShading,
-
-        reset: function(){
-          state.radius = 10;
-          state.tube = 3;
-          state.tubularSegments = 64;
-          state.radialSegments = 8;
-          state.p = 2;
-          state.q = 3;
-          state.spinning = true;
-          state.wireframe = false;
-          state.shading = THREE.SmoothShading;
-          updateMesh();
-          updateMaterial();
-        }
-      };
-
-      const textureCube = new THREE.CubeTextureLoader()
-        .setPath( 'textures/cube/pisa/' )
-        .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
-
-      let material = new THREE.MeshStandardMaterial({
-        shading: THREE.SmoothShading
-      });
-      material.roughness = 1.0;
-      material.metalness = 1;
-      material.envMap = textureCube;
-
-      const mesh = new THREE.Mesh( new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q ), material );
-      mesh.position.z = -4.5;
-      mesh.position.y = 4.5;
-      mesh.scale.multiplyScalar( 0.2 );
-      mesh.castShadow = true;
-      events.on( 'tick', (dt)=>{
-        if( state.spinning ){
-          mesh.rotation.y += 0.4 * dt;
-        }
-      });
-
-      scene.add( mesh );
-
-      const gui = dat.GUIVR.create( 'Torus Settings' );
-      gui.position.y = 1.5;
+      //  create a GUI for the cube
+      const gui = dat.GUIVR.create( 'Yellow Cube' );
+      gui.position.x = -0.50;
+      gui.position.y = 1.0;
+      gui.position.z = -0.5;
       scene.add( gui );
 
-      gui.add( state, 'radius', 1, 20 ).step(0.01).onChange( updateMesh );
-      gui.add( state, 'tube', 0.1, 10 ).step(0.01).onChange( updateMesh );
-      gui.add( state, 'tubularSegments', 3, 300 ).step(1).onChange( updateMesh );
-      gui.add( state, 'radialSegments', 3, 20 ).step(1).onChange( updateMesh );
-      gui.add( state, 'p', 1, 20 ).onChange( updateMesh ).step( 1 );
-      gui.add( state, 'q', 1, 20 ).onChange( updateMesh ).step( 1 );
-      gui.add( state, 'wireframe' ).onChange( updateMaterial );
-      gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).onChange( updateMaterial );
-      gui.add( state, 'spinning' );
 
-      function updateMesh(){
-        mesh.geometry = new THREE.TorusKnotGeometry( state.radius, state.tube, state.tubularSegments, state.radialSegments, state.p, state.q );
-      }
+      gui.add( cube.rotation, 'x', 0, Math.PI * 2 ).name('Rotation X').step(0.001);
+      gui.add( cube.rotation, 'y', 0, Math.PI * 2 ).name('Rotation Y').step(0.001);
+      gui.add( cube.rotation, 'z', 0, Math.PI * 2 ).name('Rotation Z').step(0.001);
+      gui.add( cubeMaterial, 'wireframe' );
+      gui.add( cube, 'castShadow' );
 
-      function updateMaterial(){
-        material = mesh.material = new THREE.MeshStandardMaterial({
-          shading: state.shading
-        });
-        material.roughness = 1.0;
-        material.metalness = 1;
-        material.envMap = textureCube;
-        material.wireframe = state.wireframe;
-      }
 
 
     </script>

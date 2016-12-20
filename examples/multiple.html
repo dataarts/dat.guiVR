@@ -25,14 +25,16 @@
         THREE
       });
 
+      camera.far = 12;
+
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       const floorAndLights =  createFloorAndLights();
       scene.add( floorAndLights);
 
       let sphereMaterial = new THREE.MeshStandardMaterial({color:0xff6699});
-      sphereMaterial.roughness = 1.0;
-      sphereMaterial.metalness = 1;
+      sphereMaterial.roughness = 0.60;
+      sphereMaterial.metalness = 0.5;
 
       const sphere = new THREE.Mesh( new THREE.SphereGeometry( 1,24,32 ), sphereMaterial );
       sphere.position.z = -2.0;
@@ -43,8 +45,8 @@
 
 
       let cubeMaterial = new THREE.MeshStandardMaterial({color:0x6666ff});
-      cubeMaterial.roughness = 1.0;
-      cubeMaterial.metalness = 1;
+      cubeMaterial.roughness = 0.60;
+      cubeMaterial.metalness = 0.5;
 
       const cube = new THREE.Mesh( new THREE.BoxGeometry( 1,1,1 ), cubeMaterial );
       cube.position.z = -2.0;
@@ -54,7 +56,7 @@
       scene.add( cube );
 
 
-      // DAT GUI VR
+      // Add right Vive controller
       const guiInput = dat.GUIVR.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
 
@@ -64,6 +66,7 @@
       const gui = dat.GUIVR.create( 'Sphere' );
       gui.position.x = -1.20;
       gui.position.y = 1.5;
+      gui.position.z = -0.5;
       scene.add( gui );
 
       gui.add( sphere.position, 'y', 0, 4 );
@@ -73,6 +76,7 @@
       const gui2 = dat.GUIVR.create( 'Cube' );
       gui2.position.x = 0.0;
       gui2.position.y = 1.5;
+      gui2.position.z = -0.5;
       scene.add( gui2 );
 
       gui2.add( cube.position, 'x', 0, 2.0 ).name('position x').step(0.01);
@@ -81,12 +85,15 @@
       gui2.add( cube.scale, 'y', {short: 0.2, normal: 1.0, tall: 2.0 }).name('height'); // Choose from named values
 
 
-      const gui3 = dat.GUIVR.create( 'Floor & Lights' );
+      const gui3 = dat.GUIVR.create( 'Floor' );
       gui3.position.x = 0.0;
       gui3.position.y = 0.5;
+      gui3.position.z = -0.5;
       scene.add( gui3 );
 
-      gui3.add( floorAndLights.rotation, 'y', 0, 3.2 ).name('rotation x').step(0.01);
+      gui3.add( floorAndLights.children[0].rotation, 'z', 0, 3.2 ).name('rotation').step(0.01);
+      gui3.add( floorAndLights.children[0].scale, 'y', 0, 3.2 ).name('length').step(0.01);
+      gui3.add( floorAndLights.children[0].scale, 'x', 0, 3.2 ).name('width').step(0.01);
 
 
     </script>

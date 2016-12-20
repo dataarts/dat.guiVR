@@ -31,6 +31,7 @@
 
       dat.GUIVR.enableMouse(camera);
 
+      // Add right Vive controller
       const guiInput = dat.GUIVR.addInputObject( controllers[ 0 ] );
       scene.add( guiInput );
 
@@ -50,7 +51,7 @@
       let t = 0;
       events.on('tick', function( dt ){
         t += dt * animation.speed;
-        mesh.position.y = ( Math.sin( t * 2.0 ) + 0.5 ) *4 + 2;
+        mesh.position.y = ( Math.sin( t * 2.0 ) + 0.5 ) * 2 + 2;
       });
 
       setInterval(function(){
@@ -73,6 +74,7 @@
       //  create a GUI
       const gui = dat.GUIVR.create( 'Ball Settings' );
       gui.position.y = 1.5;
+      gui.position.z = -0.5;
       scene.add( gui );
 
       gui.add( mesh.position, 'y', 2, 6 ).listen();
