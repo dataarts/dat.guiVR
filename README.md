@@ -8,7 +8,9 @@ Built on top of [THREE.js](http://threejs.org/)
 
 # Documentation
 [Tutorial](https://workshop.chromeexperiments.com/examples/guiVR)
+
 [Wiki](https://github.com/dataarts/dat.guiVR/wiki)
+
 [API Docs](https://github.com/dataarts/dat.guiVR/wiki/API-and-Examples)
 
 # Build and Run 
