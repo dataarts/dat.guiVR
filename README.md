@@ -2,9 +2,9 @@
 
 ![Preview](https://github.com/dataarts/dat.guiVR/raw/master/preview.gif)
 
-A [dat-gui](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage) implementation built in 3D for use in WebVR.
+A flexible graphical user interface for changing variables within WebVR. Rather than jumping in an out to adjust variables in your code, tweak them at run-time within VR.
 
-Built on top of [THREE.js](http://threejs.org/)
+Inspired by the original [dat-gui](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage) and built on top of [THREE.js](http://threejs.org/).
 
 # Documentation
 [Tutorial](https://workshop.chromeexperiments.com/examples/guiVR)
