@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Example</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui" name="viewport" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/r82/build/three.min.js"></script>
+    <script type="text/javascript" src="../build/datguivr.js"></script>
+
+
+    <script type="text/javascript">
+
+      var camera, scene, renderer;
+      var settings = {
+        'speed':20,
+        'friction':0.1
+      }
+
+      initThreeJS();
+      initApp();
+      animate();
+
+      function initThreeJS() {
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 15 );
+        camera.position.set(0,0,1.0);
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
+      }
+      
+      function initApp(){
+
+        const gui = dat.GUIVR.create( 'Empty GUI' );
+        gui.position.set(-0.5, 0, 0);
+
+        gui.add(settings, 'speed')
+        gui.add(settings, 'friction')
+
+        scene.add( gui );
+
+
+        dat.GUIVR.enableMouse( camera );
+      }
+
+
+      function animate() {
+
+        renderer.render( scene, camera );
+
+        requestAnimationFrame( animate );
+      }
+    </script>
+  </body>
+</html>
