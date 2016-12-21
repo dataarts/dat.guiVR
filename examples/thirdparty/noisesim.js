@@ -1,7 +1,7 @@
-/*
-  Based off of @thespite's curl noise
-  https://raw.githubusercontent.com/spite/polygon-shredder/master/js/Simulation.js
-*/
+// <!--
+//   Polygon Shredder by @thespite
+//   https://github.com/spite/polygon-shredder/
+// -->
 
 function createNoiseSim( renderer, size, params ) {
 

@@ -1,3 +1,8 @@
+// <!--
+//   Polygon Shredder by @thespite
+//   https://github.com/spite/polygon-shredder/
+// -->
+
 function createShadow( scene, renderer, shadowSize ){
   const s = 2;
   const shadowCamera = new THREE.OrthographicCamera( -s, s, s, -s, .001, 3 );

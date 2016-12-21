@@ -1,3 +1,8 @@
+// <!--
+//   Polygon Shredder by @thespite
+//   https://github.com/spite/polygon-shredder/
+// -->
+
 const colors = [
   0xed6a5a,
   0xf4f1bb,
