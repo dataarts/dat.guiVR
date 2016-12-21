@@ -61,7 +61,7 @@
 
 		<script>
 		function createThreeExample() { // DAT MODIFIED
-			if ( WEBVR.isLatestAvailable() === false ) {
+			if ( WEBVR.isAvailable() === false ) {
 
 				document.body.appendChild( WEBVR.getMessage() );
 
@@ -152,7 +152,6 @@
 					// var material = new THREE.MeshBasicMaterial( { wireframe: true } );
 
 					var loader = new THREE.TextureLoader();
-					loader.setCrossOrigin( 'anonymous' );
 					loader.setPath( threeJSExamplesPath +'models/obj/cerberus/' ); // DAT MODIFIED
 
 					material.roughness = 1;
@@ -186,8 +185,8 @@
 				} );
 
 				var loader = new THREE.CubeTextureLoader();
-				loader.setCrossOrigin( 'anonymous' );
 				loader.setPath( threeJSExamplesPath +  'textures/cube/pisa/' ); // DAT MODIFIED
+				console.log(loader.path)
 				material.envMap = loader.load( [
 					"px.png", "nx.png",
 					"py.png", "ny.png",
