@@ -159,7 +159,7 @@ const GUIVR = (function DATGUIVR(){
         event.stopImmediatePropagation();
         input.pressed = true;
       }
-    }, false );
+    }, true );
 
     window.addEventListener( 'mouseup', function( event ){
       input.pressed = false;
