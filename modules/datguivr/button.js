@@ -26,7 +26,7 @@ import * as Layout from './layout';
 import * as SharedMaterials from './sharedmaterials';
 import * as Grab from './grab';
 
-export default function createCheckbox( {
+export default function createButton( {
   textCreator,
   object,
   propertyName = 'undefined',

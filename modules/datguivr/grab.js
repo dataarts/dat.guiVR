@@ -31,9 +31,15 @@ export function create( { group, panel } = {} ){
   const tPosition = new THREE.Vector3();
 
   let oldParent;
+  
+  function getTopLevelFolder(group) {
+    var folder = group.folder;
+    while (folder.folder !== folder) folder = folder.folder;
+    return folder;
+  }
 
   function handleTick( { input } = {} ){
-    const folder = group.folder;
+    const folder = getTopLevelFolder(group);
     if( folder === undefined ){
       return;
     }
@@ -65,7 +71,7 @@ export function create( { group, panel } = {} ){
 
     let { inputObject, input } = p;
 
-    const folder = group.folder;
+    const folder = getTopLevelFolder(group);
     if( folder === undefined ){
       return;
     }
@@ -115,7 +121,7 @@ export function create( { group, panel } = {} ){
 
     let { inputObject, input } = p;
 
-    const folder = group.folder;
+    const folder = getTopLevelFolder(group);
     if( folder === undefined ){
       return;
     }

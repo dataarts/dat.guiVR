@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Example</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui" name="viewport" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+
+    <script type="text/javascript" src="https://cdn.rawgit.com/mrdoob/three.js/r82/build/three.min.js"></script>
+    <script type="text/javascript" src="../build/datguivr.js"></script>
+
+
+    <script type="text/javascript">
+
+      var camera, scene, renderer;
+      var gui; //global for hacking in console
+      var settings = {
+        'speed':20,
+        'friction':0.1,
+        'mass':5,
+        'advanced settings': {
+            'restitution' : 0.9,
+            'spring' : {
+                'compression':0.6,
+                'expansion':0.2
+            },
+            'discombobulation' : false
+        },
+        'alive':true
+      }
+
+      initThreeJS();
+      initApp();
+      animate();
+
+      // add properties from 'object' to 'folder', recursively adding nested subfolders
+      function addToFolder(object, folder) {
+        for (var k in object) {
+            if (typeof object[k] === 'object') {
+                const newFolder = dat.GUIVR.create(k);
+                addToFolder(object[k], newFolder);
+                folder.addController(newFolder);
+            } else folder.add(object, k);
+        }
+      }
+
+      function initThreeJS() {
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 15 );
+        camera.position.set(0,0,1.0);
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
+      }
+      
+      function initApp(){
+
+        gui = dat.GUIVR.create( 'settings' );
+        gui.position.set(-0.5, 0.5, 0);
+        gui.scale.set(0.5, 0.5, 0.5);
+
+        addToFolder(settings, gui);
+        scene.add(gui);
+
+        dat.GUIVR.enableMouse( camera );
+      }
+
+
+      function animate() {
+
+        renderer.render( scene, camera );
+
+        requestAnimationFrame( animate );
+      }
+    </script>
+  </body>
+</html>

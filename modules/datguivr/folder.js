@@ -39,8 +39,6 @@ export default function createFolder({
   const width = Layout.FOLDER_WIDTH;
   const depth = Layout.PANEL_DEPTH;
 
-  const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
-
   const state = {
     collapsed: false,
     previousParent: undefined
@@ -49,8 +47,21 @@ export default function createFolder({
   const group = new THREE.Group();
   const collapseGroup = new THREE.Group();
   group.add( collapseGroup );
+  // function addDebugBox() {
+  //   const box = Layout.createPanel(0.01, 0.01, 0.02, true);
+  //   box.material.color.setHex(0x00ff00);
+  //   //Colors.colorizeGeometry( box.geometry,  );
+  //   group.add(box);
+  // }
+  // addDebugBox();
+  
+  //expose as public interface so that children can call it when their spacing changes
+  group.performLayout = performLayout;
 
-  //  Yeah. Gross.
+
+  //  Yeah. Gross.  
+  //PJT: Would probably be better to have the THREE object be a member
+  //rather than just adding properties to it in dodgy ways.
   const addOriginal = THREE.Group.prototype.add;
 
   function addImpl( o ){
@@ -73,14 +84,17 @@ export default function createFolder({
   downArrow.position.set( 0.05, 0, depth  * 1.01 );
   panel.add( downArrow );
 
+  //PJT: this grabber should really belong to 'gui' rather than folder, if there is such a thing.
   const grabber = Layout.createPanel( width, Layout.FOLDER_GRAB_HEIGHT, depth, true );
-  grabber.position.y = Layout.FOLDER_HEIGHT * 0.86;
+  grabber.position.y = Layout.FOLDER_HEIGHT * 0.86; //XXX: magic number
   grabber.name = 'grabber';
   addImpl( grabber );
 
   const grabBar = Graphic.grabBar();
   grabBar.position.set( width * 0.5, 0, depth * 1.001 );
   grabber.add( grabBar );
+  group.isFolder = true;
+  group.hideGrabber = function() { grabber.visible = false };
 
   group.add = function( ...args ){
     const newController = guiAdd( ...args );
@@ -96,24 +110,42 @@ export default function createFolder({
 
   group.addController = function( ...args ){
     args.forEach( function( obj ){
-      const container = new THREE.Group();
-      container.add( obj );
-      collapseGroup.add( container );
+      // PJT: not sure what purpose this extra group has.
+      // const container = new THREE.Group();
+      // if (obj.spacing) container.spacing = obj.spacing;
+      // container.add( obj );
+      // collapseGroup.add( container );
+      collapseGroup.add( obj );
       obj.folder = group;
+      //quick & dirty hack to hide grabBar
+      //if (obj.children[2]) obj.children[2].visible = false;
+      if (obj.hideGrabber) obj.hideGrabber();
     });
 
     performLayout();
   };
 
   function performLayout(){
+    const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
+    var y = 0, lastHeight = spacingPerController, totalSpacing = spacingPerController;
     collapseGroup.children.forEach( function( child, index ){
-      child.position.y = -(index+1) * spacingPerController ;
+      var h = child.spacing ? child.spacing : spacingPerController;
+      var spacing = 0.5 * (lastHeight + h);
+      var lastY = y;
+      // for the next child to be in right place, y needs to move by full spacing...
+      y -= spacing; 
+      
+      lastHeight = h;
+      // but for folders, the origin needs to be in the middle of the top row,
+      // not the middle of the whole object...
+      child.position.y = child.isFolder ? lastY - spacingPerController : y;
       child.position.x = 0.026;
       if( state.collapsed ){
-        child.children[0].visible = false;
+        child.visible = false;
       }
       else{
-        child.children[0].visible = true;
+        totalSpacing += h;
+        child.visible = true;
       }
     });
 
@@ -123,6 +155,12 @@ export default function createFolder({
     else{
       downArrow.rotation.z = 0;
     }
+    
+    group.spacing = totalSpacing;
+    if (state.collapsed) group.spacing = spacingPerController;
+
+    //make sure parent folder also performs layout.
+    if (group.folder !== group) group.folder.performLayout();
   }
 
   function updateView(){
