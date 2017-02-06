@@ -57,7 +57,7 @@ export default function createFolder({
   
   //expose as public interface so that children can call it when their spacing changes
   group.performLayout = performLayout;
-
+  group.isCollapsed = () => { return state.collapsed }
 
   //  Yeah. Gross.  
   //PJT: Would probably be better to have the THREE object be a member
@@ -118,7 +118,6 @@ export default function createFolder({
       collapseGroup.add( obj );
       obj.folder = group;
       //quick & dirty hack to hide grabBar
-      //if (obj.children[2]) obj.children[2].visible = false;
       if (obj.hideGrabber) obj.hideGrabber();
     });
 

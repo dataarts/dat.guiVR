@@ -41,7 +41,32 @@ const GUIVR = (function DATGUIVR(){
   */
   const inputObjects = [];
   const controllers = [];
-  const hitscanObjects = [];
+  const hitscanObjects = []; //XXX: this is currently not used.
+
+  /*
+    Functions for determining whether a given controller is visible (by which we
+    mean not hidden, not 'visible' in terms of the camera orientation etc), and
+    for retrieving the list of visible hitscanObjects dynamically.
+    This might benefit from some caching especially in cases with large complex GUIs.
+    I haven't measured the impact of garbage collection etc.
+  */
+  function isControllerVisible(control) {
+    if (!control.visible) return false;
+    var folder = control.folder;
+    while (folder.folder !== folder){
+      folder = folder.folder;
+      if (folder.isCollapsed() || !folder.visible) return false;
+    } 
+    return true;
+  }
+  function getVisibleControllers() {
+    // not terribly efficient
+    return controllers.filter( isControllerVisible );
+  }
+  function getVisibleHitscanObjects() {
+    const tmp = getVisibleControllers().map( o => { return o.hitscan; } )
+    return tmp.reduce((a, b) => { return a.concat(b)}, []);
+  }
 
   let mouseEnabled = false;
   let mouseRenderer = undefined;
@@ -404,6 +429,8 @@ const GUIVR = (function DATGUIVR(){
   function update() {
     requestAnimationFrame( update );
 
+    var hitscanObjects = getVisibleHitscanObjects();
+
     if( mouseEnabled ){
       mouseInput.intersections = performMouseInput( hitscanObjects, mouseInput );
     }
@@ -435,7 +462,9 @@ const GUIVR = (function DATGUIVR(){
     }
 
     controllers.forEach( function( controller ){
-      controller.update( inputs );
+      //nb, we could do a more thorough check for visibilty, not sure how important
+      //this bit is at this stage...
+      if (controller.visible) controller.update( inputs );
     });
   }
 
@@ -468,6 +497,7 @@ const GUIVR = (function DATGUIVR(){
 
   function performMouseIntersection( raycast, mouse, camera ){
     raycast.setFromCamera( mouse, camera );
+    const hitscanObjects = getVisibleHitscanObjects();
     return raycast.intersectObjects( hitscanObjects, false );
   }
 
