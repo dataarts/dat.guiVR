@@ -127,7 +127,8 @@ export default function createFolder({
 
   function performLayout(){
     const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
-    var y = 0, lastHeight = spacingPerController, totalSpacing = spacingPerController;
+    const emptyFolderSpace = Layout.FOLDER_HEIGHT + Layout.PANEL_SPACING;
+    var y = 0, lastHeight = emptyFolderSpace, totalSpacing = emptyFolderSpace;
     collapseGroup.children.forEach( function( child, index ){
       var h = child.spacing ? child.spacing : spacingPerController;
       var spacing = 0.5 * (lastHeight + h);
