@@ -322,7 +322,6 @@ const GUIVR = (function DATGUIVR(){
     else
 
     if( object[ propertyName ] === undefined ){
-      //why not throw an exception?
       console.warn( 'no property named', propertyName, 'on object', object );
       return new THREE.Group();
     }

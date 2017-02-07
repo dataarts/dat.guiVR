@@ -47,21 +47,12 @@ export default function createFolder({
   const group = new THREE.Group();
   const collapseGroup = new THREE.Group();
   group.add( collapseGroup );
-  // function addDebugBox() {
-  //   const box = Layout.createPanel(0.01, 0.01, 0.02, true);
-  //   box.material.color.setHex(0x00ff00);
-  //   //Colors.colorizeGeometry( box.geometry,  );
-  //   group.add(box);
-  // }
-  // addDebugBox();
   
   //expose as public interface so that children can call it when their spacing changes
   group.performLayout = performLayout;
   group.isCollapsed = () => { return state.collapsed }
 
-  //  Yeah. Gross.  
-  //PJT: Would probably be better to have the THREE object be a member
-  //rather than just adding properties to it in dodgy ways.
+  //  Yeah. Gross.
   const addOriginal = THREE.Group.prototype.add;
 
   function addImpl( o ){
@@ -84,9 +75,8 @@ export default function createFolder({
   downArrow.position.set( 0.05, 0, depth  * 1.01 );
   panel.add( downArrow );
 
-  //PJT: this grabber should really belong to 'gui' rather than folder, if there is such a thing.
   const grabber = Layout.createPanel( width, Layout.FOLDER_GRAB_HEIGHT, depth, true );
-  grabber.position.y = Layout.FOLDER_HEIGHT * 0.86; //XXX: magic number
+  grabber.position.y = Layout.FOLDER_HEIGHT * 0.86;
   grabber.name = 'grabber';
   addImpl( grabber );
 
@@ -110,14 +100,8 @@ export default function createFolder({
 
   group.addController = function( ...args ){
     args.forEach( function( obj ){
-      // PJT: not sure what purpose this extra group has.
-      // const container = new THREE.Group();
-      // if (obj.spacing) container.spacing = obj.spacing;
-      // container.add( obj );
-      // collapseGroup.add( container );
       collapseGroup.add( obj );
       obj.folder = group;
-      //quick & dirty hack to hide grabBar
       if (obj.hideGrabber) obj.hideGrabber();
     });
 
