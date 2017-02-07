@@ -46,7 +46,7 @@
             if (typeof object[k] === 'object') {
                 const newFolder = dat.GUIVR.create(k);
                 addToFolder(object[k], newFolder);
-                folder.addController(newFolder);
+                folder.addFolder(newFolder);
             } else folder.add(object, k);
         }
       }

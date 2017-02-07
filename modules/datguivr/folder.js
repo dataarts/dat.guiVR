@@ -102,11 +102,20 @@ export default function createFolder({
     args.forEach( function( obj ){
       collapseGroup.add( obj );
       obj.folder = group;
-      if (obj.hideGrabber) obj.hideGrabber();
     });
 
     performLayout();
   };
+
+  group.addFolder = function( ...args ){
+    args.forEach( function (obj) {
+      collapseGroup.add( obj );
+      obj.folder = group;
+      obj.hideGrabber();
+    });
+    
+    performLayout();
+  }
 
   function performLayout(){
     const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
