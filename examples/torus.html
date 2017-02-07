@@ -66,8 +66,6 @@
         roughness: 0.25,
         p: 2,
         q: 5,
-        spinning: true,
-        spinSpeed: 'fast',
         wireframe: false,
         shading: THREE.FlatShading,
 
@@ -79,13 +77,16 @@
           roughness = 0.25;
           state.p = 2;
           state.q = 5;
-          state.spinning = true;
-          state.spinSpeed = 'fast';
           state.wireframe = false;
           state.shading = THREE.FlatShading;
           updateMesh();
           updateMaterial();
         }
+      };
+
+      const animState = {
+        spinning: true,
+        spinSpeed: 'fast',
       };
 
 
@@ -108,8 +109,8 @@
       mesh.scale.multiplyScalar( 0.2 );
       mesh.castShadow = true;
       events.on( 'tick', (dt)=>{
-        if( state.spinning ){
-          if( state.spinSpeed === 'slow' ){
+        if( animState.spinning ){
+          if( animState.spinSpeed === 'slow' ){
             mesh.rotation.y += 0.05 * dt;
           }
           else{
@@ -142,8 +143,7 @@
       gui.add( state, 'shading', { 'THREE.SmoothShading': THREE.SmoothShading, 'THREE.FlatShading': THREE.FlatShading } ).listen().onChange( updateMaterial );
       gui.add( state, 'roughness', 0, 1 ).step( 0.01 ).listen().onChange( updateMaterial );
       // gui.add( state, 'color' ),
-      gui.add( state, 'spinning' ).listen();
-      gui.add( state, 'spinSpeed', ['slow','fast'] ).listen();
+
       gui.add( state, 'reset' );
 
       updateMaterial();
@@ -162,6 +162,11 @@
         material.envMap = textureCube;
         material.wireframe = state.wireframe;
       }
+
+      const animFolder = dat.GUIVR.create( 'Animation' );
+      animFolder.add( animState, 'spinning' ).listen();
+      animFolder.add( animState, 'spinSpeed', ['slow','fast'] ).listen();
+      gui.addFolder( animFolder );
 
 
 
