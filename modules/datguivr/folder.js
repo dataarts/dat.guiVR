@@ -102,6 +102,10 @@ export default function createFolder({
     args.forEach( function( obj ){
       collapseGroup.add( obj );
       obj.folder = group;
+      if (obj.isFolder) {
+        obj.hideGrabber();
+        obj.close();
+      }
     });
 
     performLayout();
