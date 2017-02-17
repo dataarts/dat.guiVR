@@ -126,6 +126,7 @@ export default function createFolder({
     const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
     const emptyFolderSpace = Layout.FOLDER_HEIGHT + Layout.PANEL_SPACING;
     var y = 0, lastHeight = emptyFolderSpace, totalSpacing = emptyFolderSpace;
+    var lastSpace = spacingPerController;
     collapseGroup.children.forEach( function( child, index ){
       var h = child.spacing ? child.spacing : spacingPerController;
       var spacing = 0.5 * (lastHeight + h);
@@ -136,7 +137,8 @@ export default function createFolder({
       lastHeight = h;
       // but for folders, the origin needs to be in the middle of the top row,
       // not the middle of the whole object...
-      child.position.y = child.isFolder ? lastY - spacingPerController : y;
+      child.position.y = child.isFolder ? lastY - lastSpace : y;
+      lastSpace = spacing;
       child.position.x = 0.026;
       if( state.collapsed ){
         child.visible = false;
