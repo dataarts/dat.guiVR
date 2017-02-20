@@ -136,7 +136,7 @@ export default function createFolder({
 
       var y = 0, lastHeight = emptyFolderSpace;
       
-      collapseGroup.children.forEach( function( child, i ){
+      collapseGroup.children.forEach( function( child ){
         var h = child.spacing ? child.spacing : spacingPerController;
         // how far to get from the middle of previous to middle of this child?
         // half of the height of previous plus half height of this.
