@@ -1,8 +1,8 @@
 {
   "name": "datguivr",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A flexible graphical user interface for changing variables within WebVR.",
-  "main": "index.js",
+  "main": "build/datguivr.js",
   "author": "Google Data Arts Team",
   "scripts": {
     "dev": "./node_modules/.bin/grunt"
