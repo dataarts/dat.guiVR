@@ -102,6 +102,10 @@ export default function createFolder({
     args.forEach( function( obj ){
       collapseGroup.add( obj );
       obj.folder = group;
+      if (obj.isFolder) {
+        obj.hideGrabber();
+        obj.close();
+      }
     });
 
     performLayout();
@@ -112,6 +116,7 @@ export default function createFolder({
       collapseGroup.add( obj );
       obj.folder = group;
       obj.hideGrabber();
+      obj.close();
     });
     
     performLayout();
@@ -120,37 +125,40 @@ export default function createFolder({
   function performLayout(){
     const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
     const emptyFolderSpace = Layout.FOLDER_HEIGHT + Layout.PANEL_SPACING;
-    var y = 0, lastHeight = emptyFolderSpace, totalSpacing = emptyFolderSpace;
-    collapseGroup.children.forEach( function( child, index ){
-      var h = child.spacing ? child.spacing : spacingPerController;
-      var spacing = 0.5 * (lastHeight + h);
-      var lastY = y;
-      // for the next child to be in right place, y needs to move by full spacing...
-      y -= spacing; 
-      
-      lastHeight = h;
-      // but for folders, the origin needs to be in the middle of the top row,
-      // not the middle of the whole object...
-      child.position.y = child.isFolder ? lastY - spacingPerController : y;
-      child.position.x = 0.026;
-      if( state.collapsed ){
-        child.visible = false;
-      }
-      else{
-        totalSpacing += h;
-        child.visible = true;
-      }
-    });
-
-    if( state.collapsed ){
-      downArrow.rotation.z = Math.PI * 0.5;
-    }
-    else{
-      downArrow.rotation.z = 0;
-    }
+    var totalSpacing = emptyFolderSpace;
     
+    collapseGroup.children.forEach( (c) => { c.visible = !state.collapsed } );
+    
+    if ( state.collapsed ) {
+      downArrow.rotation.z = Math.PI * 0.5;
+    } else {
+      downArrow.rotation.z = 0;
+
+      var y = 0, lastHeight = emptyFolderSpace;
+      
+      collapseGroup.children.forEach( function( child ){
+        var h = child.spacing ? child.spacing : spacingPerController;
+        // how far to get from the middle of previous to middle of this child?
+        // half of the height of previous plus half height of this.
+        var spacing = 0.5 * (lastHeight + h); 
+        
+        if (child.isFolder) {
+          // For folders, the origin isn't in the middle of the entire height of the folder,
+          // but just the middle of the top panel.
+          var offset = 0.5 * (lastHeight + emptyFolderSpace);
+          child.position.y = y - offset;
+        } else {
+          child.position.y = y - spacing;
+        }
+        // in any case, for use by the next object along we remember 'y' as the middle of the whole panel
+        y -= spacing;
+        lastHeight = h;
+        totalSpacing += h;
+        child.position.x = 0.026;
+      });
+    }
+
     group.spacing = totalSpacing;
-    if (state.collapsed) group.spacing = spacingPerController;
 
     //make sure parent folder also performs layout.
     if (group.folder !== group) group.folder.performLayout();
@@ -178,6 +186,19 @@ export default function createFolder({
     performLayout();
     p.locked = true;
   });
+
+  group.open = function() {
+    //should we consider checking if parents are open and automatically open them if not?
+    if (!state.collapsed) return;
+    state.collapsed = false;
+    performLayout();
+  }
+
+  group.close = function() {
+    if (state.collapsed) return;
+    state.collapsed = true;
+    performLayout();
+  }
 
   group.folder = group;
 
