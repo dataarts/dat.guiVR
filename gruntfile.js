@@ -22,60 +22,6 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
 
-    browserify: {
-      options: {
-        watch: !grunt.option('staging'),
-        keepAlive: !grunt.option('staging'),
-        transform: [
-          ['babelify', {
-            presets: 'es2015',
-            compact: 'false',
-          }]
-        ],
-        browserifyOptions: {
-          debug: true
-        }
-      },
-      dist: {
-        files: {
-          './build/datguivr.js': [
-            'modules/datguivr/index.js'
-          ]
-        }
-      }
-    },
-
-    uglify: {
-      target: {
-        options: {
-          sourceMap: true,
-          sourceMapName: './build/datguivr.map'
-        },
-        files: {
-          './build/datguivr.min.js': ['./build/datguivr.js']
-        }
-      }
-    },
-
-    watch: {
-      options: {
-        livereload: true,
-        spawn: false
-      },
-      min: {
-        files: ['./build/datguivr.js'],
-        tasks: ['uglify:target']
-      },
-      scripts: {
-        files: ['testserver.js', './build/*.js' ],
-        tasks: []
-      },
-      html: {
-        files: [ 'examples/*.html', 'examples/*.css' ],
-        tasks: []
-      }
-    },
-
     express: {
       options: {
         port: 8000,
@@ -90,7 +36,7 @@ module.exports = function (grunt) {
 
     concurrent: {
       dev: {
-        tasks: ['watch', 'browserify', 'express:dev'],
+        tasks: ['express:dev'],
         options: {
           logConcurrentOutput: true
         },
@@ -105,10 +51,7 @@ module.exports = function (grunt) {
 
   });
 
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-express-server');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('default', ['concurrent:dev']);
   grunt.registerTask('publish', ['concurrent:publish']);

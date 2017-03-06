@@ -17,7 +17,8 @@
 * limitations under the License.
 */
 
-import * as SubdivisionModifier from '../thirdparty/SubdivisionModifier';
+import { Group, BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
+import SubdivisionModifier from '../thirdparty/SubdivisionModifier';
 
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
@@ -39,7 +40,7 @@ export default function createButton( {
   const BUTTON_HEIGHT = height - Layout.PANEL_MARGIN;
   const BUTTON_DEPTH = Layout.BUTTON_DEPTH;
 
-  const group = new THREE.Group();
+  const group = new Group();
 
   const panel = Layout.createPanel( width, height, depth );
   group.add( panel );
@@ -47,21 +48,21 @@ export default function createButton( {
   //  base checkbox
   const divisions = 4;
   const aspectRatio = BUTTON_WIDTH / BUTTON_HEIGHT;
-  const rect = new THREE.BoxGeometry( BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_DEPTH, Math.floor( divisions * aspectRatio ), divisions, divisions );
-  const modifier = new THREE.SubdivisionModifier( 1 );
+  const rect = new BoxGeometry( BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_DEPTH, Math.floor( divisions * aspectRatio ), divisions, divisions );
+  const modifier = new SubdivisionModifier( 1 );
   modifier.modify( rect );
   rect.translate( BUTTON_WIDTH * 0.5, 0, 0 );
 
   //  hitscan volume
-  const hitscanMaterial = new THREE.MeshBasicMaterial();
+  const hitscanMaterial = new MeshBasicMaterial();
   hitscanMaterial.visible = false;
 
-  const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
+  const hitscanVolume = new Mesh( rect.clone(), hitscanMaterial );
   hitscanVolume.position.z = BUTTON_DEPTH * 0.5;
   hitscanVolume.position.x = width * 0.5;
 
-  const material = new THREE.MeshBasicMaterial({ color: Colors.BUTTON_COLOR });
-  const filledVolume = new THREE.Mesh( rect.clone(), material );
+  const material = new MeshBasicMaterial({ color: Colors.BUTTON_COLOR });
+  const filledVolume = new Mesh( rect.clone(), material );
   hitscanVolume.add( filledVolume );
 
 

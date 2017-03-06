@@ -17,6 +17,7 @@
 * limitations under the License.
 */
 
+import { Vector3, Euler, Group } from 'three';
 import createInteraction from './interaction';
 
 export function create( { group, panel } = {} ){
@@ -27,10 +28,10 @@ export function create( { group, panel } = {} ){
   interaction.events.on( 'onReleaseGrip', handleOnGripRelease );
 
   let oldParent;
-  let oldPosition = new THREE.Vector3();
-  let oldRotation = new THREE.Euler();
+  let oldPosition = new Vector3();
+  let oldRotation = new Euler();
 
-  const rotationGroup = new THREE.Group();
+  const rotationGroup = new Group();
   rotationGroup.scale.set( 0.3, 0.3, 0.3 );
   rotationGroup.position.set( -0.015, 0.015, 0.0 );
 

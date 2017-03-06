@@ -17,6 +17,7 @@
 * limitations under the License.
 */
 
+import { Group, BoxGeometry, MeshBasicMaterial, Mesh, BoxHelper } from 'three';
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';
@@ -47,31 +48,31 @@ export default function createCheckbox( {
     listen: false
   };
 
-  const group = new THREE.Group();
+  const group = new Group();
 
   const panel = Layout.createPanel( width, height, depth );
   group.add( panel );
 
   //  base checkbox
-  const rect = new THREE.BoxGeometry( CHECKBOX_WIDTH, CHECKBOX_HEIGHT, CHECKBOX_DEPTH );
+  const rect = new BoxGeometry( CHECKBOX_WIDTH, CHECKBOX_HEIGHT, CHECKBOX_DEPTH );
   rect.translate( CHECKBOX_WIDTH * 0.5, 0, 0 );
 
 
   //  hitscan volume
-  const hitscanMaterial = new THREE.MeshBasicMaterial();
+  const hitscanMaterial = new MeshBasicMaterial();
   hitscanMaterial.visible = false;
 
-  const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
+  const hitscanVolume = new Mesh( rect.clone(), hitscanMaterial );
   hitscanVolume.position.z = depth;
   hitscanVolume.position.x = width * 0.5;
 
   //  outline volume
-  // const outline = new THREE.BoxHelper( hitscanVolume );
+  // const outline = new BoxHelper( hitscanVolume );
   // outline.material.color.setHex( Colors.OUTLINE_COLOR );
 
   //  checkbox volume
-  const material = new THREE.MeshBasicMaterial({ color: Colors.CHECKBOX_BG_COLOR });
-  const filledVolume = new THREE.Mesh( rect.clone(), material );
+  const material = new MeshBasicMaterial({ color: Colors.CHECKBOX_BG_COLOR });
+  const filledVolume = new Mesh( rect.clone(), material );
   // filledVolume.scale.set( ACTIVE_SCALE, ACTIVE_SCALE,ACTIVE_SCALE );
   hitscanVolume.add( filledVolume );
 

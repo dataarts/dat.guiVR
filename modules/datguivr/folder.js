@@ -17,6 +17,8 @@
 * limitations under the License.
 */
 
+import { Group } from 'three';
+
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';
@@ -44,16 +46,16 @@ export default function createFolder({
     previousParent: undefined
   };
 
-  const group = new THREE.Group();
-  const collapseGroup = new THREE.Group();
+  const group = new Group();
+  const collapseGroup = new Group();
   group.add( collapseGroup );
-  
+
   //expose as public interface so that children can call it when their spacing changes
   group.performLayout = performLayout;
   group.isCollapsed = () => { return state.collapsed }
 
   //  Yeah. Gross.
-  const addOriginal = THREE.Group.prototype.add;
+  const addOriginal = Group.prototype.add;
 
   function addImpl( o ){
     addOriginal.call( group, o );
@@ -94,7 +96,7 @@ export default function createFolder({
       return newController;
     }
     else{
-      return new THREE.Group();
+      return new Group();
     }
   };
 
@@ -113,7 +115,7 @@ export default function createFolder({
       obj.folder = group;
       obj.hideGrabber();
     });
-    
+
     performLayout();
   }
 
@@ -126,8 +128,8 @@ export default function createFolder({
       var spacing = 0.5 * (lastHeight + h);
       var lastY = y;
       // for the next child to be in right place, y needs to move by full spacing...
-      y -= spacing; 
-      
+      y -= spacing;
+
       lastHeight = h;
       // but for folders, the origin needs to be in the middle of the top row,
       // not the middle of the whole object...
@@ -148,7 +150,7 @@ export default function createFolder({
     else{
       downArrow.rotation.z = 0;
     }
-    
+
     group.spacing = totalSpacing;
     if (state.collapsed) group.spacing = spacingPerController;
 
@@ -208,7 +210,7 @@ export default function createFolder({
       return controller;
     }
     else{
-      return new THREE.Group();
+      return new Group();
     }
   };
   group.addDropdown = (...args)=>{
@@ -218,7 +220,7 @@ export default function createFolder({
       return controller;
     }
     else{
-      return new THREE.Group();
+      return new Group();
     }
   };
   group.addCheckbox = (...args)=>{
@@ -228,7 +230,7 @@ export default function createFolder({
       return controller;
     }
     else{
-      return new THREE.Group();
+      return new Group();
     }
   };
   group.addButton = (...args)=>{
@@ -238,7 +240,7 @@ export default function createFolder({
       return controller;
     }
     else{
-      return new THREE.Group();
+      return new Group();
     }
   };
 

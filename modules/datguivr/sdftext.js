@@ -17,24 +17,25 @@
 * limitations under the License.
 */
 
-import SDFShader from 'three-bmfont-text/shaders/sdf';
-import createGeometry from 'three-bmfont-text';
+import { Texture, LinearFilter, RawShaderMaterial, DoubleSide, Mesh, Vector3, Group } from 'three';
+import createTextGeometry from 'three-bmfont-text';
 import parseASCII from 'parse-bmfont-ascii';
+import createSDFShader from 'three-bmfont-text/shaders/sdf';
 
 import * as Font from './font';
 
 export function createMaterial( color ){
 
-  const texture = new THREE.Texture();
+  const texture = new Texture();
   const image = Font.image();
   texture.image = image;
   texture.needsUpdate = true;
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
   texture.generateMipmaps = false;
 
-  return new THREE.RawShaderMaterial(SDFShader({
-    side: THREE.DoubleSide,
+  return new RawShaderMaterial(createSDFShader({
+    side: DoubleSide,
     transparent: true,
     color: color,
     map: texture
@@ -44,14 +45,12 @@ export function createMaterial( color ){
 const textScale = 0.00024;
 
 export function creator(){
-
   const font = parseASCII( Font.fnt() );
 
   const colorMaterials = {};
 
   function createText( str, font, color = 0xffffff, scale = 1.0 ){
-
-    const geometry = createGeometry({
+    const geometry = createTextGeometry({
       text: str,
       align: 'left',
       width: 10000,
@@ -59,15 +58,14 @@ export function creator(){
       font
     });
 
-
     const layout = geometry.layout;
 
     let material = colorMaterials[ color ];
     if( material === undefined ){
       material = colorMaterials[ color ] = createMaterial( color );
     }
-    const mesh = new THREE.Mesh( geometry, material );
-    mesh.scale.multiply( new THREE.Vector3(1,-1,1) );
+    const mesh = new Mesh( geometry, material );
+    mesh.scale.multiply( new Vector3(1,-1,1) );
 
     const finalScale = scale * textScale;
 
@@ -80,7 +78,7 @@ export function creator(){
 
 
   function create( str, { color=0xffffff, scale=1.0 } = {} ){
-    const group = new THREE.Group();
+    const group = new Group();
 
     let mesh = createText( str, font, color, scale );
     group.add( mesh );

@@ -3,13 +3,13 @@
 * https://github.com/dataarts/dat.guiVR
 *
 * Copyright 2016 Data Arts Team, Google Inc.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,10 @@
 * limitations under the License.
 */
 
+import { MeshBasicMaterial, VertexColors } from 'three';
+
 import * as Colors from './colors';
 
-export const PANEL = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.VertexColors } );
-export const LOCATOR = new THREE.MeshBasicMaterial();
-export const FOLDER = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+export const PANEL = new MeshBasicMaterial( { color: 0xffffff, vertexColors: VertexColors } );
+export const LOCATOR = new MeshBasicMaterial();
+export const FOLDER = new MeshBasicMaterial( { color: 0x000000 } );

@@ -2,18 +2,23 @@
   "name": "datguivr",
   "version": "0.1.1",
   "description": "A flexible graphical user interface for changing variables within WebVR.",
-  "main": "build/datguivr.js",
+  "main": "build/datguivr.min.js",
   "author": "Google Data Arts Team",
   "scripts": {
     "dev": "./node_modules/.bin/grunt"
   },
   "dependencies": {
     "parse-bmfont-ascii": "^1.0.6",
-    "three-bmfont-text": "^2.2.0"
+    "three": "^0.84.0",
+    "three-bmfont-text": "^2.2.0",
+    "three-vive-controller": "^1.4.1"
   },
   "devDependencies": {
-    "babel-preset-es2015": "*",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
     "babelify": "^7.3.0",
+    "babelrc-rollup": "^3.0.0",
     "express": "*",
     "grunt": "*",
     "grunt-browserify": "*",
@@ -23,6 +28,11 @@
     "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "*",
     "grunt-express-server": "*",
-    "load-grunt-tasks": "*"
+    "load-grunt-tasks": "*",
+    "rollup": "^0.41.4",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^7.0.0",
+    "rollup-plugin-node-builtins": "^2.1.0",
+    "rollup-plugin-node-resolve": "^2.0.0"
   }
 }
