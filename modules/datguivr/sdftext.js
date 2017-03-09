@@ -32,7 +32,7 @@ export function createMaterial( color ){
   texture.magFilter = THREE.LinearFilter;
   texture.generateMipmaps = false;
 
-  return new THREE.RawShaderMaterial(SDFShader({
+  return new THREE.RawShaderMaterial(createSDFShader({
     side: THREE.DoubleSide,
     transparent: true,
     color: color,
@@ -50,7 +50,7 @@ export function creator(){
 
   function createText( str, font, color = 0xffffff, scale = 1.0 ){
 
-    const geometry = createGeometry({
+    const geometry = createTextGeometry({
       text: str,
       align: 'left',
       width: 10000,
