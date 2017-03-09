@@ -17,7 +17,6 @@
 * limitations under the License.
 */
 
-import { Group, BoxGeometry, MeshBasicMaterial, Mesh, Vector3 } from 'three';
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';
@@ -61,33 +60,33 @@ export default function createSlider( {
   state.precision = numDecimals( state.step );
   state.alpha = getAlphaFromValue( state.value, state.min, state.max );
 
-  const group = new Group();
+  const group = new THREE.Group();
 
   //  filled volume
-  const rect = new BoxGeometry( SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_DEPTH );
+  const rect = new THREE.BoxGeometry( SLIDER_WIDTH, SLIDER_HEIGHT, SLIDER_DEPTH );
   rect.translate(SLIDER_WIDTH*0.5,0,0);
   // Layout.alignLeft( rect );
 
-  const hitscanMaterial = new MeshBasicMaterial();
+  const hitscanMaterial = new THREE.MeshBasicMaterial();
   hitscanMaterial.visible = false;
 
-  const hitscanVolume = new Mesh( rect.clone(), hitscanMaterial );
+  const hitscanVolume = new THREE.Mesh( rect.clone(), hitscanMaterial );
   hitscanVolume.position.z = depth;
   hitscanVolume.position.x = width * 0.5;
   hitscanVolume.name = 'hitscanVolume';
 
   //  sliderBG volume
-  const sliderBG = new Mesh( rect.clone(), SharedMaterials.PANEL );
+  const sliderBG = new THREE.Mesh( rect.clone(), SharedMaterials.PANEL );
   Colors.colorizeGeometry( sliderBG.geometry, Colors.SLIDER_BG );
   sliderBG.position.z = depth * 0.5;
   sliderBG.position.x = SLIDER_WIDTH + Layout.PANEL_MARGIN;
 
-  const material = new MeshBasicMaterial({ color: Colors.DEFAULT_COLOR });
-  const filledVolume = new Mesh( rect.clone(), material );
+  const material = new THREE.MeshBasicMaterial({ color: Colors.DEFAULT_COLOR });
+  const filledVolume = new THREE.Mesh( rect.clone(), material );
   filledVolume.position.z = depth * 0.5;
   hitscanVolume.add( filledVolume );
 
-  const endLocator = new Mesh( new BoxGeometry( 0.05, 0.05, 0.05, 1, 1, 1 ), SharedMaterials.LOCATOR );
+  const endLocator = new THREE.Mesh( new THREE.BoxGeometry( 0.05, 0.05, 0.05, 1, 1, 1 ), SharedMaterials.LOCATOR );
   endLocator.position.x = SLIDER_WIDTH;
   hitscanVolume.add( endLocator );
   endLocator.visible = false;
@@ -213,8 +212,8 @@ export default function createSlider( {
     filledVolume.updateMatrixWorld();
     endLocator.updateMatrixWorld();
 
-    const a = new Vector3().setFromMatrixPosition( filledVolume.matrixWorld );
-    const b = new Vector3().setFromMatrixPosition( endLocator.matrixWorld );
+    const a = new THREE.Vector3().setFromMatrixPosition( filledVolume.matrixWorld );
+    const b = new THREE.Vector3().setFromMatrixPosition( endLocator.matrixWorld );
 
     const previousValue = state.value;
 
@@ -277,10 +276,10 @@ export default function createSlider( {
   return group;
 }
 
-const ta = new Vector3();
-const tb = new Vector3();
-const tToA = new Vector3();
-const aToB = new Vector3();
+const ta = new THREE.Vector3();
+const tb = new THREE.Vector3();
+const tToA = new THREE.Vector3();
+const aToB = new THREE.Vector3();
 
 function getPointAlpha( point, segment ){
   ta.copy( segment.b ).sub( segment.a );

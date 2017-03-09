@@ -17,8 +17,6 @@
 * limitations under the License.
 */
 
-import { Group } from 'three';
-
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';
@@ -50,7 +48,7 @@ export default function createCheckbox( {
   const DROPDOWN_OPTION_HEIGHT = height - Layout.PANEL_MARGIN * 1.2;
   const DROPDOWN_MARGIN = Layout.PANEL_MARGIN * -0.4;
 
-  const group = new Group();
+  const group = new THREE.Group();
 
   const panel = Layout.createPanel( width, height, depth );
   group.add( panel );

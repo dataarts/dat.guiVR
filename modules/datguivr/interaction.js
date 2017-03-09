@@ -16,13 +16,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
-import { Vector3 } from 'three';
-
-import EventEmitter from 'events';
+import Emitter from 'events';
 
 export default function createInteraction( hitVolume ){
-  const events = new EventEmitter();
+  const events = new Emitter();
 
   let anyHover = false;
   let anyPressing = false;
@@ -30,7 +27,7 @@ export default function createInteraction( hitVolume ){
   let hover = false;
   let anyActive = false;
 
-  const tVector = new Vector3();
+  const tVector = new THREE.Vector3();
   const availableInputs = [];
 
   function update( inputObjects ){

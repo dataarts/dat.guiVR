@@ -17,10 +17,8 @@
 * limitations under the License.
 */
 
-import { MeshBasicMaterial, VertexColors } from 'three';
-
 import * as Colors from './colors';
 
-export const PANEL = new MeshBasicMaterial( { color: 0xffffff, vertexColors: VertexColors } );
-export const LOCATOR = new MeshBasicMaterial();
-export const FOLDER = new MeshBasicMaterial( { color: 0x000000 } );
+export const PANEL = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.VertexColors } );
+export const LOCATOR = new THREE.MeshBasicMaterial();
+export const FOLDER = new THREE.MeshBasicMaterial( { color: 0x000000 } );

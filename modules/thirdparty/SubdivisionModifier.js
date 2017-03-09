@@ -14,16 +14,14 @@
  *		- currently doesn't handle "Sharp Edges"
  */
 
-import { Face3, Vector3, Vector2 } from 'three';
-
-export default function SubdivisionModifier( subdivisions ) {
+THREE.SubdivisionModifier = function ( subdivisions ) {
 
 	this.subdivisions = ( subdivisions === undefined ) ? 1 : subdivisions;
 
 };
 
 // Applies the "modify" pattern
-SubdivisionModifier.prototype.modify = function ( geometry ) {
+THREE.SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 	var repeats = this.subdivisions;
 
@@ -122,7 +120,7 @@ SubdivisionModifier.prototype.modify = function ( geometry ) {
 
 	function newFace( newFaces, a, b, c ) {
 
-		newFaces.push( new Face3( a, b, c ) );
+		newFaces.push( new THREE.Face3( a, b, c ) );
 
 	}
 
@@ -141,9 +139,9 @@ SubdivisionModifier.prototype.modify = function ( geometry ) {
 	/////////////////////////////
 
 	// Performs one iteration of Subdivision
-	SubdivisionModifier.prototype.smooth = function ( geometry ) {
+	THREE.SubdivisionModifier.prototype.smooth = function ( geometry ) {
 
-		var tmp = new Vector3();
+		var tmp = new THREE.Vector3();
 
 		var oldVertices, oldFaces, oldUvs;
 		var newVertices, newFaces, newUVs = [];
@@ -187,7 +185,7 @@ SubdivisionModifier.prototype.modify = function ( geometry ) {
 		for ( i in sourceEdges ) {
 
 			currentEdge = sourceEdges[ i ];
-			newEdge = new Vector3();
+			newEdge = new THREE.Vector3();
 
 			edgeVertexWeight = 3 / 8;
 			adjacentVertexWeight = 1 / 8;
@@ -332,9 +330,9 @@ SubdivisionModifier.prototype.modify = function ( geometry ) {
 		newFaces = [];
 
 		var uv, x0, x1, x2;
-		var x3 = new Vector2();
-		var x4 = new Vector2();
-		var x5 = new Vector2();
+		var x3 = new THREE.Vector2();
+		var x4 = new THREE.Vector2();
+		var x5 = new THREE.Vector2();
 
 		for ( i = 0, il = oldFaces.length; i < il; i ++ ) {
 

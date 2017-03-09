@@ -10,6 +10,10 @@ export default {
   moduleName: 'datGUIVR',
   sourceMap: 'inline',
 
+  external: [
+    'THREE'
+  ],
+
   targets: [
     { dest: 'build/datguivr.js', format: 'umd' },
     { dest: 'build/datguivr.module.js', format: 'es' }

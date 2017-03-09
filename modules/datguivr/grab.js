@@ -17,8 +17,6 @@
 * limitations under the License.
 */
 
-import { Matrix4, Vector3 } from 'three';
-
 import createInteraction from './interaction';
 
 export function create( { group, panel } = {} ){
@@ -29,8 +27,8 @@ export function create( { group, panel } = {} ){
   interaction.events.on( 'tick', handleTick );
   interaction.events.on( 'onReleased', handleOnRelease );
 
-  const tempMatrix = new Matrix4();
-  const tPosition = new Vector3();
+  const tempMatrix = new THREE.Matrix4();
+  const tPosition = new THREE.Vector3();
 
   let oldParent;
 

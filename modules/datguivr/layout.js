@@ -17,19 +17,17 @@
 * limitations under the License.
 */
 
-import { Mesh, Geometry, MeshBasicMaterial, Shape } from 'three';
-
 import * as SharedMaterials from './sharedmaterials';
 import * as Colors from './colors';
 
 export function alignLeft( obj ){
-  if( obj instanceof Mesh ){
+  if( obj instanceof THREE.Mesh ){
     obj.geometry.computeBoundingBox();
     const width = obj.geometry.boundingBox.max.x - obj.geometry.boundingBox.max.y;
     obj.geometry.translate( width, 0, 0 );
     return obj;
   }
-  else if( obj instanceof Geometry ){
+  else if( obj instanceof THREE.Geometry ){
     obj.computeBoundingBox();
     const width = obj.boundingBox.max.x - obj.boundingBox.max.y;
     obj.translate( width, 0, 0 );
@@ -38,8 +36,8 @@ export function alignLeft( obj ){
 }
 
 export function createPanel( width, height, depth, uniqueMaterial ){
-  const material = uniqueMaterial ? new MeshBasicMaterial({color:0xffffff}) : SharedMaterials.PANEL;
-  const panel = new Mesh( new BoxGeometry( width, height, depth ), material );
+  const material = uniqueMaterial ? new THREE.MeshBasicMaterial({color:0xffffff}) : SharedMaterials.PANEL;
+  const panel = new THREE.Mesh( new THREE.BoxGeometry( width, height, depth ), material );
   panel.geometry.translate( width * 0.5, 0, 0 );
 
   if( uniqueMaterial ){
@@ -53,7 +51,7 @@ export function createPanel( width, height, depth, uniqueMaterial ){
 }
 
 export function createControllerIDBox( height, color ){
-  const panel = new Mesh( new BoxGeometry( CONTROLLER_ID_WIDTH, height, CONTROLLER_ID_DEPTH ), SharedMaterials.PANEL );
+  const panel = new THREE.Mesh( new THREE.BoxGeometry( CONTROLLER_ID_WIDTH, height, CONTROLLER_ID_DEPTH ), SharedMaterials.PANEL );
   panel.geometry.translate( CONTROLLER_ID_WIDTH * 0.5, 0, 0 );
   Colors.colorizeGeometry( panel.geometry, color );
   return panel;
@@ -62,16 +60,16 @@ export function createControllerIDBox( height, color ){
 export function createDownArrow(){
   const w = 0.0096;
   const h = 0.016;
-  const sh = new Shape();
+  const sh = new THREE.Shape();
   sh.moveTo(0,0);
   sh.lineTo(-w,h);
   sh.lineTo(w,h);
   sh.lineTo(0,0);
 
-  const geo = new ShapeGeometry( sh );
+  const geo = new THREE.ShapeGeometry( sh );
   geo.translate( 0, -h * 0.5, 0 );
 
-  return new Mesh( geo, SharedMaterials.PANEL );
+  return new THREE.Mesh( geo, SharedMaterials.PANEL );
 }
 
 export const PANEL_WIDTH = 1.0;

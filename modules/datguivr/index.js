@@ -17,10 +17,7 @@
 * limitations under the License.
 */
 
-import { LineBasicMaterial, Geometry, Vector3, Line, MeshBasicMaterial, AdditiveBlending, Mesh, SphereGeometry, Object3D, Group, Raycaster, Plane, Matrix4 } from 'three';
-import ViveController from 'three-vive-controller';
-
-import EventEmitter from 'events';
+import Emitter from 'events';
 import createSlider from './slider';
 import createCheckbox from './checkbox';
 import createButton from './button';
@@ -91,12 +88,12 @@ const datGUIVR = (function DATGUIVR(){
   /*
     The default laser pointer coming out of each InputObject.
   */
-  const laserMaterial = new LineBasicMaterial({color:0x55aaff, transparent: true, blending: AdditiveBlending });
+  const laserMaterial = new THREE.LineBasicMaterial({color:0x55aaff, transparent: true, blending: THREE.AdditiveBlending });
   function createLaser(){
-    const g = new Geometry();
-    g.vertices.push( new Vector3() );
-    g.vertices.push( new Vector3(0,0,0) );
-    return new Line( g, laserMaterial );
+    const g = new THREE.Geometry();
+    g.vertices.push( new THREE.Vector3() );
+    g.vertices.push( new THREE.Vector3(0,0,0) );
+    return new THREE.Line( g, laserMaterial );
   }
 
 
@@ -106,9 +103,9 @@ const datGUIVR = (function DATGUIVR(){
   /*
     A "cursor", eg the ball that appears at the end of your laser.
   */
-  const cursorMaterial = new MeshBasicMaterial({color:0x444444, transparent: true, blending: AdditiveBlending } );
+  const cursorMaterial = new THREE.MeshBasicMaterial({color:0x444444, transparent: true, blending: THREE.AdditiveBlending } );
   function createCursor(){
-    return new Mesh( new SphereGeometry(0.006, 4, 4 ), cursorMaterial );
+    return new THREE.Mesh( new THREE.SphereGeometry(0.006, 4, 4 ), cursorMaterial );
   }
 
 
@@ -116,21 +113,21 @@ const datGUIVR = (function DATGUIVR(){
 
   /*
     Creates a generic Input type.
-    Takes any Object3D type object and uses its position
+    Takes any THREE.Object3D type object and uses its position
     and orientation as an input device.
 
     A laser pointer is included and will be updated.
     Contains state about which Interaction is currently being used or hover.
   */
-  function createInput( inputObject = new Group() ){
+  function createInput( inputObject = new THREE.Group() ){
     const input = {
-      raycast: new Raycaster( new Vector3(), new Vector3() ),
+      raycast: new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3() ),
       laser: createLaser(),
       cursor: createCursor(),
       object: inputObject,
       pressed: false,
       gripped: false,
-      events: new EventEmitter(),
+      events: new Emitter(),
       interaction: {
         grip: undefined,
         press: undefined,
@@ -154,13 +151,13 @@ const datGUIVR = (function DATGUIVR(){
   const mouseInput = createMouseInput();
 
   function createMouseInput(){
-    const mouse = new Vector2(-1,-1);
+    const mouse = new THREE.Vector2(-1,-1);
 
     const input = createInput();
     input.mouse = mouse;
-    input.mouseIntersection = new Vector3();
-    input.mouseOffset = new Vector3();
-    input.mousePlane = new Plane();
+    input.mouseIntersection = new THREE.Vector3();
+    input.mouseOffset = new THREE.Vector3();
+    input.mousePlane = new THREE.Plane();
     input.intersections = [];
 
     //  set my enableMouse
@@ -234,7 +231,7 @@ const datGUIVR = (function DATGUIVR(){
 
     input.laser.cursor = input.cursor;
 
-    if( object instanceof ViveController ){
+    if( THREE.ViveController && object instanceof THREE.ViveController ){
       bindViveController( input, object, input.laser.pressed, input.laser.gripped );
     }
 
@@ -326,7 +323,7 @@ const datGUIVR = (function DATGUIVR(){
 
     if( object[ propertyName ] === undefined ){
       console.warn( 'no property named', propertyName, 'on object', object );
-      return new Group();
+      return new THREE.Group();
     }
 
     if( isObject( arg3 ) || isArray( arg3 ) ){
@@ -390,7 +387,7 @@ const datGUIVR = (function DATGUIVR(){
   /*
     Creates a folder with the name.
 
-    Folders are Group type objects and can do group.add() for siblings.
+    Folders are THREE.Group type objects and can do group.add() for siblings.
     Folders will automatically attempt to lay its children out in sequence.
 
     Folders are given the add() functionality so that they can do
@@ -424,9 +421,9 @@ const datGUIVR = (function DATGUIVR(){
     Perform the necessary updates, raycasts on its own RAF.
   */
 
-  const tPosition = new Vector3();
-  const tDirection = new Vector3( 0, 0, -1 );
-  const tMatrix = new Matrix4();
+  const tPosition = new THREE.Vector3();
+  const tDirection = new THREE.Vector3( 0, 0, -1 );
+  const tMatrix = new THREE.Matrix4();
 
   function update() {
     requestAnimationFrame( update );
@@ -548,6 +545,7 @@ if( window ){
 
   window.dat.GUIVR = datGUIVR;
 }
+
 
 /*
   Bunch of state-less utility functions.
