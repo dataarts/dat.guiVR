@@ -1,6 +1,6 @@
 {
   "name": "datguivr",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A flexible graphical user interface for changing variables within WebVR.",
   "main": "build/datguivr.js",
   "module": "build/datguivr.module.js",

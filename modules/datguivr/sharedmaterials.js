@@ -18,7 +18,8 @@
 */
 
 import * as Colors from './colors';
+const THREE = require('three');
 
-export const PANEL = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: 2 } );
+export const PANEL = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.VertexColors } );
 export const LOCATOR = new THREE.MeshBasicMaterial();
 export const FOLDER = new THREE.MeshBasicMaterial( { color: 0x000000 } );
