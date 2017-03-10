@@ -17,6 +17,8 @@
 * limitations under the License.
 */
 
+const THREE = require('three');
+
 import createInteraction from './interaction';
 
 export function create( { group, panel } = {} ){

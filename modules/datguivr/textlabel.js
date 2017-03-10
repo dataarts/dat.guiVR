@@ -17,6 +17,8 @@
 * limitations under the License.
 */
 
+const THREE = require('three');
+
 import * as Colors from './colors';
 import * as SharedMaterials from './sharedmaterials';
 

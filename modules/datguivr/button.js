@@ -17,6 +17,8 @@
 * limitations under the License.
 */
 
+const THREE = require('three');
+
 import * as SubdivisionModifier from '../thirdparty/SubdivisionModifier';
 
 import createTextLabel from './textlabel';

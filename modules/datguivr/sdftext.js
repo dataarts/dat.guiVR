@@ -16,6 +16,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+const THREE = require('three');
+
 import createTextGeometry from 'three-bmfont-text';
 import parseASCII from 'parse-bmfont-ascii';
 import createSDFShader from 'three-bmfont-text/shaders/sdf';

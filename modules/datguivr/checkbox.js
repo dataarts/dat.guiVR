@@ -17,6 +17,8 @@
 * limitations under the License.
 */
 
+const THREE = require('three');
+
 import createTextLabel from './textlabel';
 import createInteraction from './interaction';
 import * as Colors from './colors';

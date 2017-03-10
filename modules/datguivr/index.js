@@ -17,6 +17,8 @@
 * limitations under the License.
 */
 
+const THREE = require('three');
+
 import Emitter from 'events';
 import createSlider from './slider';
 import createCheckbox from './checkbox';

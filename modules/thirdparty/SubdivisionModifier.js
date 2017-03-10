@@ -14,6 +14,8 @@
  *		- currently doesn't handle "Sharp Edges"
  */
 
+const THREE = require('three');
+
 THREE.SubdivisionModifier = function ( subdivisions ) {
 
 	this.subdivisions = ( subdivisions === undefined ) ? 1 : subdivisions;
