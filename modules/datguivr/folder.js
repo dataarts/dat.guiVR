@@ -47,7 +47,7 @@ export default function createFolder({
   const group = new THREE.Group();
   const collapseGroup = new THREE.Group();
   group.add( collapseGroup );
-  
+
   //expose as public interface so that children can call it when their spacing changes
   group.performLayout = performLayout;
   group.isCollapsed = () => { return state.collapsed }
@@ -118,7 +118,7 @@ export default function createFolder({
       obj.hideGrabber();
       obj.close();
     });
-    
+
     performLayout();
   }
 
@@ -126,22 +126,22 @@ export default function createFolder({
     const spacingPerController = Layout.PANEL_HEIGHT + Layout.PANEL_SPACING;
     const emptyFolderSpace = Layout.FOLDER_HEIGHT + Layout.PANEL_SPACING;
     var totalSpacing = emptyFolderSpace;
-    
+
     collapseGroup.children.forEach( (c) => { c.visible = !state.collapsed } );
-    
+
     if ( state.collapsed ) {
       downArrow.rotation.z = Math.PI * 0.5;
     } else {
       downArrow.rotation.z = 0;
 
       var y = 0, lastHeight = emptyFolderSpace;
-      
+
       collapseGroup.children.forEach( function( child ){
         var h = child.spacing ? child.spacing : spacingPerController;
         // how far to get from the middle of previous to middle of this child?
         // half of the height of previous plus half height of this.
-        var spacing = 0.5 * (lastHeight + h); 
-        
+        var spacing = 0.5 * (lastHeight + h);
+
         if (child.isFolder) {
           // For folders, the origin isn't in the middle of the entire height of the folder,
           // but just the middle of the top panel.
@@ -205,7 +205,7 @@ export default function createFolder({
   const grabInteraction = Grab.create( { group, panel: grabber } );
   const paletteInteraction = Palette.create( { group, panel } );
 
-  group.update = function( inputObjects ){
+  group.updateControl = function( inputObjects ){
     interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
     paletteInteraction.update( inputObjects );
@@ -214,7 +214,7 @@ export default function createFolder({
   };
 
   group.name = function( str ){
-    descriptorLabel.update( str );
+    descriptorLabel.updateLabel( str );
     return group;
   };
 

@@ -115,10 +115,10 @@ export default function createSlider( {
 
   function updateValueLabel( value ){
     if( state.useStep ){
-      valueLabel.update( roundToDecimal( state.value, state.precision ).toString() );
+      valueLabel.updateLabel( roundToDecimal( state.value, state.precision ).toString() );
     }
     else{
-      valueLabel.update( state.value.toString() );
+      valueLabel.updateLabel( state.value.toString() );
     }
   }
 
@@ -237,7 +237,7 @@ export default function createSlider( {
   const grabInteraction = Grab.create( { group, panel } );
   const paletteInteraction = Palette.create( { group, panel } );
 
-  group.update = function( inputObjects ){
+  group.updateControl = function( inputObjects ){
     interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
     paletteInteraction.update( inputObjects );
@@ -251,7 +251,7 @@ export default function createSlider( {
   };
 
   group.name = function( str ){
-    descriptorLabel.update( str );
+    descriptorLabel.updateLabel( str );
     return group;
   };
 

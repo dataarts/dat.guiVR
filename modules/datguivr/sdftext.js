@@ -86,7 +86,7 @@ export function creator(){
     group.add( mesh );
     group.layout = mesh.geometry.layout;
 
-    group.update = function( str ){
+    group.updateLabel = function( str ){
       mesh.geometry.update( str );
     };
 

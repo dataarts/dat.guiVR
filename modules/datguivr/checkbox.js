@@ -154,11 +154,11 @@ export default function createCheckbox( {
   };
 
   group.name = function( str ){
-    descriptorLabel.update( str );
+    descriptorLabel.updateLabel( str );
     return group;
   };
 
-  group.update = function( inputObjects ){
+  group.updateControl = function( inputObjects ){
     if( state.listen ){
       state.value = object[ propertyName ];
     }

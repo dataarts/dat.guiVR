@@ -123,14 +123,14 @@ export default function createButton( {
 
   const grabInteraction = Grab.create( { group, panel } );
 
-  group.update = function( inputObjects ){
+  group.updateControl = function( inputObjects ){
     interaction.update( inputObjects );
     grabInteraction.update( inputObjects );
     updateView();
   };
 
   group.name = function( str ){
-    descriptorLabel.update( str );
+    descriptorLabel.updateLabel( str );
     return group;
   };
 

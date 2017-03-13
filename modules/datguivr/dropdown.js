@@ -245,12 +245,12 @@ export default function createCheckbox( {
     return group;
   };
 
-  group.update = function( inputObjects ){
+  group.updateControl = function( inputObjects ){
     if( state.listen ){
       selectedLabel.setString( findLabelFromProp() );
     }
     labelInteractions.forEach( function( labelInteraction ){
-      labelInteraction.update( inputObjects );
+      labelInteraction.updateLabel( inputObjects );
     });
     grabInteraction.update( inputObjects );
     updateView();

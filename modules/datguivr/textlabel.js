@@ -31,11 +31,11 @@ export default function createTextLabel( textCreator, str, width = 0.4, depth = 
 
 
   group.setString = function( str ){
-    text.update( str.toString() );
+    text.updateLabel( str.toString() );
   };
 
   group.setNumber = function( str ){
-    text.update( str.toFixed(2) );
+    text.updateLabel( str.toFixed(2) );
   };
 
   text.position.z = depth;
