@@ -162,6 +162,15 @@ export default function createFolder({
 
     //make sure parent folder also performs layout.
     if (group.folder !== group) group.folder.performLayout();
+
+    // if we're a subfolder, use a smaller panel
+    let panelWidth = Layout.FOLDER_WIDTH;
+    if (group.folder !== group) {
+      panelWidth = Layout.SUBFOLDER_WIDTH;
+    }
+
+    Layout.resizePanel(panel, panelWidth, Layout.FOLDER_HEIGHT, depth)
+
   }
 
   function updateView(){
@@ -169,14 +178,14 @@ export default function createFolder({
       panel.material.color.setHex( Colors.HIGHLIGHT_BACK );
     }
     else{
-      panel.material.color.setHex( Colors.DEFAULT_BACK );
+      panel.material.color.setHex( Colors.DEFAULT_FOLDER_BACK );
     }
 
     if( grabInteraction.hovering() ){
       grabber.material.color.setHex( Colors.HIGHLIGHT_BACK );
     }
     else{
-      grabber.material.color.setHex( Colors.DEFAULT_BACK );
+      grabber.material.color.setHex( Colors.DEFAULT_FOLDER_BACK );
     }
   }
 

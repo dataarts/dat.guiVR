@@ -47,7 +47,17 @@ export function createPanel( width, height, depth, uniqueMaterial ){
     Colors.colorizeGeometry( panel.geometry, Colors.DEFAULT_BACK );
   }
 
+  panel.userData.currentWidth = width;
+  panel.userData.currentHeight = height;
+  panel.userData.currentDepth = depth;
+
   return panel;
+}
+export function resizePanel(panel, width, height, depth) {
+  panel.geometry.scale(width/panel.userData.currentWidth, height/panel.userData.currentHeight, depth/panel.userData.currentDepth);
+  panel.userData.currentWidth = width;
+  panel.userData.currentHeight = height;
+  panel.userData.currentDepth = depth;
 }
 
 export function createControllerIDBox( height, color ){
@@ -83,7 +93,8 @@ export const CONTROLLER_ID_WIDTH = 0.02;
 export const CONTROLLER_ID_DEPTH = 0.001;
 export const BUTTON_DEPTH = 0.01;
 export const FOLDER_WIDTH = 1.026;
-export const FOLDER_HEIGHT = 0.08;
+export const SUBFOLDER_WIDTH = 1.0;
+export const FOLDER_HEIGHT = 0.09;
 export const FOLDER_GRAB_HEIGHT = 0.0512;
 export const BORDER_THICKNESS = 0.01;
 export const CHECKBOX_SIZE = 0.05;
