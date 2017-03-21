@@ -250,7 +250,7 @@ export default function createCheckbox( {
       selectedLabel.setString( findLabelFromProp() );
     }
     labelInteractions.forEach( function( labelInteraction ){
-      labelInteraction.updateLabel( inputObjects );
+      labelInteraction.update( inputObjects );
     });
     grabInteraction.update( inputObjects );
     updateView();
