@@ -37,11 +37,9 @@ const GUIVR = (function DATGUIVR(){
     Lists.
     InputObjects are things like VIVE controllers, cardboard headsets, etc.
     Controllers are the DAT GUI sliders, checkboxes, etc.
-    HitscanObjects are anything raycasts will hit-test against.
   */
   const inputObjects = [];
   const controllers = [];
-  const hitscanObjects = []; //XXX: this is currently not used.
 
   /*
     Functions for determining whether a given controller is visible (by which we
@@ -252,7 +250,6 @@ const GUIVR = (function DATGUIVR(){
     });
 
     controllers.push( slider );
-    hitscanObjects.push( ...slider.hitscan )
 
     return slider;
   }
@@ -264,7 +261,6 @@ const GUIVR = (function DATGUIVR(){
     });
 
     controllers.push( checkbox );
-    hitscanObjects.push( ...checkbox.hitscan )
 
     return checkbox;
   }
@@ -275,7 +271,6 @@ const GUIVR = (function DATGUIVR(){
     });
 
     controllers.push( button );
-    hitscanObjects.push( ...button.hitscan );
     return button;
   }
 
@@ -285,7 +280,6 @@ const GUIVR = (function DATGUIVR(){
     });
 
     controllers.push( dropdown );
-    hitscanObjects.push( ...dropdown.hitscan );
     return dropdown;
   }
 
@@ -404,9 +398,6 @@ const GUIVR = (function DATGUIVR(){
     });
 
     controllers.push( folder );
-    if( folder.hitscan ){
-      hitscanObjects.push( ...folder.hitscan );
-    }
 
     return folder;
   }
