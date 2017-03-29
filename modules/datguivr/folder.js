@@ -30,6 +30,7 @@ export default function createFolder({
   textCreator,
   name,
   guiAdd,
+  guiRemove,
   addSlider,
   addDropdown,
   addCheckbox,
@@ -51,9 +52,20 @@ export default function createFolder({
   //expose as public interface so that children can call it when their spacing changes
   group.performLayout = performLayout;
   group.isCollapsed = () => { return state.collapsed }
+  
+  //useful to have access to this as well. Using in remove implementation
+  Object.defineProperty(group, 'guiChildren', {
+    get: () => { return collapseGroup.children }
+  });
+  // returns true if all of the supplied args are members of this folder
+  group.hasChild = function ( ...args ){
+    return !args.includes((obj) => { return group.guiChildren.indexOf(obj) === -1});
+  }
 
   //  Yeah. Gross.
   const addOriginal = THREE.Group.prototype.add;
+  //as long as no-one expects this to behave like a regular THREE.Group, the changed definition of remove shouldn't hurt
+  //const removeOriginal = THREE.Group.prototype.remove; 
 
   function addImpl( o ){
     addOriginal.call( group, o );
@@ -97,6 +109,30 @@ export default function createFolder({
       return new THREE.Group();
     }
   };
+
+  /* 
+  Removes the given controllers from the GUI.
+
+  If the arguments are invalid, it will attempt to detect this before making any changes, 
+  aborting the process and returning false from this method.
+
+  Note: as with add, this overwrites an existing property of THREE.Group.
+  As long as no-one expects folders to behave like regular THREE.Groups, that shouldn't matter.
+  */
+  group.remove = function( ...args ){
+    const ok = guiRemove( ...args ); // any invalid arguments should cause this to return false
+    if (!ok) return false;
+    args.forEach( function( obj ){
+      console.assert(group.hasChild(obj), "internal problem with housekeeping logic of dat.GUIVR folder not caught by sanity check");
+      if (obj.isFolder) {
+        obj.remove( ...obj.guiChildren );
+      }
+      collapseGroup.remove(obj);
+    });
+    //TODO: defer actual layout performance; set a flag and make sure it gets done before any rendering or hit-testing happens.
+    performLayout();
+    return true;
+  }
 
   group.addController = function( ...args ){
     args.forEach( function( obj ){
