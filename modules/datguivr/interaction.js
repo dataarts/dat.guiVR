@@ -23,8 +23,6 @@ export default function createInteraction( hitVolume ){
 
   let anyHover = false;
   let anyPressing = false;
-
-  let hover = false;
   let anyActive = false;
 
   const tVector = new THREE.Vector3();
@@ -32,7 +30,7 @@ export default function createInteraction( hitVolume ){
 
   function update( inputObjects ){
 
-    hover = false;
+    anyHover = false;
     anyPressing = false;
     anyActive = false;
 
@@ -44,7 +42,8 @@ export default function createInteraction( hitVolume ){
 
       const { hitObject, hitPoint } = extractHit( input );
 
-      hover = hover || hitVolume === hitObject;
+      var hover = hitVolume === hitObject;
+      anyHover = anyHover || hover;
 
       performStateEvents({
         input,
@@ -166,7 +165,7 @@ export default function createInteraction( hitVolume ){
     }
 
     if( noMainHover ){
-      return hover;
+      return anyHover;
     }
 
     if( availableInputs.filter( function( input ){
