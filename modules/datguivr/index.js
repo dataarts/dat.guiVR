@@ -378,18 +378,19 @@ const GUIVR = (function DATGUIVR(){
   /*
   Not used directly; used by folders.
   Remove controllers from the global list of all controllers known to dat.GUIVR.
-  Calls removeTest first to check input arguments.
+  Calls removeTest first to check input arguments.  returns false if this test fails.
+  returns true if successful.
 
   Note that this function does not recursively remove elements from folders; that is dealt with in the folder code which calls this.
-
-  Returns an array of any elements that couldn't be removed (should be empty, otherwise indicates some internal bug).
+  
    */
   function remove( ...args ){
-    if (!removeTest(...args)) return false;
-    args.forEach( function( obj ){
+    let argSet = [ ...new Set(args) ]; //just in case there were repeated elements in args, turn into Set then back to array.
+    if ( !removeTest(...argSet) ) return false;
+    argSet.forEach( function( obj ){
       var i = controllers.indexOf( obj );
       if ( i > -1) controllers.splice( i, 1 );
-      else { 
+      else { // I can't see how this'd happen now we guard against repeated elements.
         console.log("Internal error in remove, not anticipated by removeTest. Internal dat.GUIVR state may be inconsistent.");
         return false;
       }
