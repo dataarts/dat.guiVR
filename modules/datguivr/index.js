@@ -23,6 +23,7 @@ import createCheckbox from './checkbox';
 import createButton from './button';
 import createFolder from './folder';
 import createDropdown from './dropdown';
+import createText from './text';
 import * as SDFText from './sdftext';
 
 const GUIVR = (function DATGUIVR(){
@@ -289,6 +290,13 @@ const GUIVR = (function DATGUIVR(){
     return dropdown;
   }
 
+  function addText(object, propertyName) {
+    const text = createText({
+      textCreator, propertyName, object
+    });
+    controllers.push( text );
+    return text;
+  }
 
 
 
@@ -340,6 +348,10 @@ const GUIVR = (function DATGUIVR(){
       return addButton( object, propertyName );
     }
 
+    if( isString( object[ propertyName ] ) ){
+      return addText( object, propertyName );
+    }
+
     //  add couldn't figure it out, pass it back to folder
     return undefined
   }
@@ -381,6 +393,14 @@ const GUIVR = (function DATGUIVR(){
     return addButton( proxy, 'button' );
   }
 
+  function addSimpleText(text) {
+    const proxy = {
+      text: text
+    };
+
+    return addText( proxy, 'text' );
+  }
+
 
   /*
     Creates a folder with the name.
@@ -400,7 +420,8 @@ const GUIVR = (function DATGUIVR(){
       addSlider: addSimpleSlider,
       addDropdown: addSimpleDropdown,
       addCheckbox: addSimpleCheckbox,
-      addButton: addSimpleButton
+      addButton: addSimpleButton,
+      addText: addSimpleText
     });
 
     controllers.push( folder );
@@ -563,6 +584,11 @@ function isNumber(n) {
 function isBoolean(n){
   return typeof n === 'boolean';
 }
+
+function isString(n){
+  return typeof n === 'string';
+}
+
 
 function isFunction(functionToCheck) {
   const getType = {};
