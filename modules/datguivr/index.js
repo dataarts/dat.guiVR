@@ -294,8 +294,8 @@ const GUIVR = (function DATGUIVR(){
     const text = createText({
       textCreator, propertyName, object
     });
-    controllers.push( label );
-    return label;
+    controllers.push( text );
+    return text;
   }
 
 
