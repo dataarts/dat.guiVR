@@ -159,7 +159,7 @@ export default function createCheckbox( {
   }
 
   //  base option
-  const selectedLabel = createOption( initialLabel, false );
+  const selectedLabel = createOption( initialLabel || ' ', false );
   selectedLabel.position.x = Layout.PANEL_MARGIN * 0.5 + width * 0.5;
   selectedLabel.position.z = depth;
 
