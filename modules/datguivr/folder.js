@@ -36,6 +36,8 @@ export default function createFolder({
   addButton
 } = {} ){
 
+  const MAX_FOLDER_ITEMS_IN_COLUMN = 25;
+
   const width = Layout.FOLDER_WIDTH;
   const depth = Layout.PANEL_DEPTH;
 
@@ -136,7 +138,7 @@ export default function createFolder({
 
       var y = 0, lastHeight = emptyFolderSpace;
 
-      collapseGroup.children.forEach( function( child ){
+      collapseGroup.children.forEach( function( child, index ){
         var h = child.spacing ? child.spacing : spacingPerController;
         // how far to get from the middle of previous to middle of this child?
         // half of the height of previous plus half height of this.
@@ -153,8 +155,14 @@ export default function createFolder({
         // in any case, for use by the next object along we remember 'y' as the middle of the whole panel
         y -= spacing;
         lastHeight = h;
-        totalSpacing += h;
+        if (index < MAX_FOLDER_ITEMS_IN_COLUMN)
+          totalSpacing += h;
         child.position.x = 0.026;
+
+        if ((index+1) % MAX_FOLDER_ITEMS_IN_COLUMN === 0) y = 0;
+
+        // child.position.y -= (index%MAX_FOLDER_ITEMS_IN_COLUMN+1) * ( DROPDOWN_OPTION_HEIGHT );
+        child.position.x += width * Math.floor(index / MAX_FOLDER_ITEMS_IN_COLUMN);
       });
     }
 
