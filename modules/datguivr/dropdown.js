@@ -47,6 +47,7 @@ export default function createCheckbox( {
   const DROPDOWN_DEPTH = depth;
   const DROPDOWN_OPTION_HEIGHT = height - Layout.PANEL_MARGIN * 1.2;
   const DROPDOWN_MARGIN = Layout.PANEL_MARGIN * -0.4;
+  const MAX_DROPDOWN_LABELS_IN_COLUMN = 25;
 
   const group = new THREE.Group();
 
@@ -158,7 +159,7 @@ export default function createCheckbox( {
   }
 
   //  base option
-  const selectedLabel = createOption( initialLabel, false );
+  const selectedLabel = createOption( initialLabel || ' ', false );
   selectedLabel.position.x = Layout.PANEL_MARGIN * 0.5 + width * 0.5;
   selectedLabel.position.z = depth;
 
@@ -169,8 +170,9 @@ export default function createCheckbox( {
 
 
   function configureLabelPosition( label, index ){
-    label.position.y = -DROPDOWN_MARGIN - (index+1) * ( DROPDOWN_OPTION_HEIGHT );
+    label.position.y = -DROPDOWN_MARGIN - (index%MAX_DROPDOWN_LABELS_IN_COLUMN+1) * ( DROPDOWN_OPTION_HEIGHT );
     label.position.z = depth;
+    label.position.x += DROPDOWN_WIDTH * Math.floor(index / MAX_DROPDOWN_LABELS_IN_COLUMN);
   }
 
   function optionToLabel( optionName, index ){

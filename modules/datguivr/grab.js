@@ -47,7 +47,13 @@ export function create( { group, panel } = {} ){
     if( input.mouse ){
       if( input.pressed && input.selected && input.raycast.ray.intersectPlane( input.mousePlane, input.mouseIntersection ) ){
         if( input.interaction.press === interaction ){
-          folder.position.copy( input.mouseIntersection.sub( input.mouseOffset ) );
+          input.mouseIntersection.sub( input.mouseOffset );
+                    
+          input.selected.parent.updateMatrixWorld();          
+          input.selected.parent.worldToLocal(input.mouseIntersection);
+
+          folder.position.copy(input.mouseIntersection);
+
           return;
         }
       }
